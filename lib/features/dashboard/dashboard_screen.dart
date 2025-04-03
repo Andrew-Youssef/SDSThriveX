@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/core/theme.dart';
+import 'package:flutter_innatex_student_screens/features/calender/calender_screen.dart';
+import 'package:flutter_innatex_student_screens/features/project_approval/project_approval_screen.dart';
 
 //ISSUES:
 //button is currently non functional
@@ -17,21 +19,98 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Column(
+        body: ListView(
           children: [
             Row(children: [buildSearchBar(), buildSearchButton()]),
-
+            buildMyCardCertifyProjects(context),
+            SizedBox(height: 10),
+            buildMyCardCalender(context),
             SizedBox(height: 10),
             buildMyCard1(),
             SizedBox(height: 10),
             buildMyCard2(),
-            SizedBox(height: 10),
-            buildMyCard3(),
           ],
         ),
       ),
     );
   }
+}
+
+//COACHES ONLY
+//figure out how to make it open the certify projects page
+Widget buildMyCardCertifyProjects(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Card(
+      borderOnForeground: true,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('Certify Projects (Coaches)'),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MyPendingProjectScreen(),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.arrow_forward),
+                ),
+              ],
+            ),
+            Divider(color: Colors.grey),
+            Text(
+              'Certify student projects so that they are recognized by employers',
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+//COACHES ONLY
+Widget buildMyCardCalender(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Card(
+      borderOnForeground: true,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('Calender (Coaches)'),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MyCalenderScreen(),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.arrow_forward),
+                ),
+              ],
+            ),
+            Divider(color: Colors.grey),
+            Text(
+              'Certify student projects so that they are recognized by employers',
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 Widget buildMyCard1() {
@@ -80,28 +159,6 @@ Widget buildMyCard2() {
   );
 }
 
-Widget buildMyCard3() {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Card(
-      borderOnForeground: true,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('AI Storytelling'),
-            Divider(color: Colors.grey),
-            Text(
-              'Our new storytelling feature provides a new way of showing employers who you are',
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
 Widget buildSearchButton() {
   return Padding(
     padding: const EdgeInsets.all(12),
@@ -113,19 +170,6 @@ Widget buildSearchButton() {
     ),
   );
 }
-
-// Widget buildSearchBar() {
-//   return Flexible(
-//     child: Padding(
-//       padding: const EdgeInsets.only(left: 12),
-//       child: SearchBar(
-//         hintText: 'Search',
-//         elevation: WidgetStateProperty.all(4),
-//         onTap: () {},
-//       ),
-//     ),
-//   );
-// }
 
 Widget buildSearchBar() {
   return Flexible(
