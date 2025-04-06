@@ -49,6 +49,7 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Certify Projects (Coaches)'),
                 IconButton(
@@ -60,7 +61,14 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
                       ),
                     );
                   },
-                  icon: Icon(Icons.arrow_forward),
+                  icon: Container(
+                    padding: EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 118, 195, 247),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.arrow_forward, color: const Color.fromARGB(255, 0, 0, 0)),
+                  ),
                 ),
               ],
             ),
@@ -87,6 +95,7 @@ Widget buildMyCardCalender(BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Calender (Coaches)'),
                 IconButton(
@@ -98,7 +107,14 @@ Widget buildMyCardCalender(BuildContext context) {
                       ),
                     );
                   },
-                  icon: Icon(Icons.arrow_forward),
+                  icon: Container(
+                    padding: EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 118, 195, 247),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.arrow_forward, color: const Color.fromARGB(255, 0, 0, 0)),
+                  ),
                 ),
               ],
             ),
@@ -164,9 +180,11 @@ Widget buildSearchButton() {
     padding: const EdgeInsets.all(12),
     child: IconButton.filled(
       onPressed: () {},
-      icon: Icon(Icons.search),
-      color: Color.fromARGB(255, 255, 255, 255),
-      focusColor: Color.fromARGB(70, 162, 155, 254),
+      icon: const Icon(Icons.search),
+      style: ButtonStyle(
+        backgroundColor: WidgetStatePropertyAll<Color>(const Color.fromARGB(255, 255, 255, 255)),
+        foregroundColor: WidgetStatePropertyAll<Color>(const Color.fromARGB(255, 0, 0, 0)),
+      ),
     ),
   );
 }

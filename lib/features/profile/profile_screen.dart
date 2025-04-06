@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:expandable/expandable.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});

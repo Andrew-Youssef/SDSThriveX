@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'core/theme.dart';
 
@@ -61,36 +60,44 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Expanded(child: page),
 
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-        selectedIndex: currentPageIndex,
-        height: 60,
-        backgroundColor: Colors.white,
-        indicatorColor: Color.fromARGB(70, 162, 155, 254),
-
-        destinations: [
-          NavigationDestination(
-            icon: Icon(Icons.notifications_none, size: 30),
-            selectedIcon: Icon(Icons.notifications, size: 30),
-            label: 'Notifications',
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          backgroundColor: Colors.orange,
+          indicatorColor: Colors.orange,
+          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((Set<WidgetState> states) {
+            return const IconThemeData(color: Colors.white, size: 30);
+          }),
+          labelTextStyle: WidgetStateProperty.all(
+            const TextStyle(color: Colors.white),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined, size: 30),
-            selectedIcon: Icon(Icons.home, size: 30),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outlined, size: 30),
-            selectedIcon: Icon(Icons.person, size: 30),
-            label: 'Profile',
-          ),
-        ],
+        ),
+        child: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          selectedIndex: currentPageIndex,
+          height: 60,
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.notifications_none),
+              selectedIcon: Icon(Icons.notifications),
+              label: 'Notifications',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.home_outlined),
+              selectedIcon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person_outlined),
+              selectedIcon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }
