@@ -1,16 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'login_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+import '../auth_service.dart';
+
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  String? errorMessage;
+  String? userType;
 
   @override
   void dispose() {
@@ -44,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                 'Welcome!',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
-              TextField(
+              TextFormField(
                 controller: emailController,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
@@ -55,9 +60,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Padding(padding: EdgeInsets.all(5.0)),
-              TextField(
+              TextFormField(
                 controller: passwordController,
-                textInputAction: TextInputAction.done,
+                textInputAction: TextInputAction.next,
                 // obscureText: true,
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.password),
@@ -66,29 +71,60 @@ class _LoginPageState extends State<LoginPage> {
                   labelText: "Password",
                 ),
               ),
-              TextButton(
-                onPressed: () {},
-                child: const Text(
-                  'Forgotten password?',
-                  style: TextStyle(color: Colors.blue),
+              Padding(padding: EdgeInsets.all(5.0)),
+              TextFormField(
+                controller: confirmPasswordController,
+                textInputAction: TextInputAction.done,
+                // obscureText: true,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.password),
+                  hintText: 'Enter your password again',
+                  border: OutlineInputBorder(),
+                  labelText: "Confirm Password ",
                 ),
               ),
+              DropdownButton(
+                items: const [
+                  DropdownMenuItem(value: "Student", child: Text("Student")),
+                  DropdownMenuItem(
+                    value: "Professor",
+                    child: Text("Professor"),
+                  ),
+                  DropdownMenuItem(value: "Coach", child: Text("Coach")),
+                  DropdownMenuItem(
+                    value: "Recruiter",
+                    child: Text("Recruiter"),
+                  ),
+                ],
+                value: userType,
+                onChanged: (String? value) {
+                  setState(() {
+                    userType = value;
+                  });
+                },
+                hint: Text("Choose Your Profession!"),
+              ),
               ElevatedButton(
-                onPressed: logIn,
+                onPressed: handleSignUp,
                 child: const Text(
-                  'LOGIN',
+                  'SIGN UP',
                   style: TextStyle(color: Colors.black, fontSize: 40),
                 ),
               ),
               Text(
-                "Don't have an account?",
+                "Have an account?",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                 child: const Text(
-                  'GET STARTED',
+                  'Log In',
                   style: TextStyle(color: Colors.white, fontSize: 40),
                 ),
               ),
@@ -99,22 +135,19 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future logIn() async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-      print(emailController.text.trim());
-      print(passwordController.text.trim());
-    } on FirebaseAuthException catch (e) {
-      print(e);
-      // https://stackoverflow.com/questions/77312410/flutter-firebase-authentication-with-email-password-not-functioning-as-intende/77312743#77312743
-      // if (e.code == 'user-not-found') {
-      //   // print('No user found for that email.'); future console
-      // } else if (e.code == 'wrong-password') {
-      //   // print('Wrong password provided for that user.'); future console
-      // }
+  void handleSignUp() async {
+    String? result = await AuthService().signup(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+      confirmPassword: confirmPasswordController.text.trim(),
+      userType: userType,
+      context: context,
+    );
+
+    if (result == null) {
+      print("Successfully signed up!");
+    } else {
+      errorMessage = result;
     }
   }
 }

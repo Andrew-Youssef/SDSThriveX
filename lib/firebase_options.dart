@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -53,10 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCXbXKsEcKE95vg1h4U5bRuFL6rbaeHmdA',
-    appId: '1:423580575810:android:5cd55d09bc1158d61a25db',
-    messagingSenderId: '423580575810',
-    projectId: 'flutterfire-ui-codelab-4adca',
-    storageBucket: 'flutterfire-ui-codelab-4adca.firebasestorage.app',
+    apiKey: 'AIzaSyADg7P71tnLVdLPtzs6U24D7TyXa8m9xU0',
+    appId: '1:262456158294:android:e0c9a6383bf216dab8b3f7',
+    messagingSenderId: '262456158294',
+    projectId: 'thrive-x-50728',
+    storageBucket: 'thrive-x-50728.firebasestorage.app',
   );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBNLUzOzeSoCbEbiZQ2vDvUULh_NHnto74',
+    appId: '1:262456158294:ios:6419eb27346e9a37b8b3f7',
+    messagingSenderId: '262456158294',
+    projectId: 'thrive-x-50728',
+    storageBucket: 'thrive-x-50728.firebasestorage.app',
+    iosBundleId: 'com.example.screens',
+  );
+
 }

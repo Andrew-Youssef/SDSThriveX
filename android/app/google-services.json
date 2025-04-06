@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "423580575810",
-    "project_id": "flutterfire-ui-codelab-4adca",
-    "storage_bucket": "flutterfire-ui-codelab-4adca.firebasestorage.app"
+    "project_number": "262456158294",
+    "project_id": "thrive-x-50728",
+    "storage_bucket": "thrive-x-50728.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:423580575810:android:5cd55d09bc1158d61a25db",
+        "mobilesdk_app_id": "1:262456158294:android:e0c9a6383bf216dab8b3f7",
         "android_client_info": {
           "package_name": "com.example.screens"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCXbXKsEcKE95vg1h4U5bRuFL6rbaeHmdA"
+          "current_key": "AIzaSyADg7P71tnLVdLPtzs6U24D7TyXa8m9xU0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262456158294:android:d3028a2391060f39b8b3f7",
+        "android_client_info": {
+          "package_name": "com.example.thrive_x"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADg7P71tnLVdLPtzs6U24D7TyXa8m9xU0"
         }
       ],
       "services": {

@@ -4,7 +4,7 @@
 
 =======
 
-# screens
+# Thrive X
 
 A new Flutter project.
 
