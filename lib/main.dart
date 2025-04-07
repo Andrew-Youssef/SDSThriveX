@@ -58,13 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-      body: Expanded(child: page),
+      body: page,
 
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           backgroundColor: Colors.orange,
           indicatorColor: Colors.orange,
-          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((Set<WidgetState> states) {
+          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((
+            Set<WidgetState> states,
+          ) {
             return const IconThemeData(color: Colors.white, size: 30);
           }),
           labelTextStyle: WidgetStateProperty.all(
