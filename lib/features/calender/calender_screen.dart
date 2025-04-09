@@ -57,27 +57,48 @@ class _MyCalenderScreenState extends State<MyCalenderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: TextField(
-          decoration: InputDecoration(
-            hintText: "Search",
-            border: InputBorder.none,
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding: EdgeInsets.symmetric(horizontal: 10),
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+  preferredSize: Size.fromHeight(60.0),
+  child: Container(
+    color: Colors.orange,
+    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+    child: SafeArea(
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          Expanded(
+            child: Container(
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Search",
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                ),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.search, color: Colors.white),
+            onPressed: () {},
+                ),
+              ],
+            ),
           ),
         ),
-        actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.purple,
+        color: Colors.orange,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Row(
@@ -89,7 +110,7 @@ class _MyCalenderScreenState extends State<MyCalenderScreen> {
               ),
               IconButton(
                 icon: Icon(Icons.home, color: Colors.white),
-                onPressed: () {},
+                onPressed: () {Navigator.pop(context);},
               ),
               IconButton(
                 icon: Icon(Icons.person, color: Colors.white),
@@ -123,7 +144,7 @@ class _MyCalenderScreenState extends State<MyCalenderScreen> {
                       color:
                           selectedDay == day
                               ? Colors.purple
-                              : dateColors[day] ?? Colors.grey,
+                              : dateColors[day],
                       shape: BoxShape.circle,
                     ),
                     child: Text("$day", style: TextStyle(color: Colors.white)),

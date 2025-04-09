@@ -6,6 +6,7 @@
 //the data will be from a database that is yet to be set up but i can add placeholder stuff
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_innatex_student_screens/core/theme.dart';
 import 'package:flutter_innatex_student_screens/features/notifications/notification_details_screen.dart';
 
@@ -37,55 +38,83 @@ class _MyNotificationScreenState extends State<MyNotificationScreen> {
       child: Scaffold(
         body: Column(
           children: [
-            Wrap(
-              spacing: 8,
-              children: [
-                ElevatedButton(onPressed: () {}, child: const Text("All")),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text("Job Offers"),
+            Container(
+              width: double.infinity, // ensures full width of screen
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8), // Optional inner margin
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text("All", style: GoogleFonts.bitter()),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text("Job Offers", style: GoogleFonts.bitter()),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text("Endorsments", style: GoogleFonts.bitter()),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text("Profile Changes", style: GoogleFonts.bitter()),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text("Endorsments"),
-                  // style: theme.elevatedButtonTheme.style,
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text("Profile Changes"),
-                ),
-              ],
+              ),
             ),
 
-            Expanded(
+             Expanded(
               child: ListView(
+                padding: const EdgeInsets.all(8),
                 children: [
-                  if (list.isEmpty) Text("no notifications"),
+                  if (list.isEmpty)
+                    Text("no notifications", style: GoogleFonts.bitter()),
 
                   for (List<String> l in list)
                     Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: Colors.orange, width: 1.5),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: ListTile(
-                          leading: Icon(Icons.person_4_rounded),
-                          title: Text(l[0]),
+                          leading: const Icon(Icons.person_4_rounded),
+                          title: Text(
+                            l[0],
+                            style: GoogleFonts.bitter(fontWeight: FontWeight.bold),
+                          ),
                           subtitle: Text(
                             l[1],
-                            style: TextStyle(fontStyle: FontStyle.italic),
+                            style: GoogleFonts.bitter(
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
-                          trailing: ElevatedButton.icon(
+                          trailing: IconButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder:
-                                      (context) =>
-                                          const MyNotificationDetailsScreen(),
+                                  builder: (context) =>
+                                      const MyNotificationDetailsScreen(),
                                 ),
                               );
                             },
-                            label: const SizedBox.shrink(),
-                            icon: Icon(Icons.arrow_forward_ios),
+                            icon: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: const BoxDecoration(
+                                color: Color.fromARGB(255, 118, 195, 247),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.arrow_forward_ios,
+                                  color: Colors.black),
+                            ),
                           ),
                         ),
                       ),

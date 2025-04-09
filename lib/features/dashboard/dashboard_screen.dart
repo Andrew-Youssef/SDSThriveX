@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_innatex_student_screens/core/theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_innatex_student_screens/features/calender/calender_screen.dart';
 import 'package:flutter_innatex_student_screens/features/project_approval/project_approval_screen.dart';
-
-//ISSUES:
-//button is currently non functional
-//search bar does not really work
 
 class MyDashBoardScreen extends StatefulWidget {
   const MyDashBoardScreen({super.key});
@@ -19,62 +15,85 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: ListView(
+        body: Column(
           children: [
-            Row(children: [buildSearchBar(), buildSearchButton()]),
-            buildMyCardCertifyProjects(context),
-            SizedBox(height: 10),
-            buildMyCardCalender(context),
-            SizedBox(height: 10),
-            buildMyCard1(),
-            SizedBox(height: 10),
-            buildMyCard2(),
+            // header background
+            Container(
+              color: Colors.orange,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              child: Row(
+                children: [
+                  buildSearchBar(),
+                  buildSearchButton(),
+                ],
+              ),
+            ),
+
+            // 🔽 Scrollable content below the fixed header
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.only(top: 10),
+                children: [
+                  buildMyCardCertifyProjects(context),
+                  const SizedBox(height: 10),
+                  buildMyCardCalender(context),
+                  const SizedBox(height: 10),
+                  buildMyCard1(),
+                  const SizedBox(height: 10),
+                  buildMyCard2(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-
-//COACHES ONLY
-//figure out how to make it open the certify projects page
+// COACHES ONLY
 Widget buildMyCardCertifyProjects(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Card(
-      borderOnForeground: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Colors.orange, width: 2),
+      ),
+      elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15),
+        padding: const EdgeInsets.only(left: 15, right: 10, top: 12, bottom: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Certify Projects (Coaches)'),
+                Text(
+                  'Certify Projects (Coaches)',
+                  style: GoogleFonts.bitter(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const MyPendingProjectScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => const MyPendingProjectScreen()),
                     );
                   },
                   icon: Container(
-                    padding: EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 118, 195, 247),
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(255, 118, 195, 247),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.arrow_forward, color: const Color.fromARGB(255, 0, 0, 0)),
+                    child: const Icon(Icons.arrow_forward, color: Colors.black),
                   ),
                 ),
               ],
             ),
-            Divider(color: Colors.grey),
+            const Divider(color: Colors.grey),
             Text(
               'Certify student projects so that they are recognized by employers',
+              style: GoogleFonts.bitter(fontSize: 14),
             ),
           ],
         ),
@@ -83,44 +102,50 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
   );
 }
 
-//COACHES ONLY
+// COACHES ONLY
 Widget buildMyCardCalender(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Card(
-      borderOnForeground: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Colors.orange, width: 2),
+      ),
+      elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15),
+        padding: const EdgeInsets.only(left: 15, right: 10, top: 12, bottom: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Calender (Coaches)'),
+                Text(
+                  'Calender (Coaches)',
+                  style: GoogleFonts.bitter(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const MyCalenderScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => const MyCalenderScreen()),
                     );
                   },
                   icon: Container(
-                    padding: EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 118, 195, 247),
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(255, 118, 195, 247),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.arrow_forward, color: const Color.fromARGB(255, 0, 0, 0)),
+                    child: const Icon(Icons.arrow_forward, color: Colors.black),
                   ),
                 ),
               ],
             ),
-            Divider(color: Colors.grey),
+            const Divider(color: Colors.grey),
             Text(
               'Certify student projects so that they are recognized by employers',
+              style: GoogleFonts.bitter(fontSize: 14),
             ),
           ],
         ),
@@ -133,19 +158,25 @@ Widget buildMyCard1() {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Card(
-      borderOnForeground: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Colors.orange, width: 2),
+      ),
+      elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15),
+        padding: const EdgeInsets.only(left: 15, top: 12, bottom: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('View Portfolio'),
-            Divider(color: Colors.grey),
-            Text('- Personal Projects'),
-            Text('- Work Experience'),
-            Text('- Volunteer Work'),
-            Text('- Certifications & Degrees'),
-            Text('- Personal Stories'),
+            Text('View Portfolio', style: GoogleFonts.bitter(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Divider(color: Colors.grey),
+            ...[
+              '- Personal Projects',
+              '- Work Experience',
+              '- Volunteer Work',
+              '- Certifications & Degrees',
+              '- Personal Stories',
+            ].map((text) => Text(text, style: GoogleFonts.bitter(fontSize: 14))),
           ],
         ),
       ),
@@ -157,17 +188,23 @@ Widget buildMyCard2() {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Card(
-      borderOnForeground: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Colors.orange, width: 2),
+      ),
+      elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15),
+        padding: const EdgeInsets.only(left: 15, top: 12, bottom: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Upcoming Meetings'),
-            Divider(color: Colors.grey),
-            Text('- Coaching Sessions'),
-            Text('- Job Interviews'),
-            Text('- Seminars'),
+            Text('Upcoming Meetings', style: GoogleFonts.bitter(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Divider(color: Colors.grey),
+            ...[
+              '- Coaching Sessions',
+              '- Job Interviews',
+              '- Seminars',
+            ].map((text) => Text(text, style: GoogleFonts.bitter(fontSize: 14))),
           ],
         ),
       ),
@@ -181,9 +218,9 @@ Widget buildSearchButton() {
     child: IconButton.filled(
       onPressed: () {},
       icon: const Icon(Icons.search),
-      style: ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll<Color>(const Color.fromARGB(255, 255, 255, 255)),
-        foregroundColor: WidgetStatePropertyAll<Color>(const Color.fromARGB(255, 0, 0, 0)),
+      style: const ButtonStyle(
+        backgroundColor: WidgetStatePropertyAll<Color>(Color.fromARGB(255, 255, 255, 255)),
+        foregroundColor: WidgetStatePropertyAll<Color>(Color.fromARGB(255, 0, 0, 0)),
       ),
     ),
   );
@@ -201,26 +238,16 @@ Widget buildSearchBar() {
             padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.symmetric(horizontal: 16.0),
             ),
-            // onTap: () {
-            //   controller.openView();
-            // },
             onChanged: (_) {
               controller.openView();
             },
-            // onSubmitted: (_) {
-            //   controller.openView();
-            // },
-            // leading: const Icon(Icons.search),
           );
         },
-        suggestionsBuilder: (
-          BuildContext context,
-          SearchController controller,
-        ) {
+        suggestionsBuilder: (BuildContext context, SearchController controller) {
           return List<ListTile>.generate(5, (int index) {
             final String item = 'item $index';
             return ListTile(
-              title: Text(item),
+              title: Text(item, style: GoogleFonts.bitter()),
               onTap: () {
                 controller.closeView(item);
               },

@@ -61,7 +61,7 @@ class _MyPendingProjectPageState extends State<MyPendingProjectScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       bottomNavigationBar: BottomAppBar(
-        color: Colors.purple,
+        color: Colors.orange,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Row(
@@ -73,7 +73,7 @@ class _MyPendingProjectPageState extends State<MyPendingProjectScreen> {
               ),
               IconButton(
                 icon: Icon(Icons.home, color: Colors.white),
-                onPressed: () {},
+                onPressed: () {Navigator.pop(context);},
               ),
               IconButton(
                 icon: Icon(Icons.person, color: Colors.white),
@@ -84,38 +84,47 @@ class _MyPendingProjectPageState extends State<MyPendingProjectScreen> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.arrow_back_ios),
-                            onPressed: previousPage,
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.arrow_forward_ios),
-                            onPressed: nextPage,
-                          ),
-                        ],
-                      ),
-                      Text("$currentPage/$totalPages"),
-                    ],
-                  ),
-                ],
-              ),
+  child: Column(
+    children: [
+      // FULL-WIDTH ORANGE HEADER (NO CORNERS)
+      Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        color: Colors.orange, // <- solid edge-to-edge background
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            Column(
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+                      onPressed: previousPage,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.arrow_forward_ios, color: Colors.black),
+                      onPressed: nextPage,
+                    ),
+                  ],
+                ),
+                Text(
+                  "$currentPage/$totalPages",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+
+
               SizedBox(height: 20),
               Text(
                 project["title"]!,
@@ -156,7 +165,6 @@ class _MyPendingProjectPageState extends State<MyPendingProjectScreen> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
