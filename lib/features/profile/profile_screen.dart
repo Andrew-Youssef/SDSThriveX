@@ -11,12 +11,32 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final double coverHeight = 280;
   final double profileHeight = 144;
 
+  Map<String, bool> profileAttributes = {
+    'AI Summary': false,
+    'Projects': false,
+    'Work Experience': false,
+    'Certificates': false,
+    'Degrees': false,
+    'Skills/Strengths': false,
+    'Personal Stories': false,
+    'Volunteering Work': false,
+  };
+
+  void toggleProfileAttributes(String key) {
+    setState(() {
+      if (profileAttributes.containsKey(key)) {
+        profileAttributes[key] = !profileAttributes[key]!;
+      }
+      print(profileAttributes[key]);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
         padding: EdgeInsets.zero,
-        children: [buildTop(), buildContent()],
+        children: [buildTop(), buildContent(), buildAttributeContents()],
       ),
     );
   }
@@ -38,6 +58,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              buildAttributeButtons(),
               Text(
                 'About',
                 textAlign: TextAlign.left,
@@ -49,7 +70,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 15),
               ),
-              // buildExpandableWidgets(),
             ],
           ),
         ),
@@ -57,9 +77,223 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  // Widget buildExpandableWidget() {
-  //   return
-  // }
+  Widget buildAttributeButtons() {
+    return Wrap(
+      spacing: 8,
+      children:
+          profileAttributes.keys.map((key) {
+            return ElevatedButton(
+              onPressed: () {
+                toggleProfileAttributes(key);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    profileAttributes[key]! ? Colors.blue : Colors.white70,
+              ),
+              child: Text(key),
+            );
+          }).toList(),
+    );
+  }
+
+  Widget buildAttributeContents() {
+    bool allFalse = profileAttributes.values.every((value) => value = false);
+
+    if (allFalse) {
+      return SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (profileAttributes['AI Summary']!) buildAISummary(),
+        if (profileAttributes['Projects']!) buildProjects(),
+        if (profileAttributes['Work Experience']!) buildWorkExperience(),
+        if (profileAttributes['Certificates']!) buildCertificates(),
+        if (profileAttributes['Degrees']!) buildDegrees(),
+        if (profileAttributes['Skills/Strengths']!) buildSkillsStrengths(),
+        if (profileAttributes['Personal Stories']!) buildPersonalStories(),
+        if (profileAttributes['Volunteering Work']!) buildVolunteeringWork(),
+      ],
+    );
+  }
+
+  Widget buildAISummary() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'AI Summary',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Place holder text for AI Summary',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildProjects() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Projects',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Place holder text for Projects',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildWorkExperience() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Work Experience',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Place holder text for Work Experience',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildCertificates() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Certificates',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Place holder text for Certificates',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildDegrees() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Degrees',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Place holder text for Degrees',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildSkillsStrengths() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Skills/Strengths',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Place holder text for Skills/Strengths',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildPersonalStories() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Personal Stories',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Place holder text for Personal Stories',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildVolunteeringWork() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Volunteering Work',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Place holder text for Volunteering Work',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //   'AI Summary': false,
+  // 'Projects': false,
+  // 'Work Experience': false,
+  // 'Certificates': false,
+  // 'Degrees': false,
+  // 'Skills/Strengths': false,
+  // 'Personal Stories': false,
+  // 'Volunteering Work': false,
 
   Widget buildTop() {
     final top = coverHeight - profileHeight / 2;

@@ -60,29 +60,6 @@ class _MyPendingProjectPageState extends State<MyPendingProjectScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.purple,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: Icon(Icons.notifications, color: Colors.white),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.home, color: Colors.white),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.person, color: Colors.white),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

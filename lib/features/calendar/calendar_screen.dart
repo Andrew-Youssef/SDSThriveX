@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class MyCalenderScreen extends StatefulWidget {
-  const MyCalenderScreen({super.key});
+class MyCalendarScreen extends StatefulWidget {
+  const MyCalendarScreen({super.key});
 
   @override
-  State<MyCalenderScreen> createState() => _MyCalenderScreenState();
+  State<MyCalendarScreen> createState() => _MyCalendarScreenState();
 }
 
-class _MyCalenderScreenState extends State<MyCalenderScreen> {
+class _MyCalendarScreenState extends State<MyCalendarScreen> {
   Map<int, Color> dateColors = {
     1: Colors.red,
     2: Colors.green,
@@ -76,29 +76,7 @@ class _MyCalenderScreenState extends State<MyCalenderScreen> {
         ),
         actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.purple,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: Icon(Icons.notifications, color: Colors.white),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.home, color: Colors.white),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.person, color: Colors.white),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
