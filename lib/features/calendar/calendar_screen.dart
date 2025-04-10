@@ -59,41 +59,66 @@ class _MyCalendarScreenState extends State<MyCalendarScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-  preferredSize: Size.fromHeight(60.0),
-  child: Container(
-    color: Colors.orange,
-    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-    child: SafeArea(
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          Expanded(
-            child: Container(
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Search",
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+        preferredSize: Size.fromHeight(60.0),
+        child: Container(
+          color: Colors.orange,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          child: SafeArea(
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-              ),
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.search, color: Colors.white),
-            onPressed: () {},
+                Expanded(
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: "Search",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.search, color: Colors.white),
+                  onPressed: () {},
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.orange,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: Icon(Icons.notifications, color: Colors.white),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: Icon(Icons.home, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.person, color: Colors.white),
+                onPressed: () {},
+              ),
+            ],
           ),
         ),
       ),
@@ -119,9 +144,7 @@ class _MyCalendarScreenState extends State<MyCalendarScreen> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color:
-                          selectedDay == day
-                              ? Colors.purple
-                              : dateColors[day],
+                          selectedDay == day ? Colors.purple : dateColors[day],
                       shape: BoxShape.circle,
                     ),
                     child: Text("$day", style: TextStyle(color: Colors.white)),

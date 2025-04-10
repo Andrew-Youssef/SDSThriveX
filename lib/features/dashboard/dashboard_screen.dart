@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_innatex_student_screens/features/calender/calender_screen.dart';
+import 'package:flutter_innatex_student_screens/features/calendar/calendar_screen.dart';
 import 'package:flutter_innatex_student_screens/features/project_approval/project_approval_screen.dart';
 
 class MyDashBoardScreen extends StatefulWidget {
@@ -21,12 +21,7 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
             Container(
               color: Colors.orange,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: Row(
-                children: [
-                  buildSearchBar(),
-                  buildSearchButton(),
-                ],
-              ),
+              child: Row(children: [buildSearchBar(), buildSearchButton()]),
             ),
 
             // 🔽 Scrollable content below the fixed header
@@ -36,7 +31,7 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
                 children: [
                   buildMyCardCertifyProjects(context),
                   const SizedBox(height: 10),
-                  buildMyCardCalender(context),
+                  buildMyCardCalendar(context),
                   const SizedBox(height: 10),
                   buildMyCard1(),
                   const SizedBox(height: 10),
@@ -50,6 +45,7 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
     );
   }
 }
+
 // COACHES ONLY
 Widget buildMyCardCertifyProjects(BuildContext context) {
   return Padding(
@@ -61,7 +57,12 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
       ),
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 10, top: 12, bottom: 12),
+        padding: const EdgeInsets.only(
+          left: 15,
+          right: 10,
+          top: 12,
+          bottom: 12,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -69,14 +70,19 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Certify Projects (Coaches)',
-                  style: GoogleFonts.bitter(fontSize: 18, fontWeight: FontWeight.bold),
+                  'Certify Projects(C)', //coaches only
+                  style: GoogleFonts.bitter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const MyPendingProjectScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const MyPendingProjectScreen(),
+                      ),
                     );
                   },
                   icon: Container(
@@ -103,7 +109,7 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
 }
 
 // COACHES ONLY
-Widget buildMyCardCalender(BuildContext context) {
+Widget buildMyCardCalendar(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Card(
@@ -113,7 +119,12 @@ Widget buildMyCardCalender(BuildContext context) {
       ),
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 10, top: 12, bottom: 12),
+        padding: const EdgeInsets.only(
+          left: 15,
+          right: 10,
+          top: 12,
+          bottom: 12,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -121,14 +132,19 @@ Widget buildMyCardCalender(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Calender (Coaches)',
-                  style: GoogleFonts.bitter(fontSize: 18, fontWeight: FontWeight.bold),
+                  'Calendar (Coaches)',
+                  style: GoogleFonts.bitter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const MyCalenderScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const MyCalendarScreen(),
+                      ),
                     );
                   },
                   icon: Container(
@@ -168,7 +184,13 @@ Widget buildMyCard1() {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('View Portfolio', style: GoogleFonts.bitter(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              'View Portfolio',
+              style: GoogleFonts.bitter(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Divider(color: Colors.grey),
             ...[
               '- Personal Projects',
@@ -176,7 +198,9 @@ Widget buildMyCard1() {
               '- Volunteer Work',
               '- Certifications & Degrees',
               '- Personal Stories',
-            ].map((text) => Text(text, style: GoogleFonts.bitter(fontSize: 14))),
+            ].map(
+              (text) => Text(text, style: GoogleFonts.bitter(fontSize: 14)),
+            ),
           ],
         ),
       ),
@@ -198,13 +222,17 @@ Widget buildMyCard2() {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Upcoming Meetings', style: GoogleFonts.bitter(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              'Upcoming Meetings',
+              style: GoogleFonts.bitter(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Divider(color: Colors.grey),
-            ...[
-              '- Coaching Sessions',
-              '- Job Interviews',
-              '- Seminars',
-            ].map((text) => Text(text, style: GoogleFonts.bitter(fontSize: 14))),
+            ...['- Coaching Sessions', '- Job Interviews', '- Seminars'].map(
+              (text) => Text(text, style: GoogleFonts.bitter(fontSize: 14)),
+            ),
           ],
         ),
       ),
@@ -219,8 +247,12 @@ Widget buildSearchButton() {
       onPressed: () {},
       icon: const Icon(Icons.search),
       style: const ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll<Color>(Color.fromARGB(255, 255, 255, 255)),
-        foregroundColor: WidgetStatePropertyAll<Color>(Color.fromARGB(255, 0, 0, 0)),
+        backgroundColor: WidgetStatePropertyAll<Color>(
+          Color.fromARGB(255, 255, 255, 255),
+        ),
+        foregroundColor: WidgetStatePropertyAll<Color>(
+          Color.fromARGB(255, 0, 0, 0),
+        ),
       ),
     ),
   );
@@ -243,7 +275,10 @@ Widget buildSearchBar() {
             },
           );
         },
-        suggestionsBuilder: (BuildContext context, SearchController controller) {
+        suggestionsBuilder: (
+          BuildContext context,
+          SearchController controller,
+        ) {
           return List<ListTile>.generate(5, (int index) {
             final String item = 'item $index';
             return ListTile(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../data/globals.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -11,12 +12,21 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final double coverHeight = 280;
   final double profileHeight = 144;
 
+  void toggleProfileAttributes(String key) {
+    setState(() {
+      if (profileAttributes.containsKey(key)) {
+        profileAttributes[key] = !profileAttributes[key]!;
+      }
+      print(profileAttributes[key]);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
         padding: EdgeInsets.zero,
-        children: [buildTop(), buildContent()],
+        children: [buildTop(), buildContent(), buildAttributeData()],
       ),
     );
   }
@@ -36,20 +46,20 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              buildAttributeButtons(),
               Text(
                 'About',
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
-                'I am a passionate individual who enjoys learning new technologies and exploring creative ways to solve complex problems. With a strong background in software development, I thrive in challenging environments and love collaborating with others. Outside of work, I enjoy hiking, photography, and reading about advancements in AI and machine learning.',
+                'Place holder text for About',
                 // softWrap: true,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 15),
               ),
-              // buildExpandableWidgets(),
             ],
           ),
         ),
@@ -57,9 +67,57 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  // Widget buildExpandableWidget() {
-  //   return
-  // }
+  Widget buildAttributeButtons() {
+    return Wrap(
+      spacing: 8,
+      children:
+          profileAttributes.keys.map((key) {
+            return ElevatedButton(
+              onPressed: () {
+                toggleProfileAttributes(key);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    profileAttributes[key]! ? Colors.blue : Colors.white70,
+              ),
+              child: Text(key),
+            );
+          }).toList(),
+    );
+  }
+
+  Widget buildAttributeData() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            profileAttributes.keys.map((key) {
+              if (profileAttributes[key]!) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      key,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Place holder text for $key',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                );
+              } else {
+                return SizedBox.shrink();
+              }
+            }).toList(),
+      ),
+    );
+  }
 
   Widget buildTop() {
     final top = coverHeight - profileHeight / 2;
