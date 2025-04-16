@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'home.dart';
-import 'screens/login_page.dart';
+import '../../home.dart';
+import '../../features/login/login_page.dart';
 
 class AuthService {
   Future<String?> signup({
@@ -21,26 +20,16 @@ class AuthService {
         password: password,
       );
 
-      await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (BuildContext context) => const HomePage()),
       );
+      return null;
     } on FirebaseAuthException catch (e) {
       return e.toString();
-    }
-
-    try {
-      FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .set({'email': email, 'userType': userType});
-      print("Wrote user to Firestore");
     } catch (e) {
-      print(e.toString());
       return e.toString();
     }
-    return null;
   }
 
   Future<String?> login({
@@ -53,21 +42,19 @@ class AuthService {
         email: email,
         password: password,
       );
-
-      await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (BuildContext context) => const HomePage()),
       );
+
+      return null;
     } on FirebaseAuthException catch (e) {
       return e.toString();
     }
-    return null;
   }
 
   Future<void> logout({required BuildContext context}) async {
     await FirebaseAuth.instance.signOut();
-    await Future.delayed(const Duration(seconds: 1));
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (BuildContext context) => const LoginPage()),

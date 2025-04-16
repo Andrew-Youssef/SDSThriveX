@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
+import '../signup/signup_page.dart';
+import '../../core/services/auth_service.dart';
 
-import '../auth_service.dart';
-
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
   String? errorMessage;
-  String? userType;
 
   @override
   void dispose() {
@@ -62,7 +59,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Padding(padding: EdgeInsets.all(5.0)),
               TextFormField(
                 controller: passwordController,
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
                 // obscureText: true,
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.password),
@@ -71,60 +68,34 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: "Password",
                 ),
               ),
-              Padding(padding: EdgeInsets.all(5.0)),
-              TextFormField(
-                controller: confirmPasswordController,
-                textInputAction: TextInputAction.done,
-                // obscureText: true,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.password),
-                  hintText: 'Enter your password again',
-                  border: OutlineInputBorder(),
-                  labelText: "Confirm Password ",
+              TextButton(
+                onPressed: () {},
+                child: const Text(
+                  'Forgotten password?',
+                  style: TextStyle(color: Colors.blue),
                 ),
               ),
-              DropdownButton(
-                items: const [
-                  DropdownMenuItem(value: "Student", child: Text("Student")),
-                  DropdownMenuItem(
-                    value: "Professor",
-                    child: Text("Professor"),
-                  ),
-                  DropdownMenuItem(value: "Coach", child: Text("Coach")),
-                  DropdownMenuItem(
-                    value: "Recruiter",
-                    child: Text("Recruiter"),
-                  ),
-                ],
-                value: userType,
-                onChanged: (String? value) {
-                  setState(() {
-                    userType = value;
-                  });
-                },
-                hint: Text("Choose Your Profession!"),
-              ),
               ElevatedButton(
-                onPressed: handleSignUp,
+                onPressed: handleLogIn,
                 child: const Text(
-                  'SIGN UP',
+                  'LOGIN',
                   style: TextStyle(color: Colors.black, fontSize: 40),
                 ),
               ),
               Text(
-                "Have an account?",
+                "Don't have an account?",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(builder: (context) => SignUpPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                 child: const Text(
-                  'Log In',
+                  'Sign Up',
                   style: TextStyle(color: Colors.white, fontSize: 40),
                 ),
               ),
@@ -135,12 +106,10 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  void handleSignUp() async {
-    String? result = await AuthService().signup(
+  void handleLogIn() async {
+    String? result = await AuthService().login(
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
-      confirmPassword: confirmPasswordController.text.trim(),
-      userType: userType,
       context: context,
     );
 
