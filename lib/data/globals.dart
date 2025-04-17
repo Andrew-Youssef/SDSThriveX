@@ -8,3 +8,19 @@ Map<String, bool> profileAttributes = {
   'Personal Stories': false,
   'Volunteering Work': false,
 };
+
+//types
+//student
+//professor
+//coach
+//student
+
+class UserProfile {
+  final String type;
+
+  UserProfile(this.type);
+
+  String getType() {
+    return type;
+  }
+}

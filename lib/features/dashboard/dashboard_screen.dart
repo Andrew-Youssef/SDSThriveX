@@ -13,33 +13,41 @@ class MyDashBoardScreen extends StatefulWidget {
 class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            // header background
-            Container(
-              color: Colors.orange,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: Row(children: [buildSearchBar(), buildSearchButton()]),
-            ),
+    ThemeData theme = Theme.of(context);
 
-            // 🔽 Scrollable content below the fixed header
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(top: 10),
-                children: [
-                  buildMyCardCertifyProjects(context),
-                  const SizedBox(height: 10),
-                  buildMyCardCalendar(context),
-                  const SizedBox(height: 10),
-                  buildMyCard1(),
-                  const SizedBox(height: 10),
-                  buildMyCard2(),
-                ],
+    return Container(
+      color: theme.primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              // header background
+              Container(
+                color: theme.primaryColor,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
+                child: Row(children: [buildSearchBar(), buildSearchButton()]),
               ),
-            ),
-          ],
+
+              // 🔽 Scrollable content below the fixed header
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.only(top: 10),
+                  children: [
+                    buildMyCardCertifyProjects(context),
+                    const SizedBox(height: 10),
+                    buildMyCardCalendar(context),
+                    const SizedBox(height: 10),
+                    buildMyCard1(),
+                    const SizedBox(height: 10),
+                    buildMyCard2(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -53,7 +61,7 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
     child: Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: Colors.orange, width: 2),
+        side: BorderSide(color: Color.fromARGB(255, 244, 163, 97), width: 2),
       ),
       elevation: 4,
       child: Padding(

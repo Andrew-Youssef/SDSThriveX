@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_innatex_student_screens/data/globals.dart';
 import 'core/theme.dart';
 
 //import screens
@@ -11,15 +12,19 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  //had to remove const because of map look up
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final UserProfile user = UserProfile('recruiter');
+    final ThemeData appTheme = userTheme[user.getType()]!;
+
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: lightTheme,
-      // darkTheme: darkTheme,
+      theme: appTheme,
       themeMode: ThemeMode.system,
       home: const MyHomePage(title: 'Test'),
     );
@@ -40,8 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
     Widget page;
     switch (currentPageIndex) {
       case 0:
@@ -60,44 +63,32 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Expanded(child: page),
 
-      bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(
-          backgroundColor: Colors.orange,
-          indicatorColor: Colors.orange,
-          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((Set<WidgetState> states) {
-            return const IconThemeData(color: Colors.white, size: 30);
-          }),
-          labelTextStyle: WidgetStateProperty.all(
-            const TextStyle(color: Colors.white),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        selectedIndex: currentPageIndex,
+        height: 60,
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.notifications_none),
+            selectedIcon: Icon(Icons.notifications),
+            label: 'Notifications',
           ),
-        ),
-        child: NavigationBar(
-          onDestinationSelected: (int index) {
-            setState(() {
-              currentPageIndex = index;
-            });
-          },
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-          selectedIndex: currentPageIndex,
-          height: 60,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.notifications_none),
-              selectedIcon: Icon(Icons.notifications),
-              label: 'Notifications',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outlined),
-              selectedIcon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-        ),
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outlined),
+            selectedIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
