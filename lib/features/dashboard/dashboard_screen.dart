@@ -80,6 +80,12 @@ Widget buildMyUserTypeButtons(BuildContext context) {
                 userProvider.setUserType(userType);
               },
               child: Text(userType.name),
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    userType == userProvider.type
+                        ? Colors.blue
+                        : Colors.white70,
+              ),
             );
           }).toList(),
     ),

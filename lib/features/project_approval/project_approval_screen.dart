@@ -60,111 +60,93 @@ class _MyPendingProjectPageState extends State<MyPendingProjectScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.orange,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: Icon(Icons.notifications, color: Colors.white),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.home, color: Colors.white),
-                onPressed: () {Navigator.pop(context);},
-              ),
-              IconButton(
-                icon: Icon(Icons.person, color: Colors.white),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
       body: SafeArea(
-  child: Column(
-    children: [
-      // FULL-WIDTH ORANGE HEADER (NO CORNERS)
-      Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-        color: Colors.orange, // <- solid edge-to-edge background
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+            // FULL-WIDTH ORANGE HEADER (NO CORNERS)
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              color: Colors.orange, // <- solid edge-to-edge background
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.black,
+                            ),
+                            onPressed: previousPage,
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.black,
+                            ),
+                            onPressed: nextPage,
+                          ),
+                        ],
+                      ),
+                      Text(
+                        "$currentPage/$totalPages",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            Column(
+
+            SizedBox(height: 20),
+            Text(
+              project["title"]!,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Text(project["subtitle"]!),
+            SizedBox(height: 20),
+            Container(
+              height: 200,
+              width: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Image.network(project["image"]!, fit: BoxFit.cover),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
+                Column(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-                      onPressed: previousPage,
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.arrow_forward_ios, color: Colors.black),
-                      onPressed: nextPage,
-                    ),
+                    IconButton(icon: Icon(Icons.cancel), onPressed: () {}),
+                    Text("Reject"),
                   ],
                 ),
-                Text(
-                  "$currentPage/$totalPages",
-                  style: TextStyle(color: Colors.black),
+                SizedBox(width: 40),
+                Column(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.check_circle),
+                      onPressed: () {},
+                    ),
+                    Text("Certify"),
+                  ],
                 ),
               ],
             ),
           ],
         ),
       ),
-
-
-              SizedBox(height: 20),
-              Text(
-                project["title"]!,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              Text(project["subtitle"]!),
-              SizedBox(height: 20),
-              Container(
-                height: 200,
-                width: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Image.network(project["image"]!, fit: BoxFit.cover),
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      IconButton(icon: Icon(Icons.cancel), onPressed: () {}),
-                      Text("Reject"),
-                    ],
-                  ),
-                  SizedBox(width: 40),
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.check_circle),
-                        onPressed: () {},
-                      ),
-                      Text("Certify"),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
+    );
   }
 }

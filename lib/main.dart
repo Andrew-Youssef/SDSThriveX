@@ -49,58 +49,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int currentPageIndex = 1;
-
-  final List<GlobalKey<NavigatorState>> _navigatorKeys = [
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-  ];
-
-  void _onTap(int index) {
-    if (index == currentPageIndex) {
-      _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
-    } else {
-      setState(() => currentPageIndex = index);
-    }
-  }
+  var currentPageIndex = 1;
 
   @override
   Widget build(BuildContext context) {
+    Widget page;
+    switch (currentPageIndex) {
+      case 0:
+        page = MyNotificationScreen();
+        break;
+      case 1:
+        page = MyDashBoardScreen();
+        break;
+      case 2:
+        page = MyProfileScreen();
+        break;
+      default:
+        throw UnimplementedError("THIS AINT IMPLEMENTED YET\n");
+    }
+
     return Scaffold(
-      body: Stack(
-        children: List.generate(3, (index) {
-          return Offstage(
-            offstage: currentPageIndex != index,
-            child: Navigator(
-              key: _navigatorKeys[index],
-              onGenerateRoute: (settings) {
-                Widget page;
-                switch (index) {
-                  case 0:
-                    page = const MyNotificationScreen();
-                    break;
-                  case 1:
-                    page = const MyDashBoardScreen();
-                    break;
-                  case 2:
-                    page = const MyProfileScreen();
-                    break;
-                  default:
-                    throw Exception("Invalid index");
-                }
-                return MaterialPageRoute(builder: (_) => page);
-              },
-            ),
-          );
-        }),
-      ),
+      body: Expanded(child: page),
+
       bottomNavigationBar: NavigationBar(
-        selectedIndex: currentPageIndex,
-        onDestinationSelected: _onTap,
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        selectedIndex: currentPageIndex,
         height: 60,
-        destinations: const [
+        destinations: [
           NavigationDestination(
             icon: Icon(Icons.notifications_none),
             selectedIcon: Icon(Icons.notifications),
@@ -124,46 +104,64 @@ class _MyHomePageState extends State<MyHomePage> {
 
 // class MyHomePage extends StatefulWidget {
 //   const MyHomePage({super.key, required this.title});
-
 //   final String title;
-
 //   @override
 //   State<MyHomePage> createState() => _MyHomePageState();
 // }
 
 // class _MyHomePageState extends State<MyHomePage> {
-//   var currentPageIndex = 1;
+//   int currentPageIndex = 1;
+
+//   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+//     GlobalKey<NavigatorState>(),
+//     GlobalKey<NavigatorState>(),
+//     GlobalKey<NavigatorState>(),
+//   ];
+
+//   void _onTap(int index) {
+//     if (index == currentPageIndex) {
+//       _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
+//     } else {
+//       setState(() => currentPageIndex = index);
+//     }
+//   }
 
 //   @override
 //   Widget build(BuildContext context) {
-//     Widget page;
-//     switch (currentPageIndex) {
-//       case 0:
-//         page = MyNotificationScreen();
-//         break;
-//       case 1:
-//         page = MyDashBoardScreen();
-//         break;
-//       case 2:
-//         page = MyProfileScreen();
-//         break;
-//       default:
-//         throw UnimplementedError("THIS AINT IMPLEMENTED YET\n");
-//     }
-
 //     return Scaffold(
-//       body: Expanded(child: page),
-
+//       body: Stack(
+//         children: List.generate(3, (index) {
+//           return Offstage(
+//             offstage: currentPageIndex != index,
+//             child: Navigator(
+//               key: _navigatorKeys[index],
+//               onGenerateRoute: (settings) {
+//                 Widget page;
+//                 switch (index) {
+//                   case 0:
+//                     page = const MyNotificationScreen();
+//                     break;
+//                   case 1:
+//                     page = const MyDashBoardScreen();
+//                     break;
+//                   case 2:
+//                     page = const MyProfileScreen();
+//                     break;
+//                   default:
+//                     throw Exception("Invalid index");
+//                 }
+//                 return MaterialPageRoute(builder: (_) => page);
+//               },
+//             ),
+//           );
+//         }),
+//       ),
 //       bottomNavigationBar: NavigationBar(
-//         onDestinationSelected: (int index) {
-//           setState(() {
-//             currentPageIndex = index;
-//           });
-//         },
-//         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
 //         selectedIndex: currentPageIndex,
+//         onDestinationSelected: _onTap,
+//         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
 //         height: 60,
-//         destinations: [
+//         destinations: const [
 //           NavigationDestination(
 //             icon: Icon(Icons.notifications_none),
 //             selectedIcon: Icon(Icons.notifications),
