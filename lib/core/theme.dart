@@ -40,7 +40,7 @@ final ThemeData coachTheme = ThemeData(
   //   surface: surface,
   //   onSurface: onSurface
   // ),
-  primaryColor: Color.fromARGB(255, 244, 163, 97),
+  primaryColor: Color.fromARGB(255, 255, 112, 90),
   // primaryColor: Color.fromARGB(255, 255, 112, 90),
   navigationBarTheme: NavigationBarThemeData(
     backgroundColor: Color.fromARGB(255, 255, 112, 90),

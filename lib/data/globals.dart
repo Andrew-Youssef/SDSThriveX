@@ -15,12 +15,4 @@ Map<String, bool> profileAttributes = {
 //coach
 //student
 
-class UserProfile {
-  final String type;
-
-  UserProfile(this.type);
-
-  String getType() {
-    return type;
-  }
-}
+enum UserType { student, coach, recruiter, professor }

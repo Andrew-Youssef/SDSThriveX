@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_innatex_student_screens/data/globals.dart';
+import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_innatex_student_screens/features/calendar/calendar_screen.dart';
 import 'package:flutter_innatex_student_screens/features/project_approval/project_approval_screen.dart';
+import '../../data/globals.dart';
 
 class MyDashBoardScreen extends StatefulWidget {
   const MyDashBoardScreen({super.key});
@@ -13,6 +17,7 @@ class MyDashBoardScreen extends StatefulWidget {
 class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     ThemeData theme = Theme.of(context);
 
     return Container(
@@ -36,10 +41,17 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
                 child: ListView(
                   padding: const EdgeInsets.only(top: 10),
                   children: [
-                    buildMyCardCertifyProjects(context),
+                    buildMyUserTypeButtons(context),
                     const SizedBox(height: 10),
-                    buildMyCardCalendar(context),
-                    const SizedBox(height: 10),
+                    if (userProvider.type == UserType.coach ||
+                        userProvider.type == UserType.professor) ...[
+                      buildMyCardCertifyProjects(context),
+                      const SizedBox(height: 10),
+                      if (userProvider.type == UserType.coach) ...[
+                        buildMyCardCalendar(context),
+                        const SizedBox(height: 10),
+                      ],
+                    ],
                     buildMyCard1(),
                     const SizedBox(height: 10),
                     buildMyCard2(),
@@ -52,6 +64,26 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
       ),
     );
   }
+}
+
+Widget buildMyUserTypeButtons(BuildContext context) {
+  final userProvider = Provider.of<UserProvider>(context);
+
+  return Padding(
+    padding: const EdgeInsets.only(right: 8, left: 8),
+    child: Wrap(
+      spacing: 8,
+      children:
+          UserType.values.map((userType) {
+            return ElevatedButton(
+              onPressed: () {
+                userProvider.setUserType(userType);
+              },
+              child: Text(userType.name),
+            );
+          }).toList(),
+    ),
+  );
 }
 
 // COACHES ONLY
@@ -78,7 +110,7 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Certify Projects(C)', //coaches only
+                  'Certify Projects', //coaches only
                   style: GoogleFonts.bitter(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -140,7 +172,7 @@ Widget buildMyCardCalendar(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Calendar (Coaches)',
+                  'Calendar',
                   style: GoogleFonts.bitter(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -188,7 +220,12 @@ Widget buildMyCard1() {
       ),
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15, top: 12, bottom: 12),
+        padding: const EdgeInsets.only(
+          left: 15,
+          right: 10,
+          top: 12,
+          bottom: 12,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -226,7 +263,12 @@ Widget buildMyCard2() {
       ),
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15, top: 12, bottom: 12),
+        padding: const EdgeInsets.only(
+          left: 15,
+          right: 10,
+          top: 12,
+          bottom: 12,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
