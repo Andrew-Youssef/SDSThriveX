@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-      body: Expanded(child: page),
+      body: page,
 
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -101,6 +101,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+// //CHAT GPT CODE TO KEEP THE BOTTOM APP BAR THROUGH THE WHOLE APP (NOT NEEDED)
 
 // class MyHomePage extends StatefulWidget {
 //   const MyHomePage({super.key, required this.title});

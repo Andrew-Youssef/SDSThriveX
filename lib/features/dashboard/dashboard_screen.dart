@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_innatex_student_screens/features/calendar/calendar_screen.dart';
 import 'package:flutter_innatex_student_screens/features/project_approval/project_approval_screen.dart';
 import '../../data/globals.dart';
+import '../../widgets/search_bar.dart';
 
 class MyDashBoardScreen extends StatefulWidget {
   const MyDashBoardScreen({super.key});
@@ -29,11 +30,9 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
               // header background
               Container(
                 color: theme.primaryColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 12,
+                child: Row(
+                  children: [buildSearchBar('Search'), buildSearchButton()],
                 ),
-                child: Row(children: [buildSearchBar(), buildSearchButton()]),
               ),
 
               // 🔽 Scrollable content below the fixed header
@@ -291,60 +290,6 @@ Widget buildMyCard2() {
             ),
           ],
         ),
-      ),
-    ),
-  );
-}
-
-Widget buildSearchButton() {
-  return Padding(
-    padding: const EdgeInsets.all(12),
-    child: IconButton.filled(
-      onPressed: () {},
-      icon: const Icon(Icons.search),
-      style: const ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll<Color>(
-          Color.fromARGB(255, 255, 255, 255),
-        ),
-        foregroundColor: WidgetStatePropertyAll<Color>(
-          Color.fromARGB(255, 0, 0, 0),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget buildSearchBar() {
-  return Flexible(
-    child: Padding(
-      padding: const EdgeInsets.only(left: 12),
-      child: SearchAnchor(
-        builder: (BuildContext context, SearchController controller) {
-          return SearchBar(
-            hintText: 'Search',
-            controller: controller,
-            padding: const WidgetStatePropertyAll<EdgeInsets>(
-              EdgeInsets.symmetric(horizontal: 16.0),
-            ),
-            onChanged: (_) {
-              controller.openView();
-            },
-          );
-        },
-        suggestionsBuilder: (
-          BuildContext context,
-          SearchController controller,
-        ) {
-          return List<ListTile>.generate(5, (int index) {
-            final String item = 'item $index';
-            return ListTile(
-              title: Text(item, style: GoogleFonts.bitter()),
-              onTap: () {
-                controller.closeView(item);
-              },
-            );
-          });
-        },
       ),
     ),
   );
