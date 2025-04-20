@@ -5,6 +5,7 @@ import 'core/theme.dart';
 import 'features/dashboard/dashboard_screen.dart';
 import 'features/notifications/notifications_screen.dart';
 import 'features/profile/profile_screen.dart';
+import 'features/login/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: lightTheme,
       // darkTheme: darkTheme,
       themeMode: ThemeMode.system,
-      home: const MyHomePage(title: 'Test'),
+      home: const LoginScreen(title: 'Test'),
     );
   }
 }
