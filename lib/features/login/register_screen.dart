@@ -16,7 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _confirmPasswordController = TextEditingController();
   String _selectedAccountType = 'Student';
 
-  final List<String> _accountTypes = ['Student', 'Professor', 'Recruiter'];
+  final List<String> _accountTypes = ['Student','Coaches', 'Professor', 'Recruiter'];
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
@@ -37,7 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.asset(
-                      'assets/InnateXlogo.jpg',
+                      'assets/InnateX-04.png',
                       width: 120,
                       height: 120,
                       fit: BoxFit.contain,

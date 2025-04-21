@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Image.asset(
-                    'assets/InnateXlogo.jpg',
+                    'assets/InnateX-4.png',
                     width: 120,
                     height: 120,
                     fit: BoxFit.contain, // fit whole image in box

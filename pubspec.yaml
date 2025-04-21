@@ -42,6 +42,7 @@ flutter:
   assets:
     - assets/InnateX.jpg
     - assets/InnateXlogo.jpg
+    - assets/InnateX-04.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see
