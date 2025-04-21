@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         selectedIndex: currentPageIndex,
-        height: 60,
+        height: 55,
         destinations: [
           NavigationDestination(
             icon: Icon(Icons.notifications_none),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import '../../data/globals.dart';
 
 class MyProfileScreen extends StatefulWidget {
@@ -17,16 +19,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       if (profileAttributes.containsKey(key)) {
         profileAttributes[key] = !profileAttributes[key]!;
       }
-      print(profileAttributes[key]);
+      // print(profileAttributes[key]);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: [buildTop(), buildContent(), buildAttributeData()],
+    final userProvider = Provider.of<UserProvider>(context);
+    final theme = userProvider.getTheme();
+    return Container(
+      color: theme.primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          body: ListView(
+            padding: EdgeInsets.zero,
+            children: [buildTop(), buildContent(), buildAttributeData()],
+          ),
+        ),
       ),
     );
   }

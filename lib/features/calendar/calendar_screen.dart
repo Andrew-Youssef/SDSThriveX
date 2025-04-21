@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
+import 'package:flutter_innatex_student_screens/widgets/search_bar.dart';
+import 'package:provider/provider.dart';
 
 class MyCalendarScreen extends StatefulWidget {
   const MyCalendarScreen({super.key});
@@ -56,107 +59,112 @@ class _MyCalendarScreenState extends State<MyCalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: Container(
-          color: Colors.orange,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-          child: SafeArea(
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                Expanded(
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
+    final userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = userProvider.getTheme();
+
+    return Container(
+      color: theme.primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                color: theme.primaryColor,
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
                     ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: "Search",
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    buildSearchBar('Search'),
+                    buildSearchButton(),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: ListView(
+                    children: [
+                      SizedBox(height: 20),
+                      Text(
+                        "April 2025",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
+                      SizedBox(height: 10),
+                      Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: List.generate(30, (index) {
+                          int day = index + 1;
+                          return GestureDetector(
+                            onTap: () => onDateSelected(day),
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color:
+                                    selectedDay == day
+                                        ? Colors.purple
+                                        : dateColors[day],
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                "$day",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                      SizedBox(height: 20),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _buildLegend(Colors.red, "Unavailable"),
+                              _buildLegend(Colors.yellow, "1-on-1 Session"),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _buildLegend(Colors.blue, "Seminar"),
+                              _buildLegend(Colors.green, "Available"),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        selectedDate,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(description, textAlign: TextAlign.center),
+                      ),
+                    ],
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.search, color: Colors.white),
-                  onPressed: () {},
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            Text(
-              "April 2025",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Wrap(
-              spacing: 8.0,
-              runSpacing: 8.0,
-              children: List.generate(30, (index) {
-                int day = index + 1;
-                return GestureDetector(
-                  onTap: () => onDateSelected(day),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color:
-                          selectedDay == day ? Colors.purple : dateColors[day],
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text("$day", style: TextStyle(color: Colors.white)),
-                  ),
-                );
-              }),
-            ),
-            SizedBox(height: 20),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildLegend(Colors.red, "Unavailable"),
-                    _buildLegend(Colors.yellow, "1-on-1 Session"),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildLegend(Colors.blue, "Seminar"),
-                    _buildLegend(Colors.green, "Available"),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Text(
-              selectedDate,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(description, textAlign: TextAlign.center),
-            ),
-          ],
         ),
       ),
     );

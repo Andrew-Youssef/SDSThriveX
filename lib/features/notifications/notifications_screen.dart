@@ -7,9 +7,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/data/globals.dart';
+import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_innatex_student_screens/core/theme.dart';
 import 'package:flutter_innatex_student_screens/features/notifications/notification_details_screen.dart';
+import 'package:provider/provider.dart';
+// import '../../widgets/notifications/notification_card.dart';
 
 class MyNotificationScreen extends StatefulWidget {
   const MyNotificationScreen({super.key});
@@ -32,112 +35,151 @@ class _MyNotificationScreenState extends State<MyNotificationScreen> {
     ["Your project 'Sample Website' was endorsed by", "John Smith"],
   ];
 
+  final List<List<String>> l = [];
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            Container(
-              width: double.infinity, // ensures full width of screen
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                ), // Optional inner margin
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("All", style: GoogleFonts.bitter()),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Job Offers", style: GoogleFonts.bitter()),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Endorsments", style: GoogleFonts.bitter()),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text(
-                        "Profile Changes",
-                        style: GoogleFonts.bitter(),
-                      ),
-                    ),
-                  ],
+    final userProvider = Provider.of<UserProvider>(context);
+    final theme = userProvider.getTheme();
+
+    return Container(
+      color: theme.primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              Container(
+                width: double.infinity, // ensures full width of screen
+                color: theme.primaryColor,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Container(
+                  height: 40,
+                  color: theme.primaryColor,
+                  child: buildFilterButtons(),
+                ),
+              ),
+
+              Expanded(child: buildNotificationCards(list, context)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildNotificationCards(List<List<String>> list, BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        await Future.delayed(const Duration(seconds: 1));
+        setState(() {
+          list.add(['New refreshed notification', 'InnateX System']);
+        });
+      },
+
+      child: ListView(
+        physics: AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.all(8),
+        children: [
+          if (list.isEmpty) ...[
+            SizedBox(
+              height: MediaQuery.of(context).size.height - kToolbarHeight - 200,
+              child: Center(
+                child: Text(
+                  'No New Notifications to Display',
+                  style: GoogleFonts.bitter(),
+                  textScaler: TextScaler.linear(1.5),
                 ),
               ),
             ),
+          ] else
+            for (var l in list) buildNotificationCard(list, l, context),
+        ],
+      ),
+    );
+  }
 
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(8),
-                children: [
-                  if (list.isEmpty)
-                    Text("no notifications", style: GoogleFonts.bitter()),
-
-                  for (List<String> l in list)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                            color: Colors.orange,
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
-                          leading: const Icon(Icons.person_4_rounded),
-                          title: Text(
-                            l[0],
-                            style: GoogleFonts.bitter(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            l[1],
-                            style: GoogleFonts.bitter(
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                          trailing: IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) =>
-                                          const MyNotificationDetailsScreen(),
-                                ),
-                              );
-                            },
-                            icon: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: const BoxDecoration(
-                                color: Color.fromARGB(255, 118, 195, 247),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
+  Widget buildNotificationCard(
+    List<List<String>> list,
+    List<String> l,
+    BuildContext context,
+  ) {
+    return Dismissible(
+      key: ValueKey(l),
+      direction: DismissDirection.startToEnd,
+      onDismissed: (_) {
+        setState(() {
+          list.remove(l);
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(color: Colors.orange, width: 1.5),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ListTile(
+            leading: const Icon(Icons.person_4_rounded),
+            title: Text(
+              l[0],
+              style: GoogleFonts.bitter(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+              l[1],
+              style: GoogleFonts.bitter(fontStyle: FontStyle.italic),
+            ),
+            trailing: IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MyNotificationDetailsScreen(),
+                  ),
+                );
+              },
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 118, 195, 247),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.arrow_forward_ios, color: Colors.black),
               ),
             ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget buildFilterButtons() {
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      // spacing: 8,
+      // runSpacing: 8,
+      children: [
+        SizedBox(width: 5),
+        ElevatedButton(
+          onPressed: () {},
+          child: Text("All", style: GoogleFonts.bitter()),
+        ),
+        SizedBox(width: 5),
+        ElevatedButton(
+          onPressed: () {},
+          child: Text("Job Offers", style: GoogleFonts.bitter()),
+        ),
+        SizedBox(width: 5),
+        ElevatedButton(
+          onPressed: () {},
+          child: Text("Endorsments", style: GoogleFonts.bitter()),
+        ),
+        SizedBox(width: 5),
+        ElevatedButton(
+          onPressed: () {},
+          child: Text("Profile Changes", style: GoogleFonts.bitter()),
+        ),
+        SizedBox(width: 5),
+      ],
     );
   }
 }

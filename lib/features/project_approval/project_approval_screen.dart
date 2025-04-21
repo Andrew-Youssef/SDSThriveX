@@ -122,27 +122,47 @@ class _MyPendingProjectPageState extends State<MyPendingProjectScreen> {
     );
   }
 
+  //   Widget buildSwitchProjectButtons() {
+  //     return Column(
+  //       children: [
+  //         Row(
+  //           children: [
+  //             IconButton(
+  //               icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+  //               onPressed: previousPage,
+  //             ),
+  //             IconButton(
+  //               icon: Icon(Icons.arrow_forward_ios, color: Colors.black),
+  //               onPressed: nextPage,
+  //             ),
+  //           ],
+  //         ),
+  //         Text("$currentPage/$totalPages", style: TextStyle(color: Colors.black)),
+  //       ],
+  //     );
+  //   }
+  // }
   Widget buildSwitchProjectButtons() {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-              onPressed: previousPage,
-            ),
-            IconButton(
-              icon: Icon(Icons.arrow_forward_ios, color: Colors.black),
-              onPressed: nextPage,
-            ),
-          ],
+        IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: previousPage,
         ),
-        Text("$currentPage/$totalPages", style: TextStyle(color: Colors.black)),
+        Text(
+          "$currentPage/$totalPages",
+          style: const TextStyle(color: Colors.black, fontSize: 16),
+        ),
+        IconButton(
+          icon: const Icon(Icons.arrow_forward_ios, color: Colors.black),
+          onPressed: nextPage,
+        ),
       ],
     );
   }
 }
-
 
 //     return Scaffold(
 //       backgroundColor: Colors.grey[200],
