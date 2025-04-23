@@ -20,34 +20,24 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget page;
+    switch (currentPageIndex) {
+      case 0:
+        page = MyNotificationScreen();
+        break;
+      case 1:
+        page = MyDashBoardScreen();
+        break;
+      case 2:
+        page = MyProfileScreen();
+        break;
+      default:
+        throw UnimplementedError("THIS AINT IMPLEMENTED YET\n");
+    }
+
     return Scaffold(
-      body: StreamBuilder<DocumentSnapshot>(
-        //Might change this if there is no need for User Data might implement it to the other pages
-        stream: userRef,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(
-              child: Text('No user data found. Please report to Admin'),
-            );
-          } else {
-            Widget page;
-            switch (currentPageIndex) {
-              case 0:
-                page = MyNotificationScreen();
-                break;
-              case 1:
-                page = MyDashBoardScreen();
-                break;
-              case 2:
-                page = MyProfileScreen();
-                break;
-              default:
-                throw UnimplementedError("THIS AINT IMPLEMENTED YET\n");
-            }
-            return page;
-          }
-        },
-      ),
+      body: page,
+      //Might change this if there is no need for User Data might implement it to the other pages
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           backgroundColor: Colors.orange,
