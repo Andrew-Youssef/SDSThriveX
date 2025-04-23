@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../home.dart';
@@ -5,6 +6,7 @@ import '../../features/signin/signin_page.dart';
 
 class AuthService {
   Future<String?> signup({
+    required String name,
     required String email,
     required String password,
     required String confirmPassword,
@@ -24,6 +26,13 @@ class AuthService {
         context,
         MaterialPageRoute(builder: (BuildContext context) => const HomePage()),
       );
+
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .set({'name': name, 'email': email, 'userType': userType});
+
+      print("Wrote user to Firestore");
       return null;
     } on FirebaseAuthException catch (e) {
       return e.toString();

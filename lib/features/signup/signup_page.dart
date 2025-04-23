@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../signin/signin_page.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../../core/services/auth_service.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -11,17 +11,20 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   String? errorMessage;
   String? userType;
 
   @override
   void dispose() {
     super.dispose();
-    emailController.dispose();
-    passwordController.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
   }
 
   @override
@@ -50,7 +53,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               TextFormField(
-                controller: emailController,
+                controller: _emailController,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.email),
@@ -61,7 +64,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               Padding(padding: EdgeInsets.all(5.0)),
               TextFormField(
-                controller: passwordController,
+                controller: _passwordController,
                 textInputAction: TextInputAction.next,
                 // obscureText: true,
                 decoration: InputDecoration(
@@ -73,7 +76,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               Padding(padding: EdgeInsets.all(5.0)),
               TextFormField(
-                controller: confirmPasswordController,
+                controller: _confirmPasswordController,
                 textInputAction: TextInputAction.done,
                 // obscureText: true,
                 decoration: InputDecoration(
@@ -137,9 +140,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void handleSignUp() async {
     String? result = await AuthService().signup(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-      confirmPassword: confirmPasswordController.text.trim(),
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+      confirmPassword: _confirmPasswordController.text.trim(),
       userType: userType,
       context: context,
     );
