@@ -18,7 +18,7 @@ class MyDashBoardScreen extends StatefulWidget {
 class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
 
     return Container(
@@ -51,9 +51,9 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
                         const SizedBox(height: 10),
                       ],
                     ],
-                    buildMyCard1(),
+                    buildMyCard1(context),
                     const SizedBox(height: 10),
-                    buildMyCard2(),
+                    buildMyCard2(context),
                   ],
                 ),
               ),
@@ -78,13 +78,13 @@ Widget buildMyUserTypeButtons(BuildContext context) {
               onPressed: () {
                 userProvider.setUserType(userType);
               },
-              child: Text(userType.name),
               style: ElevatedButton.styleFrom(
                 backgroundColor:
                     userType == userProvider.type
                         ? Colors.blue
                         : Colors.white70,
               ),
+              child: Text(userType.name),
             );
           }).toList(),
     ),
@@ -116,7 +116,7 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
               children: [
                 Text(
                   'Certify Projects', //coaches only
-                  style: GoogleFonts.bitter(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -144,7 +144,7 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
             const Divider(color: Colors.grey),
             Text(
               'Certify student projects so that they are recognized by employers',
-              style: GoogleFonts.bitter(fontSize: 14),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),
@@ -178,7 +178,7 @@ Widget buildMyCardCalendar(BuildContext context) {
               children: [
                 Text(
                   'Calendar',
-                  style: GoogleFonts.bitter(
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -206,7 +206,7 @@ Widget buildMyCardCalendar(BuildContext context) {
             const Divider(color: Colors.grey),
             Text(
               'Certify student projects so that they are recognized by employers',
-              style: GoogleFonts.bitter(fontSize: 14),
+              style: Theme.of(context).textTheme.displayMedium,
             ),
           ],
         ),
@@ -215,7 +215,7 @@ Widget buildMyCardCalendar(BuildContext context) {
   );
 }
 
-Widget buildMyCard1() {
+Widget buildMyCard1(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Card(
@@ -236,10 +236,7 @@ Widget buildMyCard1() {
           children: [
             Text(
               'View Portfolio',
-              style: GoogleFonts.bitter(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const Divider(color: Colors.grey),
             ...[
@@ -249,7 +246,8 @@ Widget buildMyCard1() {
               '- Certifications & Degrees',
               '- Personal Stories',
             ].map(
-              (text) => Text(text, style: GoogleFonts.bitter(fontSize: 14)),
+              (text) =>
+                  Text(text, style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),
@@ -258,7 +256,7 @@ Widget buildMyCard1() {
   );
 }
 
-Widget buildMyCard2() {
+Widget buildMyCard2(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Card(
@@ -279,14 +277,12 @@ Widget buildMyCard2() {
           children: [
             Text(
               'Upcoming Meetings',
-              style: GoogleFonts.bitter(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const Divider(color: Colors.grey),
             ...['- Coaching Sessions', '- Job Interviews', '- Seminars'].map(
-              (text) => Text(text, style: GoogleFonts.bitter(fontSize: 14)),
+              (text) =>
+                  Text(text, style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),

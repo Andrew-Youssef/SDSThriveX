@@ -52,10 +52,24 @@ class _MyNotificationScreenState extends State<MyNotificationScreen> {
                 width: double.infinity, // ensures full width of screen
                 color: theme.primaryColor,
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Container(
-                  height: 40,
-                  color: theme.primaryColor,
-                  child: buildFilterButtons(),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 45,
+                      color: theme.primaryColor,
+                      child: Text(
+                        'Notifications',
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium!.copyWith(color: Colors.white),
+                      ),
+                    ),
+                    Container(
+                      height: 40,
+                      color: theme.primaryColor,
+                      child: buildFilterButtons(context),
+                    ),
+                  ],
                 ),
               ),
 
@@ -86,8 +100,7 @@ class _MyNotificationScreenState extends State<MyNotificationScreen> {
               child: Center(
                 child: Text(
                   'No New Notifications to Display',
-                  style: GoogleFonts.bitter(),
-                  textScaler: TextScaler.linear(1.5),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
             ),
@@ -122,11 +135,13 @@ class _MyNotificationScreenState extends State<MyNotificationScreen> {
             leading: const Icon(Icons.person_4_rounded),
             title: Text(
               l[0],
-              style: GoogleFonts.bitter(fontWeight: FontWeight.bold),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium!.copyWith(fontSize: 16),
             ),
             subtitle: Text(
               l[1],
-              style: GoogleFonts.bitter(fontStyle: FontStyle.italic),
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             trailing: IconButton(
               onPressed: () {
@@ -152,7 +167,7 @@ class _MyNotificationScreenState extends State<MyNotificationScreen> {
     );
   }
 
-  Widget buildFilterButtons() {
+  Widget buildFilterButtons(BuildContext context) {
     return ListView(
       scrollDirection: Axis.horizontal,
       // spacing: 8,
@@ -161,22 +176,31 @@ class _MyNotificationScreenState extends State<MyNotificationScreen> {
         SizedBox(width: 5),
         ElevatedButton(
           onPressed: () {},
-          child: Text("All", style: GoogleFonts.bitter()),
+          child: Text("All", style: Theme.of(context).textTheme.labelSmall),
         ),
         SizedBox(width: 5),
         ElevatedButton(
           onPressed: () {},
-          child: Text("Job Offers", style: GoogleFonts.bitter()),
+          child: Text(
+            "Job Offers",
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
         ),
         SizedBox(width: 5),
         ElevatedButton(
           onPressed: () {},
-          child: Text("Endorsments", style: GoogleFonts.bitter()),
+          child: Text(
+            "Endorsments",
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
         ),
         SizedBox(width: 5),
         ElevatedButton(
           onPressed: () {},
-          child: Text("Profile Changes", style: GoogleFonts.bitter()),
+          child: Text(
+            "Profile Changes",
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
         ),
         SizedBox(width: 5),
       ],

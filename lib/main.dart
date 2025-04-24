@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_innatex_student_screens/data/globals.dart';
+import 'data/globals.dart';
 import 'core/theme.dart';
 
 //provider stuff
