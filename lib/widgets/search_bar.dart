@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:screens/features/search/search.dart';
 
-Widget buildSearchButton() {
+Widget buildSearchButton(context) {
   return Padding(
     padding: const EdgeInsets.all(12),
     child: IconButton.filled(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SearchScreen()),
+        );
+      },
       icon: const Icon(Icons.search),
       style: const ButtonStyle(
         backgroundColor: WidgetStatePropertyAll<Color>(
@@ -32,7 +38,10 @@ Widget buildSearchBar(String text) {
               EdgeInsets.symmetric(horizontal: 16.0),
             ),
             onTap: () {
-              controller.openView();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchScreen()),
+              );
             },
             shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),

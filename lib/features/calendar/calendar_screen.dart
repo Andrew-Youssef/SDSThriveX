@@ -83,7 +83,7 @@ class _MyCalendarScreenState extends State<MyCalendarScreen> {
                       icon: Icon(Icons.arrow_back, color: Colors.white),
                     ),
                     buildSearchBar('Search'),
-                    buildSearchButton(),
+                    buildSearchButton(context),
                   ],
                 ),
               ),

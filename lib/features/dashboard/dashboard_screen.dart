@@ -29,11 +29,14 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
               Container(
                 color: theme.primaryColor,
                 child: Row(
-                  children: [buildSearchBar('Search'), buildSearchButton()],
+                  children: [
+                    buildSearchBar('Search'),
+                    buildSearchButton(context),
+                  ],
                 ),
               ),
 
-              // 🔽 Scrollable content below the fixed header
+              //  Scrollable content below the fixed header
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.only(top: 10),
