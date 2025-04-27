@@ -29,3 +29,5 @@ Map<String, bool> profileAttributes = {
 //     notifyListeners();
 //   }
 // }
+
+enum UserType { student, coach, recruiter, professor }

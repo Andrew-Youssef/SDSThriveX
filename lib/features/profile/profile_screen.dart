@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../data/data_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:screens/providers/user_provider.dart';
+import '../../data/data.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -23,10 +25,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: [buildTop(), buildContent(), buildAttributeData()],
+    final userProvider = Provider.of<UserProvider>(context);
+    final theme = userProvider.getTheme();
+    return Container(
+      color: theme.primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          body: ListView(
+            padding: EdgeInsets.zero,
+            children: [buildTop(), buildContent(), buildAttributeData()],
+          ),
+        ),
       ),
     );
   }

@@ -70,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   controller: _emailController,
                   textInputAction: TextInputAction.next,
+                  style: bitterStyle,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.email),
                     hintText: 'Enter your email',

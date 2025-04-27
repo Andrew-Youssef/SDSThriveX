@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:screens/features/dashboard/dashboard_screen.dart';
 import 'package:screens/features/notifications/notifications_screen.dart';
 import 'package:screens/features/profile/profile_screen.dart';
+import 'package:screens/providers/user_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,6 +22,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final ThemeData theme = userProvider.getTheme();
     Widget page;
     switch (currentPageIndex) {
       case 0:
@@ -35,21 +39,12 @@ class _HomePageState extends State<HomePage> {
         throw UnimplementedError("THIS AINT IMPLEMENTED YET\n");
     }
 
-    return Scaffold(
-      body: page,
-      //Might change this if there is no need for User Data might implement it to the other pages
-      bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(
-          backgroundColor: Colors.orange,
-          indicatorColor: Colors.orange,
-          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
-            return const IconThemeData(color: Colors.white, size: 30);
-          }),
-          labelTextStyle: WidgetStateProperty.all(
-            const TextStyle(color: Colors.white),
-          ),
-        ),
-        child: NavigationBar(
+    return Theme(
+      data: theme,
+      child: Scaffold(
+        body: page,
+        //Might change this if there is no need for User Data might implement it to the other pages
+        bottomNavigationBar: NavigationBar(
           onDestinationSelected: (int index) {
             setState(() {
               currentPageIndex = index;
@@ -57,7 +52,7 @@ class _HomePageState extends State<HomePage> {
           },
           labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
           selectedIndex: currentPageIndex,
-          height: 60,
+          height: 55,
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.notifications_none),
