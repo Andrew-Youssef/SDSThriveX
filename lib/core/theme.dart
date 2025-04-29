@@ -79,16 +79,21 @@ class MyThemeData {
 
         //dashboard main text
         displayMedium: myFont.displayMedium?.copyWith(
-          fontSize: 14,
+          fontSize: 15,
           height: 1.5,
+          color: Colors.black,
         ),
         //dashboard title text
         titleMedium: myFont.titleMedium?.copyWith(
           fontSize: 18,
           fontWeight: FontWeight.bold,
           height: 1.5,
+          color: Colors.black,
         ),
       ),
+
+      //for dividers, can manually change thickness
+      dividerColor: Colors.black54,
 
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: thisPrimaryColor,

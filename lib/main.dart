@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'data/globals.dart';
-import 'core/theme.dart';
 
 //provider stuff
 import 'package:provider/provider.dart';

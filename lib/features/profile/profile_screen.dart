@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_certificates.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_degrees.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_personal_stories.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_profile.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_projects.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_skills_strengths.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_volunteering_work.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_workexperience.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/profile_edit_screen.dart';
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
+import 'package:flutter_innatex_student_screens/widgets/header.dart';
 import 'package:provider/provider.dart';
 import '../../data/globals.dart';
+// import '../../widgets/profile/attribute_buttons.dart'
+//     show buildAttributeButtons;
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -11,10 +23,37 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  final double coverHeight = 280;
-  final double profileHeight = 144;
+  final double coverHeight = 140;
+  final double profileHeight = 130;
 
-  void toggleProfileAttributes(String key) {
+  Map<ProfileAttribute, WidgetBuilder> attributeScreens = {
+    ProfileAttribute.profile:
+        (context) => const MyEditProfileAttributesScreen(),
+    ProfileAttribute.projects: (context) => const MyEditProjectsScreen(),
+    ProfileAttribute.workExperience:
+        (context) => const MyEditWorkExperienceScreen(),
+    ProfileAttribute.certificates:
+        (context) => const MyEditCertificatesScreen(),
+    ProfileAttribute.degrees: (context) => const MyEditDegreesScreen(),
+    ProfileAttribute.skillsStrengths:
+        (context) => const MyEditSkillsStrengthsScreen(),
+    ProfileAttribute.personalStories:
+        (context) => const MyEditPersonalStoriesScreen(),
+    ProfileAttribute.volunteeringWork:
+        (context) => const MyEditVolunteeringWorkScreen(),
+  };
+
+  final Map<ProfileAttribute, bool> profileAttributes = {
+    ProfileAttribute.projects: false,
+    ProfileAttribute.workExperience: false,
+    ProfileAttribute.certificates: false,
+    ProfileAttribute.degrees: false,
+    ProfileAttribute.skillsStrengths: false,
+    ProfileAttribute.personalStories: false,
+    ProfileAttribute.volunteeringWork: false,
+  };
+
+  void toggleProfileAttributes(ProfileAttribute key) {
     setState(() {
       if (profileAttributes.containsKey(key)) {
         profileAttributes[key] = !profileAttributes[key]!;
@@ -25,15 +64,21 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    final theme = userProvider.getTheme();
+    // final userProvider = Provider.of<UserProvider>(context);
+    final theme = Theme.of(context);
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
         child: Scaffold(
+          appBar: myAppBar('Profile', context),
           body: ListView(
             padding: EdgeInsets.zero,
-            children: [buildTop(), buildContent(), buildAttributeData()],
+            children: [
+              buildTop(),
+              buildContent(context),
+              // Divider(color: Colors.black),
+              buildAttributeData(context),
+            ],
           ),
         ),
       ),
@@ -43,31 +88,62 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   //projects
   //certificates
   //
-  Widget buildContent() {
+  Widget buildContent(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Column(
       children: [
-        Column(
-          children: [
-            Text('John Smith', style: TextStyle(fontSize: 28)),
-            Text('Student at UTS', style: TextStyle(fontSize: 15)),
-          ],
+        Container(
+          padding: EdgeInsets.all(8.0),
+          width: double.infinity,
+          child: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'John Smith',
+                    style: theme.textTheme.titleMedium!.copyWith(fontSize: 28),
+                  ),
+                  Text('Student at UTS', style: theme.textTheme.displayMedium),
+                ],
+              ),
+              Expanded(child: SizedBox()),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyEditProfileScreen(),
+                    ),
+                  );
+                },
+                icon: Icon(Icons.edit),
+              ),
+            ],
+          ),
         ),
+        Divider(thickness: 3),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               buildAttributeButtons(),
+              // buildAttributeButtons(
+              //   profileAttributes: profileAttributes,
+              //   onToggle: (key) {
+              //     toggleProfileAttributes(key);
+              //   },
+              // ),
               Text(
                 'About',
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium,
               ),
               Text(
                 'Place holder text for About',
-                // softWrap: true,
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 15),
+                style: theme.textTheme.displayMedium,
               ),
             ],
           ),
@@ -89,42 +165,114 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 backgroundColor:
                     profileAttributes[key]! ? Colors.blue : Colors.white70,
               ),
-              child: Text(key),
+              // orignal
+              // child: Text(key),
+              child: Text(profileAttributeLabels[key]!),
             );
           }).toList(),
     );
   }
 
-  Widget buildAttributeData() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            profileAttributes.keys.map((key) {
-              if (profileAttributes[key]!) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      key,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+  // Widget buildAttributeData() {
+  //   int count = 0;
+  //   return Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children:
+  //           profileAttributes.keys.map((key) {
+  //             int current = count;
+  //             count++;
+  //             if (profileAttributes[key]!) {
+  //               return Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   if (current == 0) Divider(thickness: 3),
+  //                   Text(
+  //                     key,
+  //                     style: TextStyle(
+  //                       fontSize: 18,
+  //                       fontWeight: FontWeight.bold,
+  //                     ),
+  //                   ),
+  //                   Text(
+  //                     'Place holder text for $key',
+  //                     style: TextStyle(fontSize: 15),
+  //                   ),
+  //                   SizedBox(height: 10),
+  //                   Divider(thickness: 3),
+  //                 ],
+  //               );
+  //             } else {
+  //               return SizedBox.shrink();
+  //             }
+  //           }).toList(),
+  //     ),
+  //   );
+  // }
+
+  Widget buildAttributeData(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
+    bool flag_first_entry = false;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children:
+          profileAttributes.keys.map((key) {
+            if (profileAttributes[key]!) {
+              bool isFirst = !flag_first_entry;
+              flag_first_entry = true;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (isFirst) const Divider(thickness: 3),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        alignment: Alignment.centerLeft,
+                        backgroundColor: Colors.transparent,
+                        tapTargetSize: MaterialTapTargetSize.padded,
+                        splashFactory: NoSplash.splashFactory,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: attributeScreens[key]!),
+                        );
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // original
+                          // Text(key, style: theme.textTheme.titleMedium),
+                          // Text(
+                          //   'Place holder text for $key',
+                          //   style: theme.textTheme.displayMedium,
+                          // ),
+                          Text(
+                            profileAttributeLabels[key]!,
+                            style: theme.textTheme.titleMedium,
+                          ),
+                          Text(
+                            'Place holder text for ${profileAttributeLabels[key]}',
+                            style: theme.textTheme.displayMedium,
+                          ),
+
+                          const SizedBox(height: 10),
+                        ],
                       ),
                     ),
-                    Text(
-                      'Place holder text for $key',
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                );
-              } else {
-                return SizedBox.shrink();
-              }
-            }).toList(),
-      ),
+                  ),
+                  const Divider(thickness: 3),
+                ],
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          }).toList(),
     );
   }
 

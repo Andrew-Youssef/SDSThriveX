@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/data/globals.dart';
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
+import 'package:flutter_innatex_student_screens/widgets/header.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_innatex_student_screens/core/theme.dart';
 import 'package:flutter_innatex_student_screens/features/notifications/notification_details_screen.dart';
@@ -46,30 +47,17 @@ class _MyNotificationScreenState extends State<MyNotificationScreen> {
       color: theme.primaryColor,
       child: SafeArea(
         child: Scaffold(
+          appBar: myAppBar('Notifications', context),
           body: Column(
             children: [
               Container(
                 width: double.infinity, // ensures full width of screen
                 color: theme.primaryColor,
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 45,
-                      color: theme.primaryColor,
-                      child: Text(
-                        'Notifications',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium!.copyWith(color: Colors.white),
-                      ),
-                    ),
-                    Container(
-                      height: 40,
-                      color: theme.primaryColor,
-                      child: buildFilterButtons(context),
-                    ),
-                  ],
+                child: Container(
+                  height: 40,
+                  color: theme.primaryColor,
+                  child: buildFilterButtons(context),
                 ),
               ),
 
