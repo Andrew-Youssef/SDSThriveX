@@ -12,8 +12,6 @@ import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
 import 'package:provider/provider.dart';
 import '../../data/globals.dart';
-// import '../../widgets/profile/attribute_buttons.dart'
-//     show buildAttributeButtons;
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -25,6 +23,21 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen> {
   final double coverHeight = 140;
   final double profileHeight = 130;
+
+  //***************************** NOTE ********************************/
+  // RIGHT NOW THIS IS REALLY BAD
+  // The maps need to be put somewhere else. (I DONT KNOW WHERE ELSE)
+  // attributeScreens is also used in edit_profile_attributes
+  // i dont want to make them global bc only these 2 classes should have access
+
+  // maybe put in the routes.dart? lol probs.
+
+  // profile attributes NEEDS to be synced with the data base.
+  // profileAttributes should exist elsewhere where it can be modified by database
+  // and then pulled here.
+
+  // This will allow for toggleable sections. for hong to do.
+  //****************************** ik ************************************/
 
   Map<ProfileAttribute, WidgetBuilder> attributeScreens = {
     ProfileAttribute.profile:
@@ -76,7 +89,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             children: [
               buildTop(),
               buildContent(context),
-              // Divider(color: Colors.black),
               buildAttributeData(context),
             ],
           ),
@@ -165,14 +177,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 backgroundColor:
                     profileAttributes[key]! ? Colors.blue : Colors.white70,
               ),
-              // orignal
-              // child: Text(key),
               child: Text(profileAttributeLabels[key]!),
             );
           }).toList(),
     );
   }
 
+  //Original
   // Widget buildAttributeData() {
   //   int count = 0;
   //   return Padding(
@@ -213,20 +224,21 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   Widget buildAttributeData(BuildContext context) {
     ThemeData theme = Theme.of(context);
+    // bool flagFirstEntry = false;
 
-    bool flag_first_entry = false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children:
           profileAttributes.keys.map((key) {
             if (profileAttributes[key]!) {
-              bool isFirst = !flag_first_entry;
-              flag_first_entry = true;
+              // bool isFirst = !flagFirstEntry;
+              // flagFirstEntry = true;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (isFirst) const Divider(thickness: 3),
+                  // if (isFirst) const
+                  Divider(thickness: 3),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(
@@ -246,12 +258,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // original
-                          // Text(key, style: theme.textTheme.titleMedium),
-                          // Text(
-                          //   'Place holder text for $key',
-                          //   style: theme.textTheme.displayMedium,
-                          // ),
                           Text(
                             profileAttributeLabels[key]!,
                             style: theme.textTheme.titleMedium,
@@ -266,7 +272,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                     ),
                   ),
-                  const Divider(thickness: 3),
+                  // const Divider(thickness: 3),
                 ],
               );
             } else {

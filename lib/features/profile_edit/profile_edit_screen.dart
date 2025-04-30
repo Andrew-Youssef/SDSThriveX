@@ -9,7 +9,6 @@ import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profi
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_skills_strengths.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_volunteering_work.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_workexperience.dart';
-import 'package:flutter_innatex_student_screens/features/project_approval/project_approval_screen.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
 
 class MyEditProfileScreen extends StatefulWidget {
@@ -32,7 +31,7 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
   // }
 
   //NOTE:
-  //also used in profile_screen
+  //also used in profile_screen read more there
   Map<ProfileAttribute, WidgetBuilder> attributeScreens = {
     ProfileAttribute.profile:
         (context) => const MyEditProfileAttributesScreen(),
@@ -61,7 +60,7 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
           appBar: myAppBar('Edit Profile', context),
           body: ListView(
             children: [
-              for (final p in attributeScreens.keys) ...[
+              for (ProfileAttribute p in attributeScreens.keys) ...[
                 buildSetting(context, p),
                 Divider(height: 3),
               ],
