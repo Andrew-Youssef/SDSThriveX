@@ -270,7 +270,7 @@ Widget buildSearchBar() {
             padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.symmetric(horizontal: 16.0),
             ),
-            onChanged: (_) {
+            onTap: () {
               controller.openView();
             },
           );
@@ -279,15 +279,44 @@ Widget buildSearchBar() {
           BuildContext context,
           SearchController controller,
         ) {
-          return List<ListTile>.generate(5, (int index) {
-            final String item = 'item $index';
-            return ListTile(
-              title: Text(item, style: GoogleFonts.bitter()),
-              onTap: () {
-                controller.closeView(item);
-              },
-            );
-          });
+          return [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ElevatedButton(
+                onPressed: () {
+                  controller.closeView('Endorsed');
+                  // TODO: Handle "Endorsed" action
+                },
+                child: Text('Endorsed', style: GoogleFonts.bitter()),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ElevatedButton(
+                onPressed: () {
+                  controller.closeView('Not Endorsed');
+                  // TODO: Handle "Not Endorsed" action
+                },
+                child: Text('Not Endorsed', style: GoogleFonts.bitter()),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+          ];
         },
       ),
     ),
