@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/core/models/project_model.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_individual/edit_project.dart';
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
 import 'package:provider/provider.dart';
@@ -12,12 +13,32 @@ class MyEditProjectsScreen extends StatefulWidget {
 }
 
 class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _imageController = TextEditingController();
-  final TextEditingController _startDate = TextEditingController();
-  final TextEditingController _endDate = TextEditingController();
+  late final TextEditingController _nameController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _imageController;
+  late final TextEditingController _startDate;
+  late final TextEditingController _endDate;
   ProjectModel? selectedProject;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _descriptionController = TextEditingController();
+    _imageController = TextEditingController();
+    _startDate = TextEditingController();
+    _endDate = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _imageController.dispose();
+    _startDate.dispose();
+    _endDate.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +58,11 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                   Expanded(child: SizedBox()),
                   IconButton(
                     onPressed:
-                        projects.isEmpty
+                        selectedProject == null
                             ? null
                             : () {
                               userProvider.removeProject(selectedProject!);
+                              selectedProject = null;
                             },
                     icon: Icon(Icons.delete),
                   ),
@@ -66,13 +88,26 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                   ),
                 ],
               ),
+              // Expanded(
+              //   child: ListView(
+              //     children: [
+              //       if (projects.isEmpty) ...[
+              //         Center(child: Text('Add a new project!')),
+              //         SizedBox(height: 20),
+              //       ] else ...[
+              //         showExistingProjects(context),
+              //       ],
+              //       buildInputFields(context),
+              //     ],
+              //   ),
+              // ),
               if (projects.isEmpty) ...[
                 Center(child: Text('Add a new project!')),
                 SizedBox(height: 20),
               ] else ...[
                 showExistingProjects(context),
               ],
-              Expanded(child: buildInputFields(context)),
+              buildInputFields(context),
             ],
           ),
         ),
@@ -99,6 +134,19 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                   selectedProject = p;
                 });
                 // print('yoooooo');
+              },
+              onLongPress: () {
+                setState(() {
+                  selectedProject = p;
+                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            MyEditProjectScreen(project: selectedProject!),
+                  ),
+                );
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -133,61 +181,78 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
   Widget buildInputFields(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return ListView(
-      padding: EdgeInsets.all(8.0),
-      children: [
-        TextField(
-          controller: _nameController,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Name of project',
-          ),
-        ),
-        TextField(
-          controller: _startDate,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Start Date (required)',
-            filled: true,
-            prefixIcon: Icon(Icons.calendar_today),
-          ),
-          readOnly: true,
-          onTap: () {
-            _selectDate(_startDate, context);
-          },
-        ),
-        TextField(
-          controller: _endDate,
-          decoration: InputDecoration(
-            // border: OutlineInputBorder(),
-            labelText: 'End Date (optional)',
-            filled: true,
-            prefixIcon: Icon(Icons.calendar_today),
-            enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: theme.primaryColor),
+    return Expanded(
+      child: ListView(
+        padding: EdgeInsets.all(8.0),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Name of project',
+              ),
             ),
           ),
-          readOnly: true,
-          onTap: () {
-            _selectDate(_endDate, context);
-          },
-        ),
-        TextField(
-          controller: _descriptionController,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Description',
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _startDate,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Start Date (required)',
+                filled: true,
+                prefixIcon: Icon(Icons.calendar_today),
+              ),
+              readOnly: true,
+              onTap: () {
+                _selectDate(_startDate, context);
+              },
+            ),
           ),
-        ),
-        TextField(
-          controller: _imageController,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Image URL (figure out later)',
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _endDate,
+              decoration: InputDecoration(
+                // border: OutlineInputBorder(),
+                labelText: 'End Date (optional)',
+                filled: true,
+                prefixIcon: Icon(Icons.calendar_today),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: theme.primaryColor),
+                ),
+              ),
+              readOnly: true,
+              onTap: () {
+                _selectDate(_endDate, context);
+              },
+            ),
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _descriptionController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Description',
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _imageController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Image URL (figure out later)',
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
