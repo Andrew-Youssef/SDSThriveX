@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_innatex_student_screens/core/models/project_model.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_certificates.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_degrees.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_personal_stories.dart';
@@ -77,8 +78,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final userProvider = Provider.of<UserProvider>(context);
     final theme = Theme.of(context);
+
+    // final userProvider = Provider.of<UserProvider>(context);
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
@@ -183,61 +185,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  //Original
-  // Widget buildAttributeData() {
-  //   int count = 0;
-  //   return Padding(
-  //     padding: const EdgeInsets.all(8.0),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children:
-  //           profileAttributes.keys.map((key) {
-  //             int current = count;
-  //             count++;
-  //             if (profileAttributes[key]!) {
-  //               return Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   if (current == 0) Divider(thickness: 3),
-  //                   Text(
-  //                     key,
-  //                     style: TextStyle(
-  //                       fontSize: 18,
-  //                       fontWeight: FontWeight.bold,
-  //                     ),
-  //                   ),
-  //                   Text(
-  //                     'Place holder text for $key',
-  //                     style: TextStyle(fontSize: 15),
-  //                   ),
-  //                   SizedBox(height: 10),
-  //                   Divider(thickness: 3),
-  //                 ],
-  //               );
-  //             } else {
-  //               return SizedBox.shrink();
-  //             }
-  //           }).toList(),
-  //     ),
-  //   );
-  // }
-
   Widget buildAttributeData(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    // bool flagFirstEntry = false;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children:
           profileAttributes.keys.map((key) {
             if (profileAttributes[key]!) {
-              // bool isFirst = !flagFirstEntry;
-              // flagFirstEntry = true;
-
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // if (isFirst) const
                   Divider(thickness: 3),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -262,17 +220,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             profileAttributeLabels[key]!,
                             style: theme.textTheme.titleMedium,
                           ),
-                          Text(
-                            'Place holder text for ${profileAttributeLabels[key]}',
-                            style: theme.textTheme.displayMedium,
-                          ),
 
+                          //og
+                          // Text(
+                          //   'Place holder text for ${profileAttributeLabels[key]}',
+                          //   style: theme.textTheme.displayMedium,
+                          // ),
+                          getAttributeWidgetData(context)[key]!,
                           const SizedBox(height: 10),
                         ],
                       ),
                     ),
                   ),
-                  // const Divider(thickness: 3),
                 ],
               );
             } else {
@@ -316,5 +275,83 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         fit: BoxFit.cover,
       ),
     );
+  }
+
+  Widget showExistingProjects(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<ProjectModel> projects = userProvider.projects;
+
+    if (projects.isEmpty) {
+      return Text(
+        'Place holder text for Personal Stories',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in projects) ...[
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: theme.primaryColor, width: 3),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(p.name),
+                    Text(p.dateBegun.toString().split(' ')[0]),
+                    Text(
+                      p.dateEnded != null
+                          ? p.dateEnded!.toString().split(' ')[0]
+                          : 'Unknown',
+                    ),
+                    Text(p.description),
+                    Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
+
+  Map<ProfileAttribute, Widget> getAttributeWidgetData(context) {
+    ThemeData theme = Theme.of(context);
+
+    return {
+      ProfileAttribute.projects: showExistingProjects(context),
+      ProfileAttribute.workExperience: Text(
+        'Place holder text for Work Experience',
+        style: theme.textTheme.displayMedium,
+      ),
+      ProfileAttribute.certificates: Text(
+        'Place holder text for Certificates',
+        style: theme.textTheme.displayMedium,
+      ),
+      ProfileAttribute.degrees: Text(
+        'Place holder text for Degrees',
+        style: theme.textTheme.displayMedium,
+      ),
+      ProfileAttribute.skillsStrengths: Text(
+        'Place holder text for Skills & Strengths',
+        style: theme.textTheme.displayMedium,
+      ),
+      ProfileAttribute.personalStories: Text(
+        'Place holder text for Personal Stories',
+        style: theme.textTheme.displayMedium,
+      ),
+      ProfileAttribute.volunteeringWork: Text(
+        'Place holder text for Volunteering Work',
+        style: theme.textTheme.displayMedium,
+      ),
+    };
   }
 }
