@@ -284,7 +284,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
     if (projects.isEmpty) {
       return Text(
-        'Place holder text for Personal Stories',
+        'Place holder text for Projects',
         style: theme.textTheme.displayMedium,
       );
     } else {
