@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/core/models/project_model.dart';
-import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_certificates.dart';
-import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_degrees.dart';
+import 'package:flutter_innatex_student_screens/core/models/workexperience_model.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_cert_degrees.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_personal_stories.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_profile.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_projects.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_skills_strengths.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_volunteering_work.dart';
-import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_workexperience.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_workexperiences.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/profile_edit_screen.dart';
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
@@ -45,10 +45,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         (context) => const MyEditProfileAttributesScreen(),
     ProfileAttribute.projects: (context) => const MyEditProjectsScreen(),
     ProfileAttribute.workExperience:
-        (context) => const MyEditWorkExperienceScreen(),
-    ProfileAttribute.certificates:
-        (context) => const MyEditCertificatesScreen(),
-    ProfileAttribute.degrees: (context) => const MyEditDegreesScreen(),
+        (context) => const MyEditWorkExperiencesScreen(),
+    ProfileAttribute.certDegrees: (context) => const MyEditCertDegreesScreen(),
     ProfileAttribute.skillsStrengths:
         (context) => const MyEditSkillsStrengthsScreen(),
     ProfileAttribute.personalStories:
@@ -60,8 +58,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final Map<ProfileAttribute, bool> profileAttributes = {
     ProfileAttribute.projects: false,
     ProfileAttribute.workExperience: false,
-    ProfileAttribute.certificates: false,
-    ProfileAttribute.degrees: false,
+    ProfileAttribute.certDegrees: false,
     ProfileAttribute.skillsStrengths: false,
     ProfileAttribute.personalStories: false,
     ProfileAttribute.volunteeringWork: false,
@@ -277,6 +274,38 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
+  //*****************************WILSON *****************************//
+  /*
+  work from here downwards
+
+  create ur own models for ui testing, dont use UserProvider
+  eg. for WorkExperience
+    WorkExperienceModel wkModel = 
+      WorkExperienceModel(
+        name: name, 
+        role: role, 
+        dateBegun: dateBegun, 
+        description: description
+      )
+  create a List<WorkExperienceModel> to test it for displaying multiple models
+  
+  name each function like this:
+  Widget showExisting[(section eg WorkExperience)](BuildContext context) {}
+
+  manually create your list of Models, then make the widget scrollable,
+  and display conditionally whether the list is empty or not.
+
+  If the list is empty, it should display:
+  "Add [section]!" or something.
+
+  
+  To test if each of your things is working, go to getAttributeWidgetData()
+  and replace the corresponding placeholder TextWidget with ur function name
+
+  also read themes.dart
+  
+  */
+
   Widget showExistingProjects(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
@@ -332,12 +361,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         'Place holder text for Work Experience',
         style: theme.textTheme.displayMedium,
       ),
-      ProfileAttribute.certificates: Text(
+      ProfileAttribute.certDegrees: Text(
         'Place holder text for Certificates',
-        style: theme.textTheme.displayMedium,
-      ),
-      ProfileAttribute.degrees: Text(
-        'Place holder text for Degrees',
         style: theme.textTheme.displayMedium,
       ),
       ProfileAttribute.skillsStrengths: Text(

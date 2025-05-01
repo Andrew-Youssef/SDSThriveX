@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/core/models/ai_model.dart';
 import 'package:flutter_innatex_student_screens/core/models/certificates_model.dart';
-import 'package:flutter_innatex_student_screens/core/models/degrees_model.dart';
 import 'package:flutter_innatex_student_screens/core/models/personal_stories_model.dart';
 import 'package:flutter_innatex_student_screens/core/models/profile_model.dart';
 import 'package:flutter_innatex_student_screens/core/models/project_model.dart';
@@ -20,8 +19,7 @@ class UserProvider extends ChangeNotifier {
 
   final List<ProjectModel> _projects = [];
   final List<WorkExperienceModel> _workExperiences = [];
-  final List<CertificateModel> _certificates = [];
-  final List<DegreeModel> _degrees = [];
+  final List<CertDegreesModel> _certDegrees = [];
   final List<PersonalStoriesModel> _personalStories = [];
   final List<VolunteeringWorkModel> _volunteeringWork = [];
   final List<SkillsStrengthsModel> _skillsStrengths = [];
@@ -31,8 +29,7 @@ class UserProvider extends ChangeNotifier {
 
   List<ProjectModel> get projects => _projects;
   List<WorkExperienceModel> get workExperiences => _workExperiences;
-  List<CertificateModel> get certificates => _certificates;
-  List<DegreeModel> get degrees => _degrees;
+  List<CertDegreesModel> get certDegrees => _certDegrees;
   List<PersonalStoriesModel> get personalStories => _personalStories;
   List<VolunteeringWorkModel> get volunteeringWork => _volunteeringWork;
   List<SkillsStrengthsModel> get skillsStrengths => _skillsStrengths;
@@ -115,28 +112,15 @@ class UserProvider extends ChangeNotifier {
   }
 
   // Certificates
-  void addCertificate(CertificateModel cert) {
+  void addCertificate(CertDegreesModel cert) {
     cert.addListener(notifyListeners);
-    _certificates.add(cert);
+    _certDegrees.add(cert);
     notifyListeners();
   }
 
-  void removeCertificate(CertificateModel cert) {
+  void removeCertificate(CertDegreesModel cert) {
     cert.removeListener(notifyListeners);
-    _certificates.remove(cert);
-    notifyListeners();
-  }
-
-  // Degrees
-  void addDegree(DegreeModel degree) {
-    degree.addListener(notifyListeners);
-    _degrees.add(degree);
-    notifyListeners();
-  }
-
-  void removeDegree(DegreeModel degree) {
-    degree.removeListener(notifyListeners);
-    _degrees.remove(degree);
+    _certDegrees.remove(cert);
     notifyListeners();
   }
 

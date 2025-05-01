@@ -3,6 +3,7 @@
 //TUTORIAL
 //theme data is automatically assigned so its whatever dont need to worry abt it
 //bitter is now the default font
+
 //instead of styling each individual text widget, common text widgets will be grouped
 //idk what the grouping is yet but if you go down to setMyTheme => return ThemeData => textTheme
 //you will see headlineSmall, displayMedium, etc

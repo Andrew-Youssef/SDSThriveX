@@ -1,14 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/data/globals.dart';
-import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_certificates.dart';
-import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_degrees.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_cert_degrees.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_personal_stories.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_profile.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_projects.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_skills_strengths.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_volunteering_work.dart';
-import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_workexperience.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_workexperiences.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
 
 class MyEditProfileScreen extends StatefulWidget {
@@ -37,10 +36,8 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
         (context) => const MyEditProfileAttributesScreen(),
     ProfileAttribute.projects: (context) => const MyEditProjectsScreen(),
     ProfileAttribute.workExperience:
-        (context) => const MyEditWorkExperienceScreen(),
-    ProfileAttribute.certificates:
-        (context) => const MyEditCertificatesScreen(),
-    ProfileAttribute.degrees: (context) => const MyEditDegreesScreen(),
+        (context) => const MyEditWorkExperiencesScreen(),
+    ProfileAttribute.certDegrees: (context) => const MyEditCertDegreesScreen(),
     ProfileAttribute.skillsStrengths:
         (context) => const MyEditSkillsStrengthsScreen(),
     ProfileAttribute.personalStories:

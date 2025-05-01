@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CertificateModel extends ChangeNotifier {
+class CertDegreesModel extends ChangeNotifier {
   String institutionName;
   String certificateName;
   DateTime dateStarted;
   DateTime? dateEnded; // null if ongoing
   String description;
 
-  CertificateModel({
+  CertDegreesModel({
     required this.institutionName,
     required this.certificateName,
     required this.dateStarted,
