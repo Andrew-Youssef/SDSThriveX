@@ -21,16 +21,20 @@ class AuthService {
         email: email,
         password: password,
       );
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) {
+        return 'User ID is null';
+      }
+
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .set({'name': name, 'email': email, 'userType': userType});
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (BuildContext context) => const HomePage()),
       );
-
-      FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .set({'name': name, 'email': email, 'userType': userType});
 
       print("Wrote user to Firestore");
       return null;
