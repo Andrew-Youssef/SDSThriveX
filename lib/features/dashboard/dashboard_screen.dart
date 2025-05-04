@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_innatex_student_screens/data/globals.dart';
+import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_innatex_student_screens/features/calendar/calendar_screen.dart';
 import 'package:flutter_innatex_student_screens/features/project_approval/project_approval_screen.dart';
+import '../../data/globals.dart';
+import '../../widgets/search_bar.dart';
 
 class MyDashBoardScreen extends StatefulWidget {
   const MyDashBoardScreen({super.key});
@@ -13,37 +18,77 @@ class MyDashBoardScreen extends StatefulWidget {
 class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            // header background
-            Container(
-              color: Colors.orange,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: Row(children: [buildSearchBar(), buildSearchButton()]),
-            ),
+    final userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
 
-            // 🔽 Scrollable content below the fixed header
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(top: 10),
-                children: [
-                  buildMyCardCertifyProjects(context),
-                  const SizedBox(height: 10),
-                  buildMyCardCalendar(context),
-                  const SizedBox(height: 10),
-                  buildMyCard1(),
-                  const SizedBox(height: 10),
-                  buildMyCard2(),
-                ],
+    return Container(
+      color: theme.primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              // header background
+              Container(
+                color: theme.primaryColor,
+                child: Row(
+                  children: [buildSearchBar('Search'), buildSearchButton()],
+                ),
               ),
-            ),
-          ],
+
+              // 🔽 Scrollable content below the fixed header
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.only(top: 10),
+                  children: [
+                    buildMyUserTypeButtons(context),
+                    const SizedBox(height: 10),
+                    if (userProvider.type == UserType.coach ||
+                        userProvider.type == UserType.professor) ...[
+                      buildMyCardCertifyProjects(context),
+                      const SizedBox(height: 10),
+                      if (userProvider.type == UserType.coach) ...[
+                        buildMyCardCalendar(context),
+                        const SizedBox(height: 10),
+                      ],
+                    ],
+                    buildMyCard1(context),
+                    const SizedBox(height: 10),
+                    buildMyCard2(context),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+Widget buildMyUserTypeButtons(BuildContext context) {
+  final userProvider = Provider.of<UserProvider>(context);
+
+  return Padding(
+    padding: const EdgeInsets.only(right: 8, left: 8),
+    child: Wrap(
+      spacing: 8,
+      children:
+          UserType.values.map((userType) {
+            return ElevatedButton(
+              onPressed: () {
+                userProvider.setUserType(userType);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    userType == userProvider.type
+                        ? Colors.blue
+                        : Colors.white70,
+              ),
+              child: Text(userType.name),
+            );
+          }).toList(),
+    ),
+  );
 }
 
 // COACHES ONLY
@@ -53,7 +98,7 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
     child: Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: Colors.orange, width: 2),
+        side: BorderSide(color: Color.fromARGB(255, 244, 163, 97), width: 2),
       ),
       elevation: 4,
       child: Padding(
@@ -70,8 +115,8 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Certify Projects(C)', //coaches only
-                  style: GoogleFonts.bitter(
+                  'Certify Projects', //coaches only
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -99,7 +144,7 @@ Widget buildMyCardCertifyProjects(BuildContext context) {
             const Divider(color: Colors.grey),
             Text(
               'Certify student projects so that they are recognized by employers',
-              style: GoogleFonts.bitter(fontSize: 14),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),
@@ -132,8 +177,8 @@ Widget buildMyCardCalendar(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Calendar (Coaches)',
-                  style: GoogleFonts.bitter(
+                  'Calendar',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -161,7 +206,7 @@ Widget buildMyCardCalendar(BuildContext context) {
             const Divider(color: Colors.grey),
             Text(
               'Certify student projects so that they are recognized by employers',
-              style: GoogleFonts.bitter(fontSize: 14),
+              style: Theme.of(context).textTheme.displayMedium,
             ),
           ],
         ),
@@ -170,7 +215,7 @@ Widget buildMyCardCalendar(BuildContext context) {
   );
 }
 
-Widget buildMyCard1() {
+Widget buildMyCard1(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Card(
@@ -180,16 +225,18 @@ Widget buildMyCard1() {
       ),
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15, top: 12, bottom: 12),
+        padding: const EdgeInsets.only(
+          left: 15,
+          right: 10,
+          top: 12,
+          bottom: 12,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'View Portfolio',
-              style: GoogleFonts.bitter(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const Divider(color: Colors.grey),
             ...[
@@ -199,7 +246,8 @@ Widget buildMyCard1() {
               '- Certifications & Degrees',
               '- Personal Stories',
             ].map(
-              (text) => Text(text, style: GoogleFonts.bitter(fontSize: 14)),
+              (text) =>
+                  Text(text, style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),
@@ -208,7 +256,7 @@ Widget buildMyCard1() {
   );
 }
 
-Widget buildMyCard2() {
+Widget buildMyCard2(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Card(
@@ -218,77 +266,26 @@ Widget buildMyCard2() {
       ),
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15, top: 12, bottom: 12),
+        padding: const EdgeInsets.only(
+          left: 15,
+          right: 10,
+          top: 12,
+          bottom: 12,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Upcoming Meetings',
-              style: GoogleFonts.bitter(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const Divider(color: Colors.grey),
             ...['- Coaching Sessions', '- Job Interviews', '- Seminars'].map(
-              (text) => Text(text, style: GoogleFonts.bitter(fontSize: 14)),
+              (text) =>
+                  Text(text, style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),
-      ),
-    ),
-  );
-}
-
-Widget buildSearchButton() {
-  return Padding(
-    padding: const EdgeInsets.all(12),
-    child: IconButton.filled(
-      onPressed: () {},
-      icon: const Icon(Icons.search),
-      style: const ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll<Color>(
-          Color.fromARGB(255, 255, 255, 255),
-        ),
-        foregroundColor: WidgetStatePropertyAll<Color>(
-          Color.fromARGB(255, 0, 0, 0),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget buildSearchBar() {
-  return Flexible(
-    child: Padding(
-      padding: const EdgeInsets.only(left: 12),
-      child: SearchAnchor(
-        builder: (BuildContext context, SearchController controller) {
-          return SearchBar(
-            hintText: 'Search',
-            controller: controller,
-            padding: const WidgetStatePropertyAll<EdgeInsets>(
-              EdgeInsets.symmetric(horizontal: 16.0),
-            ),
-            onChanged: (_) {
-              controller.openView();
-            },
-          );
-        },
-        suggestionsBuilder: (
-          BuildContext context,
-          SearchController controller,
-        ) {
-          return List<ListTile>.generate(5, (int index) {
-            final String item = 'item $index';
-            return ListTile(
-              title: Text(item, style: GoogleFonts.bitter()),
-              onTap: () {
-                controller.closeView(item);
-              },
-            );
-          });
-        },
       ),
     ),
   );

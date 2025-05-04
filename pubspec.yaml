@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^6.1.0
+  provider: ^6.1.4
 
   cupertino_icons: ^1.0.8
 
@@ -56,7 +57,7 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   # fonts:
-  #   - family: Schyler
+  #   - family: 
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf

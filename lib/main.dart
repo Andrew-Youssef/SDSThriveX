@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'core/theme.dart';
+
+//provider stuff
+import 'package:provider/provider.dart';
+import 'providers/user_provider.dart';
 
 //import screens
 import 'features/dashboard/dashboard_screen.dart';
@@ -8,7 +11,12 @@ import 'features/profile/profile_screen.dart';
 import 'features/login/login.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => UserProvider())],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,10 +25,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final ThemeData appTheme = userProvider.getTheme();
+
     return MaterialApp(
+      // debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: lightTheme,
-      // darkTheme: darkTheme,
+      theme: appTheme,
       themeMode: ThemeMode.system,
       home: const LoginScreen(title: 'Test'),
     );
@@ -41,8 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
     Widget page;
     switch (currentPageIndex) {
       case 0:
@@ -59,47 +68,118 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-      body: Expanded(child: page),
+      body: page,
 
-      bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(
-          backgroundColor: Colors.orange,
-          indicatorColor: Colors.orange,
-          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((Set<WidgetState> states) {
-            return const IconThemeData(color: Colors.white, size: 30);
-          }),
-          labelTextStyle: WidgetStateProperty.all(
-            const TextStyle(color: Colors.white),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        selectedIndex: currentPageIndex,
+        height: 55,
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.notifications_none),
+            selectedIcon: Icon(Icons.notifications),
+            label: 'Notifications',
           ),
-        ),
-        child: NavigationBar(
-          onDestinationSelected: (int index) {
-            setState(() {
-              currentPageIndex = index;
-            });
-          },
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-          selectedIndex: currentPageIndex,
-          height: 60,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.notifications_none),
-              selectedIcon: Icon(Icons.notifications),
-              label: 'Notifications',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outlined),
-              selectedIcon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-        ),
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outlined),
+            selectedIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
 }
+
+// //CHAT GPT CODE TO KEEP THE BOTTOM APP BAR THROUGH THE WHOLE APP (NOT NEEDED)
+
+// class MyHomePage extends StatefulWidget {
+//   const MyHomePage({super.key, required this.title});
+//   final String title;
+//   @override
+//   State<MyHomePage> createState() => _MyHomePageState();
+// }
+
+// class _MyHomePageState extends State<MyHomePage> {
+//   int currentPageIndex = 1;
+
+//   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+//     GlobalKey<NavigatorState>(),
+//     GlobalKey<NavigatorState>(),
+//     GlobalKey<NavigatorState>(),
+//   ];
+
+//   void _onTap(int index) {
+//     if (index == currentPageIndex) {
+//       _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
+//     } else {
+//       setState(() => currentPageIndex = index);
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Stack(
+//         children: List.generate(3, (index) {
+//           return Offstage(
+//             offstage: currentPageIndex != index,
+//             child: Navigator(
+//               key: _navigatorKeys[index],
+//               onGenerateRoute: (settings) {
+//                 Widget page;
+//                 switch (index) {
+//                   case 0:
+//                     page = const MyNotificationScreen();
+//                     break;
+//                   case 1:
+//                     page = const MyDashBoardScreen();
+//                     break;
+//                   case 2:
+//                     page = const MyProfileScreen();
+//                     break;
+//                   default:
+//                     throw Exception("Invalid index");
+//                 }
+//                 return MaterialPageRoute(builder: (_) => page);
+//               },
+//             ),
+//           );
+//         }),
+//       ),
+//       bottomNavigationBar: NavigationBar(
+//         selectedIndex: currentPageIndex,
+//         onDestinationSelected: _onTap,
+//         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+//         height: 60,
+//         destinations: const [
+//           NavigationDestination(
+//             icon: Icon(Icons.notifications_none),
+//             selectedIcon: Icon(Icons.notifications),
+//             label: 'Notifications',
+//           ),
+//           NavigationDestination(
+//             icon: Icon(Icons.home_outlined),
+//             selectedIcon: Icon(Icons.home),
+//             label: 'Home',
+//           ),
+//           NavigationDestination(
+//             icon: Icon(Icons.person_outlined),
+//             selectedIcon: Icon(Icons.person),
+//             label: 'Profile',
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

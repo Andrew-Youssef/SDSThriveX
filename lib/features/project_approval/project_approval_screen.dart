@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
+import 'package:provider/provider.dart';
+import '../../widgets/search_bar.dart';
 
 class MyPendingProjectScreen extends StatefulWidget {
   const MyPendingProjectScreen({super.key});
@@ -50,88 +53,49 @@ class _MyPendingProjectPageState extends State<MyPendingProjectScreen> {
     }
   }
 
-  @override //like CSS
+  @override
   Widget build(BuildContext context) {
-    final projectIndex = (currentPage - 1).clamp(
-      0,
-      totalPages - 1,
-    ); //ensure value stays within range or red
+    final userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = userProvider.getTheme();
+    final projectIndex = (currentPage - 1).clamp(0, totalPages - 1);
     final project = projectData[projectIndex];
 
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.orange,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Container(
+      color: theme.primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
             children: [
-              IconButton(
-                icon: Icon(Icons.notifications, color: Colors.white),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.home, color: Colors.white),
-                onPressed: () {Navigator.pop(context);},
-              ),
-              IconButton(
-                icon: Icon(Icons.person, color: Colors.white),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: SafeArea(
-  child: Column(
-    children: [
-      // FULL-WIDTH ORANGE HEADER (NO CORNERS)
-      Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-        color: Colors.orange, // <- solid edge-to-edge background
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            Column(
-              children: [
-                Row(
+              // header background
+              Container(
+                color: theme.primaryColor,
+                child: Row(
                   children: [
                     IconButton(
-                      icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-                      onPressed: previousPage,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.arrow_forward_ios, color: Colors.black),
-                      onPressed: nextPage,
-                    ),
+                    buildSearchBar('Search'),
+                    buildSearchButton(),
                   ],
                 ),
-                Text(
-                  "$currentPage/$totalPages",
-                  style: TextStyle(color: Colors.black),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+              ),
 
+              buildSwitchProjectButtons(),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
+
               Text(
                 project["title"]!,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(project["subtitle"]!),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 height: 200,
                 width: 200,
@@ -140,31 +104,157 @@ class _MyPendingProjectPageState extends State<MyPendingProjectScreen> {
                 ),
                 child: Image.network(project["image"]!, fit: BoxFit.cover),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Column(children: const [Icon(Icons.cancel), Text("Reject")]),
+                  const SizedBox(width: 40),
                   Column(
-                    children: [
-                      IconButton(icon: Icon(Icons.cancel), onPressed: () {}),
-                      Text("Reject"),
-                    ],
-                  ),
-                  SizedBox(width: 40),
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.check_circle),
-                        onPressed: () {},
-                      ),
-                      Text("Certify"),
-                    ],
+                    children: const [Icon(Icons.check_circle), Text("Certify")],
                   ),
                 ],
               ),
             ],
           ),
         ),
-      );
+      ),
+    );
+  }
+
+  //   Widget buildSwitchProjectButtons() {
+  //     return Column(
+  //       children: [
+  //         Row(
+  //           children: [
+  //             IconButton(
+  //               icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+  //               onPressed: previousPage,
+  //             ),
+  //             IconButton(
+  //               icon: Icon(Icons.arrow_forward_ios, color: Colors.black),
+  //               onPressed: nextPage,
+  //             ),
+  //           ],
+  //         ),
+  //         Text("$currentPage/$totalPages", style: TextStyle(color: Colors.black)),
+  //       ],
+  //     );
+  //   }
+  // }
+  Widget buildSwitchProjectButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: previousPage,
+        ),
+        Text(
+          "$currentPage/$totalPages",
+          style: const TextStyle(color: Colors.black, fontSize: 16),
+        ),
+        IconButton(
+          icon: const Icon(Icons.arrow_forward_ios, color: Colors.black),
+          onPressed: nextPage,
+        ),
+      ],
+    );
   }
 }
+
+//     return Scaffold(
+//       backgroundColor: Colors.grey[200],
+//       body: SafeArea(
+//         child: Column(
+//           children: [
+//             buildSearchBar('Enter a project'),
+//             buildSearchButton(),
+//             // FULL-WIDTH ORANGE HEADER (NO CORNERS)
+
+//             // Container(
+//             //   width: double.infinity,
+//             //   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+//             //   color: Colors.orange, // <- solid edge-to-edge background
+//             //   child: Row(
+//             //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             //     children: [
+//             //       IconButton(
+//             //         icon: Icon(Icons.arrow_back, color: Colors.black),
+//             //         onPressed: () {
+//             //           Navigator.pop(context);
+//             //         },
+//             //       ),
+//             //       Column(
+//             //         children: [
+//             //           Row(
+//             //             children: [
+//             //               IconButton(
+//             //                 icon: Icon(
+//             //                   Icons.arrow_back_ios,
+//             //                   color: Colors.black,
+//             //                 ),
+//             //                 onPressed: previousPage,
+//             //               ),
+//             //               IconButton(
+//             //                 icon: Icon(
+//             //                   Icons.arrow_forward_ios,
+//             //                   color: Colors.black,
+//             //                 ),
+//             //                 onPressed: nextPage,
+//             //               ),
+//             //             ],
+//             //           ),
+//             //           Text(
+//             //             "$currentPage/$totalPages",
+//             //             style: TextStyle(color: Colors.black),
+//             //           ),
+//             //         ],
+//             //       ),
+//             //     ],
+//             //   ),
+//             // ),
+//             SizedBox(height: 20),
+//             Text(
+//               project["title"]!,
+//               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+//             ),
+//             Text(project["subtitle"]!),
+//             SizedBox(height: 20),
+//             Container(
+//               height: 200,
+//               width: 200,
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.circular(20),
+//               ),
+//               child: Image.network(project["image"]!, fit: BoxFit.cover),
+//             ),
+//             SizedBox(height: 20),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 Column(
+//                   children: [
+//                     IconButton(icon: Icon(Icons.cancel), onPressed: () {}),
+//                     Text("Reject"),
+//                   ],
+//                 ),
+//                 SizedBox(width: 40),
+//                 Column(
+//                   children: [
+//                     IconButton(
+//                       icon: Icon(Icons.check_circle),
+//                       onPressed: () {},
+//                     ),
+//                     Text("Certify"),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
