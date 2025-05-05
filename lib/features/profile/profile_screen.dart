@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:screens/providers/user_provider.dart';
@@ -18,6 +20,8 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen> {
   final double coverHeight = 140;
   final double profileHeight = 130;
+
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
 
   ProjectModel? selectedProject;
   WorkExperienceModel? selectedWorkExperience;
@@ -243,75 +247,121 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   }
 
   Widget showExistingProjects(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<ProjectModel> projects = userProvider.projects;
 
-    if (projects.isEmpty) {
-      return Text(
-        'Place holder text for Projects',
-        style: theme.textTheme.displayMedium,
-      );
-    } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in projects) ...[
-              GestureDetector(
-                onTap: () {
-                  if (selectedProject == p) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyEditProjectScreen(project: p),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedProject = p;
-                  });
-                },
-                onLongPress: () {
+    return StreamBuilder<QuerySnapshot>(
+      stream:
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .collection('projects')
+              .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('No projects found.', style: theme.textTheme.displayMedium),
+              SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyEditProjectScreen(project: p),
+                      builder:
+                          (context) => MyEditProjectScreen(
+                            project: ProjectModel(
+                              id: '',
+                              name: '',
+                              dateBegun: DateTime.now(),
+                              dateEnded: null,
+                              description: '',
+                              imageUrl: '',
+                            ),
+                          ),
                     ),
                   );
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedProject ? 5 : 3,
+                icon: Icon(Icons.add),
+                label: Text('Add Your First Project'),
+              ),
+            ],
+          );
+        } else {
+          final projects =
+              snapshot.data!.docs
+                  .map(
+                    (doc) => ProjectModel.convertMap(
+                      doc.data() as Map<String, dynamic>,
+                      doc.id,
+                    ),
+                  )
+                  .toList();
+
+          return SizedBox(
+            height: 200,
+            child: ListView(
+              padding: EdgeInsets.all(8.0),
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              children: [
+                for (final p in projects) ...[
+                  GestureDetector(
+                    onTap: () {
+                      if (selectedProject == p) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => MyEditProjectScreen(project: p),
+                          ),
+                        );
+                      }
+                      setState(() {
+                        selectedProject = p;
+                      });
+                    },
+                    onLongPress: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyEditProjectScreen(project: p),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: theme.primaryColor,
+                          width: p == selectedProject ? 5 : 3,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(p.name),
+                          Text(p.dateBegun.toString().split(' ')[0]),
+                          Text(
+                            p.dateEnded != null
+                                ? p.dateEnded!.toString().split(' ')[0]
+                                : 'Unknown',
+                          ),
+                          Text(p.description),
+                          Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
+                        ],
+                      ),
                     ),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(p.name),
-                      Text(p.dateBegun.toString().split(' ')[0]),
-                      Text(
-                        p.dateEnded != null
-                            ? p.dateEnded!.toString().split(' ')[0]
-                            : 'Unknown',
-                      ),
-                      Text(p.description),
-                      Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
-      );
-    }
+                  SizedBox(width: 20),
+                ],
+              ],
+            ),
+          );
+        }
+      },
+    );
   }
 
   Widget showExistingWorkExperiences(BuildContext context) {

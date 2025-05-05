@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:screens/core/models/project_model.dart';
 import 'package:screens/features/profile_edit/edit_profile_attributes/edit_individual/edit_project.dart';
@@ -13,12 +15,14 @@ class MyEditProjectsScreen extends StatefulWidget {
 }
 
 class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
-  ProjectModel? selectedProject;
+  String? selectedProjectId;
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _imageController;
   late final TextEditingController _startDate;
   late final TextEditingController _endDate;
+
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
@@ -44,137 +48,201 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<ProjectModel> projects = userProvider.projects;
 
-    return Container(
-      color: theme.primaryColor,
-      child: SafeArea(
-        child: Scaffold(
-          appBar: myAppBar('Edit Projects', context),
-          body: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(child: SizedBox()),
-                  IconButton(
-                    onPressed:
-                        selectedProject == null
-                            ? null
-                            : () {
-                              userProvider.removeProject(selectedProject!);
-                              selectedProject = null;
-                            },
-                    icon: Icon(Icons.delete),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      if (_nameController.text.isNotEmpty &&
-                          _startDate.text.isNotEmpty &&
-                          _descriptionController.text.isNotEmpty) {
-                        ProjectModel newProject = ProjectModel(
-                          name: _nameController.text,
-                          dateBegun: DateTime.tryParse(_startDate.text)!,
-                          dateEnded:
-                              _endDate.text.isNotEmpty
-                                  ? DateTime.tryParse(_startDate.text)
-                                  : null,
-                          description: _descriptionController.text,
-                          imageUrl: _imageController.text,
-                        );
-                        userProvider.addProject(newProject);
-                      }
-                    },
-                    icon: Icon(Icons.add_box),
-                  ),
-                ],
-              ),
-              // Expanded(
-              //   child: ListView(
-              //     children: [
-              //       if (projects.isEmpty) ...[
-              //         Center(child: Text('Add a new project!')),
-              //         SizedBox(height: 20),
-              //       ] else ...[
-              //         showExistingProjects(context),
-              //       ],
-              //       buildInputFields(context),
-              //     ],
-              //   ),
-              // ),
-              if (projects.isEmpty) ...[
-                Center(child: Text('Add a new project!')),
-                SizedBox(height: 20),
-              ] else ...[
-                showExistingProjects(context),
-              ],
-              buildInputFields(context),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget showExistingProjects(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<ProjectModel> projects = userProvider.projects;
-
-    return SizedBox(
-      height: 200,
-      child: ListView(
-        padding: EdgeInsets.all(8.0),
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        children: [
-          for (final p in projects) ...[
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedProject = p;
-                });
-                // print('yoooooo');
-              },
-              onLongPress: () {
-                setState(() {
-                  selectedProject = p;
-                });
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            MyEditProjectScreen(project: selectedProject!),
-                  ),
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: theme.primaryColor,
-                    width: p == selectedProject ? 5 : 3,
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(p.name),
-                    Text(p.dateBegun.toString().split(' ')[0]),
-                    Text(
-                      p.dateEnded != null
-                          ? p.dateEnded!.toString().split(' ')[0]
-                          : 'Unknown',
+    return StreamBuilder<QuerySnapshot>(
+      stream:
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .collection('projects')
+              .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Text(
+            'No projects found.',
+            style: theme.textTheme.displayMedium,
+          );
+        } else {
+          final projects =
+              snapshot.data!.docs
+                  .map(
+                    (doc) => ProjectModel.convertMap(
+                      doc.data() as Map<String, dynamic>,
+                      doc.id,
                     ),
-                    Text(p.description),
-                    Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
+                  )
+                  .toList();
+
+          return Container(
+            color: theme.primaryColor,
+            child: SafeArea(
+              child: Scaffold(
+                appBar: myAppBar('Edit Projects', context),
+                body: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: SizedBox()),
+                        IconButton(
+                          onPressed:
+                              selectedProjectId == null
+                                  ? null
+                                  : () {
+                                    userProvider.removeProject(
+                                      selectedProjectId!,
+                                    );
+
+                                    setState(() {
+                                      selectedProjectId = null;
+                                    });
+                                  },
+                          icon: Icon(Icons.delete),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (_nameController.text.isNotEmpty &&
+                                _startDate.text.isNotEmpty &&
+                                _descriptionController.text.isNotEmpty) {
+                              ProjectModel newProject = ProjectModel(
+                                id: '',
+                                name: _nameController.text,
+                                dateBegun: DateTime.tryParse(_startDate.text)!,
+                                dateEnded:
+                                    _endDate.text.isNotEmpty
+                                        ? DateTime.tryParse(_startDate.text)
+                                        : null,
+                                description: _descriptionController.text,
+                                imageUrl: _imageController.text,
+                              );
+                              userProvider.addProject(newProject);
+                            }
+                          },
+                          icon: Icon(Icons.add_box),
+                        ),
+                      ],
+                    ),
+                    // Expanded(
+                    //   child: ListView(
+                    //     children: [
+                    //       if (projects.isEmpty) ...[
+                    //         Center(child: Text('Add a new project!')),
+                    //         SizedBox(height: 20),
+                    //       ] else ...[
+                    //         showExistingProjects(context),
+                    //       ],
+                    //       buildInputFields(context),
+                    //     ],
+                    //   ),
+                    // ),
+                    if (projects.isEmpty) ...[
+                      Center(child: Text('Add a new project!')),
+                      SizedBox(height: 20),
+                    ] else ...[
+                      showExistingProjects(context),
+                    ],
+                    buildInputFields(context),
                   ],
                 ),
               ),
             ),
-            SizedBox(width: 20),
-          ],
-        ],
-      ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget showExistingProjects(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
+    return StreamBuilder<QuerySnapshot>(
+      stream:
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .collection('projects')
+              .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Text(
+            'No projects found.',
+            style: theme.textTheme.displayMedium,
+          );
+        } else {
+          final projects =
+              snapshot.data!.docs
+                  .map(
+                    (doc) => ProjectModel.convertMap(
+                      doc.data() as Map<String, dynamic>,
+                      doc.id,
+                    ),
+                  )
+                  .toList();
+          return SizedBox(
+            height: 200,
+            child: ListView(
+              padding: EdgeInsets.all(8.0),
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              children: [
+                for (final project in projects) ...[
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedProjectId = project.id;
+                      });
+                      // print('yoooooo');
+                    },
+                    onLongPress: () {
+                      setState(() {
+                        selectedProjectId = project.id;
+                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) =>
+                                  MyEditProjectScreen(project: project),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: theme.primaryColor,
+                          width: project.id == selectedProjectId ? 5 : 3,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(project.name),
+                          Text(project.dateBegun.toString().split(' ')[0]),
+                          Text(
+                            project.dateEnded != null
+                                ? project.dateEnded!.toString().split(' ')[0]
+                                : 'Unknown',
+                          ),
+                          Text(project.description),
+                          Text(
+                            project.imageUrl != null
+                                ? project.imageUrl!
+                                : 'Unknown',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                ],
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 

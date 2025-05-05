@@ -64,7 +64,7 @@ class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
                   Expanded(child: SizedBox()),
                   IconButton(
                     onPressed: () {
-                      userProvider.removeProject(widget.project);
+                      userProvider.removeProject(widget.project.id);
                       Navigator.pop(context);
                     },
                     icon: Icon(Icons.delete),

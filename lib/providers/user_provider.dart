@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:screens/core/theme.dart';
 import '../data/globals.dart';
@@ -10,7 +12,6 @@ class UserProvider extends ChangeNotifier {
   AIModel? _aiModel;
   ProfileModel? _profile; //WE NEED THIS FIELD UPDATES WHEN USER IS LOGGED IN
 
-  final List<ProjectModel> _projects = [];
   final List<WorkExperienceModel> _workExperiences = [];
   final List<CertDegreesModel> _certDegrees = [];
   final List<PersonalStoriesModel> _personalStories = [];
@@ -20,7 +21,6 @@ class UserProvider extends ChangeNotifier {
   AIModel? get aiModel => _aiModel;
   ProfileModel? get profile => _profile;
 
-  List<ProjectModel> get projects => _projects;
   List<WorkExperienceModel> get workExperiences => _workExperiences;
   List<CertDegreesModel> get certDegrees => _certDegrees;
   List<PersonalStoriesModel> get personalStories => _personalStories;
@@ -79,16 +79,43 @@ class UserProvider extends ChangeNotifier {
   }
 
   // Projects
-  void addProject(ProjectModel project) {
-    project.addListener(notifyListeners);
-    _projects.add(project);
-    notifyListeners();
+  Future<void> addProject(ProjectModel project) async {
+    try {
+      project.addListener(notifyListeners);
+      final currentDoc =
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser?.uid)
+              .collection('projects')
+              .doc();
+      project.id = currentDoc.id;
+
+      await currentDoc.set({
+        "Name": project.name,
+        "Description": project.description,
+        "DateStart": project.dateBegun,
+        "DateEnd": project.dateEnded,
+        "Image": project.imageUrl,
+      });
+
+      notifyListeners();
+    } catch (e) {
+      return;
+    }
   }
 
-  void removeProject(ProjectModel project) {
-    project.removeListener(notifyListeners);
-    _projects.remove(project);
-    notifyListeners();
+  Future<void> removeProject(String projectId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection("projects")
+          .doc(projectId)
+          .delete();
+      notifyListeners();
+    } catch (e) {
+      return;
+    }
   }
 
   // Work Experience
@@ -155,6 +182,4 @@ class UserProvider extends ChangeNotifier {
     _skillsStrengths.remove(skill);
     notifyListeners();
   }
-
-  //funtcions to load and upload to database probably... have to do for all
 }

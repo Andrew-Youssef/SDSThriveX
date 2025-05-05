@@ -22,17 +22,15 @@ class AuthService {
         password: password,
       );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (BuildContext context) => const HomePage()),
-      );
-
-      FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection("users")
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .set({'name': name, 'email': email, 'userType': userType});
 
-      print("Wrote user to Firestore");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => const HomePage()),
+      );
       return null;
     } on FirebaseAuthException catch (e) {
       return e.toString();

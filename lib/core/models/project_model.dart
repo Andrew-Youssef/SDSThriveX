@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ProjectModel extends ChangeNotifier {
+  String id;
   String name;
   DateTime dateBegun;
   DateTime? dateEnded; // null if ongoing
@@ -8,6 +10,7 @@ class ProjectModel extends ChangeNotifier {
   String? imageUrl; // optional
 
   ProjectModel({
+    required this.id,
     required this.name,
     required this.dateBegun,
     this.dateEnded,
@@ -39,5 +42,19 @@ class ProjectModel extends ChangeNotifier {
   void updateImageUrl(String? newUrl) {
     imageUrl = newUrl;
     notifyListeners();
+  }
+
+  factory ProjectModel.convertMap(Map<String, dynamic> map, String id) {
+    return ProjectModel(
+      id: id,
+      name: map["name"],
+      description: map["description"],
+      dateBegun: (map['DateEnd'] as Timestamp).toDate(),
+      dateEnded:
+          map['DateEnd'] != null
+              ? (map['DateEnd'] as Timestamp).toDate()
+              : null,
+      imageUrl: map["Image"] ?? "",
+    );
   }
 }
