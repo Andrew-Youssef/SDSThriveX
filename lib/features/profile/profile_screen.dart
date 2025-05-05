@@ -260,34 +260,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         if (snapshot.hasError) {
           return Text('${snapshot.error}');
         } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('No projects found.', style: theme.textTheme.displayMedium),
-              SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => MyEditProjectScreen(
-                            project: ProjectModel(
-                              id: '',
-                              name: '',
-                              dateBegun: DateTime.now(),
-                              dateEnded: null,
-                              description: '',
-                              imageUrl: '',
-                            ),
-                          ),
-                    ),
-                  );
-                },
-                icon: Icon(Icons.add),
-                label: Text('Add Your First Project'),
-              ),
-            ],
+          return Text(
+            'Place holder text for Projects',
+            style: theme.textTheme.displayMedium,
           );
         } else {
           final projects =
