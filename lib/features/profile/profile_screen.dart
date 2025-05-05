@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:screens/providers/user_provider.dart';
-import '../../data/data.dart';
+import '../../data/globals.dart';
+import '../../core/models/export_models.dart';
+import 'package:screens/features/profile_edit/profile_edit_screen.dart';
+import 'package:screens/features/profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
+import 'package:screens/features/profile_edit/edit_profile_attributes/edit_individual/export_edit_individual.dart';
+import 'package:screens/widgets/header.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -11,29 +16,55 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  final double coverHeight = 280;
-  final double profileHeight = 144;
+  final double coverHeight = 140;
+  final double profileHeight = 130;
 
-  void toggleProfileAttributes(String key) {
+  ProjectModel? selectedProject;
+  WorkExperienceModel? selectedWorkExperience;
+  CertDegreesModel? selectedCertDegree;
+  SkillsStrengthsModel? selectedSkillStrength;
+  PersonalStoriesModel? selectedPersonalStory;
+  VolunteeringWorkModel? selectedVolunteeringWork;
+
+  Map<ProfileAttribute, WidgetBuilder> attributeScreens = {
+    ProfileAttribute.profile:
+        (context) => const MyEditProfileAttributesScreen(),
+    ProfileAttribute.projects: (context) => const MyEditProjectsScreen(),
+    ProfileAttribute.workExperience:
+        (context) => const MyEditWorkExperiencesScreen(),
+    ProfileAttribute.certDegrees: (context) => const MyEditCertDegreesScreen(),
+    ProfileAttribute.skillsStrengths:
+        (context) => const MyEditSkillsStrengthsScreen(),
+    ProfileAttribute.personalStories:
+        (context) => const MyEditPersonalStoriesScreen(),
+    ProfileAttribute.volunteeringWork:
+        (context) => const MyEditVolunteeringWorksScreen(),
+  };
+
+  void toggleProfileAttributes(ProfileAttribute key) {
     setState(() {
       if (profileAttributes.containsKey(key)) {
         profileAttributes[key] = !profileAttributes[key]!;
       }
-      print(profileAttributes[key]);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    final theme = userProvider.getTheme();
+    final theme = Theme.of(context);
+
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
         child: Scaffold(
+          appBar: myAppBar('Profile', context),
           body: ListView(
             padding: EdgeInsets.zero,
-            children: [buildTop(), buildContent(), buildAttributeData()],
+            children: [
+              buildTop(),
+              buildContent(context),
+              buildAttributeData(context),
+            ],
           ),
         ),
       ),
@@ -43,15 +74,41 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   //projects
   //certificates
   //
-  Widget buildContent() {
+  Widget buildContent(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Column(
       children: [
-        Column(
-          children: [
-            Text('John Smith', style: TextStyle(fontSize: 28)),
-            Text('Student at UTS', style: TextStyle(fontSize: 15)),
-          ],
+        Container(
+          padding: EdgeInsets.all(8.0),
+          width: double.infinity,
+          child: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'John Smith',
+                    style: theme.textTheme.titleMedium!.copyWith(fontSize: 28),
+                  ),
+                  Text('Student at UTS', style: theme.textTheme.displayMedium),
+                ],
+              ),
+              Expanded(child: SizedBox()),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyEditProfileScreen(),
+                    ),
+                  );
+                },
+                icon: Icon(Icons.edit),
+              ),
+            ],
+          ),
         ),
+        Divider(thickness: 3),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -61,13 +118,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               Text(
                 'About',
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium,
               ),
               Text(
                 'Place holder text for About',
-                // softWrap: true,
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 15),
+                style: theme.textTheme.displayMedium,
               ),
             ],
           ),
@@ -89,42 +145,66 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 backgroundColor:
                     profileAttributes[key]! ? Colors.blue : Colors.white70,
               ),
-              child: Text(key),
+              child: Text(profileAttributeLabels[key]!),
             );
           }).toList(),
     );
   }
 
-  Widget buildAttributeData() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            profileAttributes.keys.map((key) {
-              if (profileAttributes[key]!) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      key,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+  Widget buildAttributeData(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children:
+          profileAttributes.keys.map((key) {
+            if (profileAttributes[key]!) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Divider(thickness: 3),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              profileAttributeLabels[key]!,
+                              style: theme.textTheme.titleMedium,
+                            ),
+                            Expanded(child: SizedBox()),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: attributeScreens[key]!,
+                                  ),
+                                );
+                              },
+                              icon: Icon(Icons.edit),
+                            ),
+                          ],
+                        ),
+
+                        //og
+                        // Text(
+                        //   'Place holder text for ${profileAttributeLabels[key]}',
+                        //   style: theme.textTheme.displayMedium,
+                        // ),
+                        getAttributeWidgetData(context)[key]!,
+                        const SizedBox(height: 10),
+                      ],
                     ),
-                    Text(
-                      'Place holder text for $key',
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                );
-              } else {
-                return SizedBox.shrink();
-              }
-            }).toList(),
-      ),
+                  ),
+                ],
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          }).toList(),
     );
   }
 
@@ -153,14 +233,462 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  Container buildCoverImage() {
-    return Container(
-      child: Image.network(
-        'https://media.licdn.com/dms/image/v2/D4D12AQF6mW4EuB-99Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1692951785182?e=2147483647&v=beta&t=9whX4YpHoNOzyq7CIiNwro17k-ajBH6TM3qo2CyH2Pk',
-        width: double.infinity,
-        height: coverHeight,
-        fit: BoxFit.cover,
-      ),
+  Image buildCoverImage() {
+    return Image.network(
+      'https://media.licdn.com/dms/image/v2/D4D12AQF6mW4EuB-99Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1692951785182?e=2147483647&v=beta&t=9whX4YpHoNOzyq7CIiNwro17k-ajBH6TM3qo2CyH2Pk',
+      width: double.infinity,
+      height: coverHeight,
+      fit: BoxFit.cover,
     );
+  }
+
+  Widget showExistingProjects(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<ProjectModel> projects = userProvider.projects;
+
+    if (projects.isEmpty) {
+      return Text(
+        'Place holder text for Projects',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in projects) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedProject == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyEditProjectScreen(project: p),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedProject = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyEditProjectScreen(project: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedProject ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.name),
+                      Text(p.dateBegun.toString().split(' ')[0]),
+                      Text(
+                        p.dateEnded != null
+                            ? p.dateEnded!.toString().split(' ')[0]
+                            : 'Unknown',
+                      ),
+                      Text(p.description),
+                      Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget showExistingWorkExperiences(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<WorkExperienceModel> projects = userProvider.workExperiences;
+
+    if (projects.isEmpty) {
+      return Text(
+        'Place holder text for Work Experience',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in projects) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedWorkExperience == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                MyEditWorkExperienceScreen(workExperience: p),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedWorkExperience = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              MyEditWorkExperienceScreen(workExperience: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedWorkExperience ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.name),
+                      Text(p.dateBegun.toString().split(' ')[0]),
+                      Text(
+                        p.dateEnded != null
+                            ? p.dateEnded!.toString().split(' ')[0]
+                            : 'Unknown',
+                      ),
+                      Text(p.description),
+                      Text(p.role),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget showExistingCertDegrees(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<CertDegreesModel> projects = userProvider.certDegrees;
+
+    if (projects.isEmpty) {
+      return Text(
+        'Place holder text for Certs & Degrees',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in projects) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedCertDegree == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => MyEditCertDegreeScreen(certDegree: p),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedCertDegree = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => MyEditCertDegreeScreen(certDegree: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedCertDegree ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.institutionName),
+                      Text(p.certificateName),
+                      Text(p.dateStarted.toString().split(' ')[0]),
+                      Text(
+                        p.dateEnded != null
+                            ? p.dateEnded!.toString().split(' ')[0]
+                            : 'Unknown',
+                      ),
+                      Text(p.description),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget showExistingSkillsStrengths(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<SkillsStrengthsModel> projects = userProvider.skillsStrengths;
+
+    if (projects.isEmpty) {
+      return Text(
+        'Place holder text for Skills & Strengths',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in projects) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedSkillStrength == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                MyEditSkillStrengthScreen(skillStrength: p),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedSkillStrength = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              MyEditSkillStrengthScreen(skillStrength: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedSkillStrength ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.skill),
+                      Text(p.acquiredAt),
+                      Text(p.description),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget showExistingPersonalStories(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<PersonalStoriesModel> projects = userProvider.personalStories;
+
+    if (projects.isEmpty) {
+      return Text(
+        'Place holder text for Personal Stories',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in projects) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedPersonalStory == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                MyEditPersonalStoryScreen(personalStory: p),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedPersonalStory = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              MyEditPersonalStoryScreen(personalStory: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedPersonalStory ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.title),
+                      Text(p.date.toString().split(' ')[0]),
+                      Text(p.description),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget showExistingVolunteeringWorks(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<VolunteeringWorkModel> projects = userProvider.volunteeringWork;
+
+    if (projects.isEmpty) {
+      return Text(
+        'Place holder text for Volunteering Work',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in projects) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedVolunteeringWork == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => MyEditVolunteeringWorkScreen(
+                              volunteeringWork: p,
+                            ),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedVolunteeringWork = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              MyEditVolunteeringWorkScreen(volunteeringWork: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedVolunteeringWork ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.institutionName),
+                      Text(p.role),
+                      Text(p.dateStarted.toString().split(' ')[0]),
+                      Text(
+                        p.dateEnded != null
+                            ? p.dateEnded!.toString().split(' ')[0]
+                            : 'Unknown',
+                      ),
+                      Text(p.description),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
+
+  Map<ProfileAttribute, Widget> getAttributeWidgetData(context) {
+    return {
+      ProfileAttribute.projects: showExistingProjects(context),
+      ProfileAttribute.workExperience: showExistingWorkExperiences(context),
+      ProfileAttribute.certDegrees: showExistingCertDegrees(context),
+      ProfileAttribute.skillsStrengths: showExistingSkillsStrengths(context),
+      ProfileAttribute.personalStories: showExistingPersonalStories(context),
+      ProfileAttribute.volunteeringWork: showExistingVolunteeringWorks(context),
+    };
   }
 }

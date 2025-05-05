@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/data/data.dart';
+import 'package:screens/data/globals.dart';
 import 'package:screens/providers/user_provider.dart';
 import 'package:screens/features/calendar/calendar_screen.dart';
 import 'package:screens/features/project_approval/project_approval_screen.dart';

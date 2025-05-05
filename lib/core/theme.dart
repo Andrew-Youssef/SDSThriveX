@@ -15,7 +15,7 @@
 //copyWith keeps current styling and just overwrites whatever is in the param list
 
 import 'package:flutter/material.dart';
-import '../../data/data.dart';
+import '../../data/globals.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../providers/user_provider.dart';
