@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/core/models/ai_model.dart';
-import 'package:flutter_innatex_student_screens/core/models/certificates_model.dart';
+import 'package:flutter_innatex_student_screens/core/models/cert_degree_model.dart';
 import 'package:flutter_innatex_student_screens/core/models/personal_stories_model.dart';
 import 'package:flutter_innatex_student_screens/core/models/profile_model.dart';
 import 'package:flutter_innatex_student_screens/core/models/project_model.dart';
@@ -112,13 +112,13 @@ class UserProvider extends ChangeNotifier {
   }
 
   // Certificates
-  void addCertificate(CertDegreesModel cert) {
+  void addCertDegree(CertDegreesModel cert) {
     cert.addListener(notifyListeners);
     _certDegrees.add(cert);
     notifyListeners();
   }
 
-  void removeCertificate(CertDegreesModel cert) {
+  void removeCertDegree(CertDegreesModel cert) {
     cert.removeListener(notifyListeners);
     _certDegrees.remove(cert);
     notifyListeners();

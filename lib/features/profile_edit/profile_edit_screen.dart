@@ -6,7 +6,7 @@ import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profi
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_profile.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_projects.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_skills_strengths.dart';
-import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_volunteering_work.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_volunteering_works.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_workexperiences.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
 
@@ -43,7 +43,7 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
     ProfileAttribute.personalStories:
         (context) => const MyEditPersonalStoriesScreen(),
     ProfileAttribute.volunteeringWork:
-        (context) => const MyEditVolunteeringWorkScreen(),
+        (context) => const MyEditVolunteeringWorksScreen(),
   };
 
   @override

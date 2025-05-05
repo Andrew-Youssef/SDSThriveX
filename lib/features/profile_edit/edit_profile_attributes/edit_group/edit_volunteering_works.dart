@@ -1,42 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_innatex_student_screens/core/models/project_model.dart';
-import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_individual/edit_project.dart';
+import 'package:flutter_innatex_student_screens/core/models/volunteering_work_model.dart';
+import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_individual/edit_volunteering_work.dart';
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
 import 'package:provider/provider.dart';
 
-class MyEditProjectsScreen extends StatefulWidget {
-  const MyEditProjectsScreen({super.key});
+class MyEditVolunteeringWorksScreen extends StatefulWidget {
+  const MyEditVolunteeringWorksScreen({super.key});
 
   @override
-  State<MyEditProjectsScreen> createState() => _MyEditProjectsScreenState();
+  State<MyEditVolunteeringWorksScreen> createState() =>
+      _MyEditVolunteeringWorkScreenState();
 }
 
-class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
-  ProjectModel? selectedProject;
-  late final TextEditingController _nameController;
-  late final TextEditingController _descriptionController;
-  late final TextEditingController _imageController;
+class _MyEditVolunteeringWorkScreenState
+    extends State<MyEditVolunteeringWorksScreen> {
+  VolunteeringWorkModel? selectedVolunteeringWork;
+  late final TextEditingController _institutionNameController;
+  late final TextEditingController _roleController;
   late final TextEditingController _startDate;
   late final TextEditingController _endDate;
+  late final TextEditingController _descriptionController;
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
+    _institutionNameController = TextEditingController();
+    _roleController = TextEditingController();
     _descriptionController = TextEditingController();
-    _imageController = TextEditingController();
     _startDate = TextEditingController();
     _endDate = TextEditingController();
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _descriptionController.dispose();
-    _imageController.dispose();
+    _institutionNameController.dispose();
+    _roleController.dispose();
     _startDate.dispose();
     _endDate.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -44,13 +46,14 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<ProjectModel> projects = userProvider.projects;
+    List<VolunteeringWorkModel> volunteeringWorks =
+        userProvider.volunteeringWork;
 
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
         child: Scaffold(
-          appBar: myAppBar('Edit Projects', context),
+          appBar: myAppBar('Edit Volunteering Work', context),
           body: Column(
             children: [
               Row(
@@ -58,30 +61,33 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                   Expanded(child: SizedBox()),
                   IconButton(
                     onPressed:
-                        selectedProject == null
+                        selectedVolunteeringWork == null
                             ? null
                             : () {
-                              userProvider.removeProject(selectedProject!);
-                              selectedProject = null;
+                              userProvider.removeVolunteeringWork(
+                                selectedVolunteeringWork!,
+                              );
+                              selectedVolunteeringWork = null;
                             },
                     icon: Icon(Icons.delete),
                   ),
                   IconButton(
                     onPressed: () {
-                      if (_nameController.text.isNotEmpty &&
+                      if (_institutionNameController.text.isNotEmpty &&
                           _startDate.text.isNotEmpty &&
                           _descriptionController.text.isNotEmpty) {
-                        ProjectModel newProject = ProjectModel(
-                          name: _nameController.text,
-                          dateBegun: DateTime.tryParse(_startDate.text)!,
-                          dateEnded:
-                              _endDate.text.isNotEmpty
-                                  ? DateTime.tryParse(_startDate.text)
-                                  : null,
-                          description: _descriptionController.text,
-                          imageUrl: _imageController.text,
-                        );
-                        userProvider.addProject(newProject);
+                        VolunteeringWorkModel newVolunteeringWork =
+                            VolunteeringWorkModel(
+                              institutionName: _institutionNameController.text,
+                              dateStarted: DateTime.tryParse(_startDate.text)!,
+                              dateEnded:
+                                  _endDate.text.isNotEmpty
+                                      ? DateTime.tryParse(_startDate.text)
+                                      : null,
+                              description: _descriptionController.text,
+                              role: _roleController.text,
+                            );
+                        userProvider.addVolunteeringWork(newVolunteeringWork);
                       }
                     },
                     icon: Icon(Icons.add_box),
@@ -101,11 +107,11 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
               //     ],
               //   ),
               // ),
-              if (projects.isEmpty) ...[
-                Center(child: Text('Add a new project!')),
+              if (volunteeringWorks.isEmpty) ...[
+                Center(child: Text('Add new volunteering experience!')),
                 SizedBox(height: 20),
               ] else ...[
-                showExistingProjects(context),
+                showExistingVolunteeringWorks(context),
               ],
               buildInputFields(context),
             ],
@@ -115,10 +121,11 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
     );
   }
 
-  Widget showExistingProjects(BuildContext context) {
+  Widget showExistingVolunteeringWorks(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<ProjectModel> projects = userProvider.projects;
+    List<VolunteeringWorkModel> volunteeringWorks =
+        userProvider.volunteeringWork;
 
     return SizedBox(
       height: 200,
@@ -127,24 +134,25 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         children: [
-          for (final p in projects) ...[
+          for (final p in volunteeringWorks) ...[
             GestureDetector(
               onTap: () {
                 setState(() {
-                  selectedProject = p;
+                  selectedVolunteeringWork = p;
                 });
                 // print('yoooooo');
               },
               onLongPress: () {
                 setState(() {
-                  selectedProject = p;
+                  selectedVolunteeringWork = p;
                 });
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder:
-                        (context) =>
-                            MyEditProjectScreen(project: selectedProject!),
+                        (context) => MyEditVolunteeringWorkScreen(
+                          volunteeringWork: selectedVolunteeringWork!,
+                        ),
                   ),
                 );
               },
@@ -152,21 +160,21 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: theme.primaryColor,
-                    width: p == selectedProject ? 5 : 3,
+                    width: p == selectedVolunteeringWork ? 5 : 3,
                   ),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(p.name),
-                    Text(p.dateBegun.toString().split(' ')[0]),
+                    Text(p.institutionName),
+                    Text(p.role),
+                    Text(p.dateStarted.toString().split(' ')[0]),
                     Text(
                       p.dateEnded != null
                           ? p.dateEnded!.toString().split(' ')[0]
                           : 'Unknown',
                     ),
                     Text(p.description),
-                    Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
                   ],
                 ),
               ),
@@ -188,10 +196,20 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              controller: _nameController,
+              controller: _institutionNameController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Name of project',
+                hintText: 'Name of Institution',
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _roleController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Role in Institution',
               ),
             ),
           ),
@@ -241,16 +259,6 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _imageController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Image URL (figure out later)',
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -271,6 +279,15 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
       setState(() {
         controller.text = picked.toString().split(" ")[0];
       });
+    }
+  }
+
+  DateTime? getParsedStartDate() {
+    if (_startDate.text.isEmpty) return null;
+    try {
+      return DateTime.parse(_startDate.text);
+    } catch (e) {
+      return null; // Handle invalid format safely
     }
   }
 }

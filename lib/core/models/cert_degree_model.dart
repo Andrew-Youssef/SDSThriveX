@@ -15,7 +15,7 @@ class CertDegreesModel extends ChangeNotifier {
     required this.description,
   });
 
-  void updateInstitution(String newInstitution) {
+  void updateInstitutionName(String newInstitution) {
     institutionName = newInstitution;
     notifyListeners();
   }

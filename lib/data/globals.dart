@@ -25,3 +25,12 @@ final Map<ProfileAttribute, String> profileAttributeLabels = {
   ProfileAttribute.personalStories: 'Personal Stories',
   ProfileAttribute.volunteeringWork: 'Volunteering Work',
 };
+
+final Map<ProfileAttribute, bool> profileAttributes = {
+  ProfileAttribute.projects: false,
+  ProfileAttribute.workExperience: false,
+  ProfileAttribute.certDegrees: false,
+  ProfileAttribute.skillsStrengths: false,
+  ProfileAttribute.personalStories: false,
+  ProfileAttribute.volunteeringWork: false,
+};

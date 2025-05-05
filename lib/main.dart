@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
       theme: appTheme,
       themeMode: ThemeMode.system,
       home: const MyHomePage(title: 'Test'),
+      // home: const MyProfileScreen(),
     );
   }
 }
