@@ -18,8 +18,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/data/globals.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import '../providers/user_provider.dart';
 
 // Color.fromARGB(255, 255, 255, 255) // first   color white
 // Color.fromARGB(255, 162, 155, 254) // second  color blue/purple

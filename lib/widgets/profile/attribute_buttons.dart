@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_innatex_student_screens/data/globals.dart';
 
 Widget buildAttributeButtons({
   required Map<String, bool> profileAttributes,

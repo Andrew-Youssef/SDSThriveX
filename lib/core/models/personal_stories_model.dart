@@ -27,3 +27,16 @@ class PersonalStoriesModel extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+final List<PersonalStoriesModel> dummyStories = [
+  PersonalStoriesModel(
+    title: 'Overcoming Presentation Anxiety',
+    date: DateTime(2023, 6),
+    description: 'Delivered a confident final pitch after weeks of practice.',
+  ),
+  PersonalStoriesModel(
+    title: 'Solo Travel Learning Experience',
+    date: DateTime(2022, 11),
+    description: 'Gained independence and adaptability while backpacking in NZ.',
+  ),
+];

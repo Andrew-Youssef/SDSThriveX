@@ -8,7 +8,6 @@ import 'providers/user_provider.dart';
 import 'features/dashboard/dashboard_screen.dart';
 import 'features/notifications/notifications_screen.dart';
 import 'features/profile/profile_screen.dart';
-import 'features/login/login.dart';
 
 void main() {
   runApp(
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: appTheme,
       themeMode: ThemeMode.system,
-      home: const LoginScreen(title: 'Test'),
+      home: const MyHomePage(title: 'Test'),
     );
   }
 }

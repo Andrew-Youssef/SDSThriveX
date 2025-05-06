@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_innatex_student_screens/core/models/certificates_model.dart';
+import 'package:flutter_innatex_student_screens/core/models/personal_stories_model.dart';
 import 'package:flutter_innatex_student_screens/core/models/project_model.dart';
+import 'package:flutter_innatex_student_screens/core/models/skills_strengths_model.dart';
+import 'package:flutter_innatex_student_screens/core/models/volunteering_work_model.dart';
 import 'package:flutter_innatex_student_screens/core/models/workexperience_model.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_cert_degrees.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_personal_stories.dart';
@@ -224,7 +228,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           //   style: theme.textTheme.displayMedium,
                           // ),
                           getAttributeWidgetData(context)[key]!,
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 12),
                         ],
                       ),
                     ),
@@ -313,70 +317,345 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
     if (projects.isEmpty) {
       return Text(
-        'Place holder text for Projects',
+        'Add some projects!',
         style: theme.textTheme.displayMedium,
       );
     } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in projects) ...[
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.primaryColor, width: 3),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(p.name),
-                    Text(p.dateBegun.toString().split(' ')[0]),
-                    Text(
-                      p.dateEnded != null
-                          ? p.dateEnded!.toString().split(' ')[0]
-                          : 'Unknown',
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: projects.map((project) {
+          final String dateRange =
+              '${project.dateBegun.toLocal().toString().split(' ')[0]} - '
+              '${project.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    project.name,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 16, 
+                      fontWeight: FontWeight.bold
                     ),
-                    Text(p.description),
-                    Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
-                  ],
-                ),
+                  ),
+                  Text(
+                    dateRange,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 16, 
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(width: 20),
+              const SizedBox(height: 4),
+              Text(
+                project.description,
+                style: theme.textTheme.displayMedium,
+              ),
+              if (project.imageUrl != null && project.imageUrl!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      project.imageUrl!,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 10),
+              Divider(thickness: 1),
             ],
-          ],
-        ),
+          );
+        }).toList(),
       );
     }
   }
+  
+  Widget showExistingWorkExperience(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    List<WorkExperienceModel> workExperiences = dummyWorkExperiences;
+
+    if (workExperiences.isEmpty) {
+      return Text(
+        'Add some work experience!',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: workExperiences.map((exp) {
+          final String dateRange =
+              '${exp.dateBegun.toLocal().toString().split(' ')[0]} - '
+              '${exp.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    exp.name,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    dateRange,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                exp.role,
+                style: theme.textTheme.displayMedium,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                exp.description,
+                style: theme.textTheme.displayMedium,
+              ),
+              const SizedBox(height: 10),
+              Divider(thickness: 1),
+            ],
+          );
+        }).toList(),
+      );
+    }
+  }
+  
+
+  Widget showExistingCertificates(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    List<CertDegreesModel> certificates = dummyCertificates;
+
+    if (certificates.isEmpty) {
+      return Text(
+        'Add some certificates!',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: certificates.map((cert) {
+          final String dateRange =
+              '${cert.dateStarted.toLocal().toString().split(' ')[0]} - '
+              '${cert.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    cert.certificateName,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 16, 
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  Text(
+                    dateRange,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 16, 
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                cert.institutionName,
+                style: theme.textTheme.displayMedium
+              ),
+              const SizedBox(height: 4),
+              Text(
+                cert.description,
+                style: theme.textTheme.displayMedium,
+              ),
+              const SizedBox(height: 10),
+              Divider(thickness: 1),
+            ],
+          );
+        }).toList(),
+      );
+    }
+  }
+
+  Widget showExistingSkillsStrengths(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    List<SkillsStrengthsModel> skills = dummySkillsStrengths;
+
+    if (skills.isEmpty) {
+      return Text(
+        'Add some skills & strengths!',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: skills.map((skillModel) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                skillModel.skill,
+                style: theme.textTheme.bodyMedium!.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                skillModel.acquiredAt,
+                style: theme.textTheme.displayMedium,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                skillModel.description,
+                style: theme.textTheme.displayMedium,
+              ),
+              const SizedBox(height: 10),
+              Divider(thickness: 1),
+            ],
+          );
+        }).toList(),
+      );
+    }
+  }
+  
+  Widget showExistingPersonalStories(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    List<PersonalStoriesModel> stories = dummyStories;
+
+    if (dummyStories.isEmpty) {
+      return Text(
+        'Add a personal story!',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: dummyStories.map((story) {
+          final String formattedDate = 
+              story.date.toLocal().toString().split(' ')[0];
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      story.title,
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    formattedDate,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                story.description,
+                style: theme.textTheme.displayMedium,
+              ),
+              const SizedBox(height: 10),
+              Divider(thickness: 1),
+            ],
+          );
+        }).toList(),
+      );
+    }
+  }
+
+  Widget showExistingVolunteeringWork(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
+    if (dummyVolunteeringWork.isEmpty) {
+      return Text(
+        'Add some volunteering work!',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: dummyVolunteeringWork.map((work) {
+          final String dateRange =
+              '${work.dateStarted.toLocal().toString().split(' ')[0]} - '
+              '${work.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    work.institutionName,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    dateRange,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                work.role,
+                style: theme.textTheme.displayMedium,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                work.description,
+                style: theme.textTheme.displayMedium,
+              ),
+              const SizedBox(height: 10),
+              Divider(thickness: 1),
+            ],
+          );
+        }).toList(),
+      );
+    }
+  }
+
 
   Map<ProfileAttribute, Widget> getAttributeWidgetData(context) {
     ThemeData theme = Theme.of(context);
 
     return {
       ProfileAttribute.projects: showExistingProjects(context),
-      ProfileAttribute.workExperience: Text(
-        'Place holder text for Work Experience',
-        style: theme.textTheme.displayMedium,
-      ),
-      ProfileAttribute.certDegrees: Text(
-        'Place holder text for Certificates',
-        style: theme.textTheme.displayMedium,
-      ),
-      ProfileAttribute.skillsStrengths: Text(
-        'Place holder text for Skills & Strengths',
-        style: theme.textTheme.displayMedium,
-      ),
-      ProfileAttribute.personalStories: Text(
-        'Place holder text for Personal Stories',
-        style: theme.textTheme.displayMedium,
-      ),
-      ProfileAttribute.volunteeringWork: Text(
-        'Place holder text for Volunteering Work',
-        style: theme.textTheme.displayMedium,
-      ),
+      ProfileAttribute.workExperience: showExistingWorkExperience(context),
+      ProfileAttribute.certDegrees: showExistingCertificates(context),
+      ProfileAttribute.skillsStrengths: showExistingSkillsStrengths(context),
+      ProfileAttribute.personalStories: showExistingPersonalStories(context),
+      ProfileAttribute.volunteeringWork: showExistingVolunteeringWork(context),
     };
   }
 }

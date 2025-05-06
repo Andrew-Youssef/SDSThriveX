@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/data/globals.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_group/edit_cert_degrees.dart';
@@ -48,25 +47,25 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+  ThemeData theme = Theme.of(context);
 
-    return Container(
-      color: theme.primaryColor,
-      child: SafeArea(
-        child: Scaffold(
-          appBar: myAppBar('Edit Profile', context),
-          body: ListView(
-            children: [
-              for (ProfileAttribute p in attributeScreens.keys) ...[
-                buildSetting(context, p),
-                Divider(height: 3),
-              ],
+  return Container(
+    color: theme.primaryColor,
+    child: SafeArea(
+      child: Scaffold(
+        appBar: myAppBar('Edit Projects', context),
+        body: ListView(
+          children: [
+            if (attributeScreens.containsKey(ProfileAttribute.projects)) ...[
+              buildSetting(context, ProfileAttribute.projects),
+              const Divider(height: 3),
             ],
-          ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   // profile picture
   // profile name

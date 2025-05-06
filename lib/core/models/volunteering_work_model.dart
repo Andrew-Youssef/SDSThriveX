@@ -41,3 +41,20 @@ class VolunteeringWorkModel extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+List<VolunteeringWorkModel> dummyVolunteeringWork = [
+    VolunteeringWorkModel(
+      institutionName: "Red Cross",
+      role: "Event Organizer",
+      dateStarted: DateTime(2023, 3),
+      dateEnded: DateTime(2023, 6),
+      description: "Helped organize blood donation events and manage logistics.",
+    ),
+    VolunteeringWorkModel(
+      institutionName: "Green Earth",
+      role: "Community Volunteer",
+      dateStarted: DateTime(2022, 1),
+      dateEnded: null, // Ongoing
+      description: "Involved in local clean-up drives and sustainability awareness.",
+    ),
+  ];

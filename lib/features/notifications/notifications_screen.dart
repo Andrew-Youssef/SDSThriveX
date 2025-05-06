@@ -6,11 +6,8 @@
 //the data will be from a database that is yet to be set up but i can add placeholder stuff
 
 import 'package:flutter/material.dart';
-import 'package:flutter_innatex_student_screens/data/globals.dart';
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_innatex_student_screens/core/theme.dart';
 import 'package:flutter_innatex_student_screens/features/notifications/notification_details_screen.dart';
 import 'package:provider/provider.dart';
 // import '../../widgets/notifications/notification_card.dart';

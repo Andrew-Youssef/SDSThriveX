@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_innatex_student_screens/data/globals.dart';
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_innatex_student_screens/features/calendar/calendar_screen.dart';
 import 'package:flutter_innatex_student_screens/features/project_approval/project_approval_screen.dart';
-import '../../data/globals.dart';
 import '../../widgets/search_bar.dart';
 
 class MyDashBoardScreen extends StatefulWidget {

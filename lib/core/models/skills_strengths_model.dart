@@ -27,3 +27,21 @@ class SkillsStrengthsModel extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+List<SkillsStrengthsModel> dummySkillsStrengths = [
+  SkillsStrengthsModel(
+    skill: 'Problem Solving',
+    acquiredAt: 'Google Summer of Code',
+    description: 'Developed debugging strategies and improved efficiency of existing modules.',
+  ),
+  SkillsStrengthsModel(
+    skill: 'Team Leadership',
+    acquiredAt: 'UTS Programming Club',
+    description: 'Led a team of 6 students on a semester-long software engineering project.',
+  ),
+  SkillsStrengthsModel(
+    skill: 'Adaptability',
+    acquiredAt: 'Part-time Customer Support Role',
+    description: 'Quickly adjusted to changing tools and communication methods during peak seasons.',
+  ),
+];

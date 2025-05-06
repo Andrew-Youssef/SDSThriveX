@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Widget buildSearchButton() {
   return Padding(
@@ -52,7 +51,6 @@ Widget buildSearchBar(String text) {
                   controller.closeView('Endorsed');
                   // TODO: Handle "Endorsed" action
                 },
-                child: Text('Endorsed'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
@@ -64,6 +62,7 @@ Widget buildSearchBar(String text) {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
+                child: Text('Endorsed'),
               ),
             ),
             Padding(
@@ -73,7 +72,6 @@ Widget buildSearchBar(String text) {
                   controller.closeView('Not Endorsed');
                   // TODO: Handle "Not Endorsed" action
                 },
-                child: Text('Not Endorsed'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
@@ -85,6 +83,7 @@ Widget buildSearchBar(String text) {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
+                child: Text('Not Endorsed'),
               ),
             ),
           ];
