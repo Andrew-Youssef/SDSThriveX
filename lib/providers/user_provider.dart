@@ -43,7 +43,7 @@ class UserProvider extends ChangeNotifier {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
-            .collection('Projects')
+            .collection('projects')
             .get();
 
     _projects =

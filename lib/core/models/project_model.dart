@@ -54,10 +54,10 @@ class ProjectModel extends ChangeNotifier {
       id: id,
       name: map["name"],
       description: map["description"],
-      dateBegun: (map['DateEnd'] as Timestamp).toDate(),
+      dateBegun: (map['dateBegun'] as Timestamp).toDate(),
       dateEnded:
-          map['DateEnd'] != null
-              ? (map['DateEnd'] as Timestamp).toDate()
+          map['dateEnded'] != null
+              ? (map['DateEnded'] as Timestamp).toDate()
               : null,
       imageUrl: map["Image"] ?? "",
     );

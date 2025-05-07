@@ -41,6 +41,8 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
                 child: ListView(
                   padding: const EdgeInsets.only(top: 10),
                   children: [
+                    Text("HELLO ${userProvider.projects.length}"),
+                    const SizedBox(height: 30),
                     buildMyUserTypeButtons(context),
                     const SizedBox(height: 10),
                     if (userProvider.type == UserType.coach ||
@@ -55,6 +57,7 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
                     buildMyCard1(context),
                     const SizedBox(height: 10),
                     buildMyCard2(context),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
