@@ -1,19 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:screens/core/models/project_model.dart';
 import '../core/models/profile_model.dart';
 import '../core/theme/theme.dart';
 import '../data/globals.dart';
 
 class UserProvider extends ChangeNotifier {
+  late String? _aiSummary;
   ProfileModel? _profile;
   List<ProjectModel> _projects = [];
   late MyThemeData _themeData;
 
   UserProvider() {
+    _aiSummary = "";
     _themeData = MyThemeData(UserType.student);
   }
 
+  String? get aiSummary => _aiSummary;
   ProfileModel? get profile => _profile;
   UserType get type => UserTypeExtension.fromString(_profile!.userType);
   List<ProjectModel> get projects => _projects;
@@ -83,5 +87,20 @@ class UserProvider extends ChangeNotifier {
     await docRef.set(newProject.toJSON());
     _projects.add(newProject);
     notifyListeners();
+  }
+
+  Future<void> generateSummary() async {
+    final gemini = Gemini.instance;
+    loadProjects(profile!.userId);
+    String combinedInformation = projects
+        .map((project) => project.toPrompt())
+        .join('\n\n');
+
+    final prompt =
+        "Write a short summary based on the following user's details. \n\n $combinedInformation";
+
+    final response = await gemini.prompt(parts: [Part.text(prompt)]);
+
+    _aiSummary = response?.output ?? "No story generated.";
   }
 }

@@ -72,4 +72,8 @@ class ProjectModel extends ChangeNotifier {
       'dateEnded': dateEnded,
     };
   }
+
+  String toPrompt() {
+    return "Project Name: $name, Project Description: $description, Project Starting Date: $dateBegun, Project Ending Date: $dateEnded";
+  }
 }

@@ -17,6 +17,8 @@ dependencies:
   cloud_firestore: ^5.6.6
   provider: ^6.1.4
   google_fonts: ^6.2.1
+  flutter_gemini: ^3.0.0
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -29,3 +31,4 @@ flutter:
 
   assets:
     - assets/PNG/
+    - .env
