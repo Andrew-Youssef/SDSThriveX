@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/core/services/firebase_options.dart';
-import 'package:screens/providers/user_provider.dart';
-
-import 'features/signin/signin_page.dart';
+import 'core/theme/theme.dart';
+import 'core/services/firebase_options.dart';
+import 'providers/user_provider.dart';
+import 'features/signin_screen.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,8 +22,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    final ThemeData appTheme = userProvider.getTheme();
+    final userProvider = Provider.of<UserProvider?>(context);
+    final ThemeData appTheme =
+        userProvider?.getTheme() ?? MyThemeData.defaultTheme;
 
     return MaterialApp(
       title: 'Thrive X',
@@ -39,6 +40,6 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: LoginPage());
+    return MaterialApp(home: SigninPage());
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../signin/signin_page.dart';
+import 'signin_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/services/auth_service.dart';
 
@@ -262,7 +262,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const LoginPage(),
+                                    builder: (context) => const SigninPage(),
                                   ),
                                 );
                               },

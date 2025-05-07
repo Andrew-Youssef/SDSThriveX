@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/providers/user_provider.dart';
-import 'package:screens/widgets/search_bar.dart';
+import '../providers/user_provider.dart';
 
 class MyCalendarScreen extends StatefulWidget {
   const MyCalendarScreen({super.key});
@@ -82,8 +81,6 @@ class _MyCalendarScreenState extends State<MyCalendarScreen> {
                       },
                       icon: Icon(Icons.arrow_back, color: Colors.white),
                     ),
-                    buildSearchBar('Search'),
-                    buildSearchButton(context),
                   ],
                 ),
               ),

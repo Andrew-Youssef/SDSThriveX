@@ -1,52 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:screens/core/models/cert_degree_model.dart';
-import 'package:screens/providers/user_provider.dart';
-import 'package:screens/widgets/header.dart';
+import '../../../../../core/models/project_model.dart';
+import '../../../../../providers/user_provider.dart';
+import '../../../../../widgets/header.dart';
 import 'package:provider/provider.dart';
 
-class MyEditCertDegreeScreen extends StatefulWidget {
-  final CertDegreesModel certDegree;
+class MyEditProjectScreen extends StatefulWidget {
+  final ProjectModel project;
 
-  const MyEditCertDegreeScreen({super.key, required this.certDegree});
+  const MyEditProjectScreen({super.key, required this.project});
 
   @override
-  State<MyEditCertDegreeScreen> createState() => _MyEditCertDegreeScreenState();
+  State<MyEditProjectScreen> createState() => _MyEditProjectScreenState();
 }
 
-class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
-  late final TextEditingController _institutionNameController;
-  late final TextEditingController _certificationNameController;
+class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
+  late final TextEditingController _nameController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _imageController;
   late final TextEditingController _startDate;
   late final TextEditingController _endDate;
-  late final TextEditingController _descriptionController;
 
   @override
   void initState() {
     super.initState();
-    _institutionNameController = TextEditingController(
-      text: widget.certDegree.institutionName,
-    );
-    _certificationNameController = TextEditingController(
-      text: widget.certDegree.certificateName,
-    );
+    _nameController = TextEditingController(text: widget.project.name);
     _descriptionController = TextEditingController(
-      text: widget.certDegree.description,
+      text: widget.project.description,
+    );
+    _imageController = TextEditingController(
+      text: widget.project.imageUrl ?? '',
     );
     _startDate = TextEditingController(
-      text: widget.certDegree.dateStarted.toString().split(' ')[0],
+      text: widget.project.dateBegun.toString().split(' ')[0],
     );
     _endDate = TextEditingController(
-      text: widget.certDegree.dateEnded?.toString().split(' ')[0] ?? 'Ongoing',
+      text: widget.project.dateEnded?.toString().split(' ')[0] ?? '',
     );
   }
 
   @override
   void dispose() {
-    _institutionNameController.dispose();
-    _certificationNameController.dispose();
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _imageController.dispose();
     _startDate.dispose();
     _endDate.dispose();
-    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -58,7 +56,7 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
       color: theme.primaryColor,
       child: SafeArea(
         child: Scaffold(
-          appBar: myAppBar('Edit Cert & Degrees', context),
+          appBar: myAppBar('Edit Project', context),
           body: Column(
             children: [
               Row(
@@ -66,7 +64,7 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
                   Expanded(child: SizedBox()),
                   IconButton(
                     onPressed: () {
-                      userProvider.removeCertDegree(widget.certDegree);
+                      userProvider.removeProject(widget.project.id);
                       Navigator.pop(context);
                     },
                     icon: Icon(Icons.delete),
@@ -91,22 +89,11 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              onChanged: widget.certDegree.updateInstitutionName,
-              controller: _institutionNameController,
+              onChanged: widget.project.updateName,
+              controller: _nameController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Name of Institution',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: widget.certDegree.updateCertificateName,
-              controller: _certificationNameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Name of Certification',
+                labelText: 'Name of project',
               ),
             ),
           ),
@@ -149,11 +136,22 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              onChanged: widget.certDegree.updateDescription,
+              onChanged: widget.project.updateDescription,
               controller: _descriptionController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Description',
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: widget.project.updateImageUrl,
+              controller: _imageController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Image URL (figure out later)',
               ),
             ),
           ),
@@ -167,8 +165,8 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
     BuildContext context,
   ) async {
     final Map<TextEditingController, void Function(DateTime)> updaterMap = {
-      _startDate: widget.certDegree.updateDateStarted,
-      _endDate: widget.certDegree.updateDateEnded,
+      _startDate: widget.project.updateDateBegun,
+      _endDate: widget.project.updateDateEnded,
     };
     DateTime? picked = await showDatePicker(
       context: context,

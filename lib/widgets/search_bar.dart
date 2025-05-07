@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:screens/features/search/search.dart';
+import '../features/search_screen.dart';
 
 Widget buildSearchButton(context) {
   return Padding(

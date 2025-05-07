@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:screens/core/models/workexperience_model.dart';
-import 'package:screens/features/profile_edit/edit_profile_attributes/edit_individual/edit_workexperience.dart';
-import 'package:screens/providers/user_provider.dart';
-import 'package:screens/widgets/header.dart';
 import 'package:provider/provider.dart';
+import '../../../../../core/models/project_model.dart';
+import '../edit_individual/edit_project.dart';
+import '../../../../../widgets/header.dart';
+import '../../../../../providers/user_provider.dart';
 
-class MyEditWorkExperiencesScreen extends StatefulWidget {
-  const MyEditWorkExperiencesScreen({super.key});
+class MyEditProjectsScreen extends StatefulWidget {
+  const MyEditProjectsScreen({super.key});
 
   @override
-  State<MyEditWorkExperiencesScreen> createState() =>
-      _MyEditWorkExperienceScreenState();
+  State<MyEditProjectsScreen> createState() => _MyEditProjectsScreenState();
 }
 
-class _MyEditWorkExperienceScreenState
-    extends State<MyEditWorkExperiencesScreen> {
-  WorkExperienceModel? selectedWorkExperience;
+class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
+  ProjectModel? selectedProject;
   late final TextEditingController _nameController;
-  late final TextEditingController _roleController;
   late final TextEditingController _descriptionController;
+  late final TextEditingController _imageController;
   late final TextEditingController _startDate;
   late final TextEditingController _endDate;
 
@@ -26,17 +24,19 @@ class _MyEditWorkExperienceScreenState
   void initState() {
     super.initState();
     _nameController = TextEditingController();
-    _roleController = TextEditingController();
     _descriptionController = TextEditingController();
+    _imageController = TextEditingController();
     _startDate = TextEditingController();
     _endDate = TextEditingController();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.loadProjects(userProvider.profile!.userId);
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _roleController.dispose();
     _descriptionController.dispose();
+    _imageController.dispose();
     _startDate.dispose();
     _endDate.dispose();
     super.dispose();
@@ -45,14 +45,15 @@ class _MyEditWorkExperienceScreenState
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    userProvider.loadProjects(userProvider.profile!.userId);
     ThemeData theme = Theme.of(context);
-    List<WorkExperienceModel> workExperiences = userProvider.workExperiences;
+    List<ProjectModel> projects = userProvider.projects;
 
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
         child: Scaffold(
-          appBar: myAppBar('Edit Work Experience', context),
+          appBar: myAppBar('Edit Projects', context),
           body: Column(
             children: [
               Row(
@@ -60,13 +61,11 @@ class _MyEditWorkExperienceScreenState
                   Expanded(child: SizedBox()),
                   IconButton(
                     onPressed:
-                        selectedWorkExperience == null
+                        selectedProject == null
                             ? null
                             : () {
-                              userProvider.removeWorkExperience(
-                                selectedWorkExperience!,
-                              );
-                              selectedWorkExperience = null;
+                              userProvider.removeProject(selectedProject!.id);
+                              selectedProject = null;
                             },
                     icon: Icon(Icons.delete),
                   ),
@@ -75,29 +74,42 @@ class _MyEditWorkExperienceScreenState
                       if (_nameController.text.isNotEmpty &&
                           _startDate.text.isNotEmpty &&
                           _descriptionController.text.isNotEmpty) {
-                        WorkExperienceModel newWorkExperience =
-                            WorkExperienceModel(
-                              name: _nameController.text,
-                              dateBegun: DateTime.tryParse(_startDate.text)!,
-                              dateEnded:
-                                  _endDate.text.isNotEmpty
-                                      ? DateTime.tryParse(_startDate.text)
-                                      : null,
-                              description: _descriptionController.text,
-                              role: _roleController.text,
-                            );
-                        userProvider.addWorkExperience(newWorkExperience);
+                        ProjectModel newProject = ProjectModel(
+                          id: '',
+                          name: _nameController.text,
+                          dateBegun: DateTime.tryParse(_startDate.text)!,
+                          dateEnded:
+                              _endDate.text.isNotEmpty
+                                  ? DateTime.tryParse(_startDate.text)
+                                  : null,
+                          description: _descriptionController.text,
+                          imageUrl: _imageController.text,
+                        );
+                        userProvider.addProject(newProject);
                       }
                     },
                     icon: Icon(Icons.add_box),
                   ),
                 ],
               ),
-              if (workExperiences.isEmpty) ...[
-                Center(child: Text('Add a new work experience!')),
+              // Expanded(
+              //   child: ListView(
+              //     children: [
+              //       if (projects.isEmpty) ...[
+              //         Center(child: Text('Add a new project!')),
+              //         SizedBox(height: 20),
+              //       ] else ...[
+              //         showExistingProjects(context),
+              //       ],
+              //       buildInputFields(context),
+              //     ],
+              //   ),
+              // ),
+              if (projects.isEmpty) ...[
+                Center(child: Text('Add a new project!')),
                 SizedBox(height: 20),
               ] else ...[
-                showExistingWorkExperiences(context),
+                showExistingProjects(context),
               ],
               buildInputFields(context),
             ],
@@ -107,10 +119,10 @@ class _MyEditWorkExperienceScreenState
     );
   }
 
-  Widget showExistingWorkExperiences(BuildContext context) {
+  Widget showExistingProjects(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<WorkExperienceModel> workExperiences = userProvider.workExperiences;
+    List<ProjectModel> projects = userProvider.projects;
 
     return SizedBox(
       height: 200,
@@ -119,25 +131,24 @@ class _MyEditWorkExperienceScreenState
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         children: [
-          for (final p in workExperiences) ...[
+          for (final p in projects) ...[
             GestureDetector(
               onTap: () {
                 setState(() {
-                  selectedWorkExperience = p;
+                  selectedProject = p;
                 });
                 // print('yoooooo');
               },
               onLongPress: () {
                 setState(() {
-                  selectedWorkExperience = p;
+                  selectedProject = p;
                 });
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder:
-                        (context) => MyEditWorkExperienceScreen(
-                          workExperience: selectedWorkExperience!,
-                        ),
+                        (context) =>
+                            MyEditProjectScreen(project: selectedProject!),
                   ),
                 );
               },
@@ -145,7 +156,7 @@ class _MyEditWorkExperienceScreenState
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: theme.primaryColor,
-                    width: p == selectedWorkExperience ? 5 : 3,
+                    width: p == selectedProject ? 5 : 3,
                   ),
                 ),
                 child: Column(
@@ -159,7 +170,7 @@ class _MyEditWorkExperienceScreenState
                           : 'Unknown',
                     ),
                     Text(p.description),
-                    Text(p.role),
+                    Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
                   ],
                 ),
               ),
@@ -184,17 +195,7 @@ class _MyEditWorkExperienceScreenState
               controller: _nameController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Name of work experience',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _roleController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Role in work experience',
+                hintText: 'Name of project',
               ),
             ),
           ),
@@ -244,6 +245,16 @@ class _MyEditWorkExperienceScreenState
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _imageController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Image URL (figure out later)',
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -264,15 +275,6 @@ class _MyEditWorkExperienceScreenState
       setState(() {
         controller.text = picked.toString().split(" ")[0];
       });
-    }
-  }
-
-  DateTime? getParsedStartDate() {
-    if (_startDate.text.isEmpty) return null;
-    try {
-      return DateTime.parse(_startDate.text);
-    } catch (e) {
-      return null; // Handle invalid format safely
     }
   }
 }

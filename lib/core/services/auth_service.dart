@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../home.dart';
-import '../../features/signin/signin_page.dart';
+import '../models/profile_model.dart';
+import '../../providers/user_provider.dart';
+import '../../features/signin_screen.dart';
 
 class AuthService {
   Future<String?> signup({
@@ -27,6 +30,15 @@ class AuthService {
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .set({'name': name, 'email': email, 'userType': userType});
 
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser?.uid)
+              .get();
+
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.setProfile(ProfileModel.fromDB(doc));
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (BuildContext context) => const HomePage()),
@@ -49,6 +61,15 @@ class AuthService {
         email: email,
         password: password,
       );
+
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser?.uid)
+              .get();
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.setProfile(ProfileModel.fromDB(doc));
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (BuildContext context) => const HomePage()),
@@ -64,7 +85,7 @@ class AuthService {
     await FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (BuildContext context) => const LoginPage()),
+      MaterialPageRoute(builder: (BuildContext context) => const SigninPage()),
     );
   }
 }

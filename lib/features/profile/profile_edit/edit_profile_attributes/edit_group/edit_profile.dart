@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:screens/widgets/header.dart';
+import '../../../../../widgets/header.dart';
 
 class MyEditProfileAttributesScreen extends StatefulWidget {
   const MyEditProfileAttributesScreen({super.key});

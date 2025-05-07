@@ -19,6 +19,11 @@ class ProjectModel extends ChangeNotifier {
   });
 
   // Optional update methods
+  void updateUserID(String newID) {
+    id = newID;
+    notifyListeners();
+  }
+
   void updateName(String newName) {
     name = newName;
     notifyListeners();
@@ -56,5 +61,15 @@ class ProjectModel extends ChangeNotifier {
               : null,
       imageUrl: map["Image"] ?? "",
     );
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {
+      'name': name,
+      'description': description,
+      'imageUrl': imageUrl,
+      'dateBegun': dateBegun,
+      'dateEnded': dateEnded,
+    };
   }
 }

@@ -1,65 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:screens/core/theme.dart';
+import 'package:screens/core/models/project_model.dart';
+import '../core/models/profile_model.dart';
+import '../core/theme/theme.dart';
 import '../data/globals.dart';
-import 'package:screens/core/models/export_models.dart';
 
 class UserProvider extends ChangeNotifier {
-  late UserType _type;
+  ProfileModel? _profile;
+  List<ProjectModel> _projects = [];
   late MyThemeData _themeData;
 
-  AIModel? _aiModel;
-  ProfileModel? _profile; //WE NEED THIS FIELD UPDATES WHEN USER IS LOGGED IN
-
-  final List<WorkExperienceModel> _workExperiences = [];
-  final List<CertDegreesModel> _certDegrees = [];
-  final List<PersonalStoriesModel> _personalStories = [];
-  final List<VolunteeringWorkModel> _volunteeringWork = [];
-  final List<SkillsStrengthsModel> _skillsStrengths = [];
-
-  AIModel? get aiModel => _aiModel;
-  ProfileModel? get profile => _profile;
-
-  List<WorkExperienceModel> get workExperiences => _workExperiences;
-  List<CertDegreesModel> get certDegrees => _certDegrees;
-  List<PersonalStoriesModel> get personalStories => _personalStories;
-  List<VolunteeringWorkModel> get volunteeringWork => _volunteeringWork;
-  List<SkillsStrengthsModel> get skillsStrengths => _skillsStrengths;
-
   UserProvider() {
-    //for now, later add load from storage
-    //call userProvider when logged in and inisitalize properly
-    _profile = ProfileModel(
-      userId: '123',
-      name: 'John Jones',
-      userType: UserType.student,
-    );
-
-    _type = _profile!.userType;
-    _themeData = MyThemeData(_type);
+    _themeData = MyThemeData(UserType.student);
   }
 
-  UserType get type => _type;
-
-  //this doesnt change ProfileModel because technically it shouldnt be changing
-  //this is just a theme changing function i would say
-  void setUserType(UserType newType) {
-    _type = newType;
-    _themeData.setUserType(_type);
-    notifyListeners();
-  }
-
-  String getTypeName() {
-    return _type.name;
-  }
+  ProfileModel? get profile => _profile;
+  UserType get type => UserTypeExtension.fromString(_profile!.userType);
+  List<ProjectModel> get projects => _projects;
 
   ThemeData getTheme() {
     return _themeData.getMyTheme();
   }
 
+  void setUserTheme(UserType newType) {
+    _themeData.setUserType(newType);
+    notifyListeners();
+  }
+
   void setProfile(ProfileModel profileData) {
     _profile = profileData;
+    loadProjects(profileData.userId);
     notifyListeners();
   }
 
@@ -68,118 +38,50 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setAIModel(AIModel model) {
-    _aiModel = model;
+  Future<void> loadProjects(String userId) async {
+    final projectDocs =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('Projects')
+            .get();
+
+    _projects =
+        projectDocs.docs.map((doc) {
+          final data = doc.data();
+          return ProjectModel.convertMap(data, userId);
+        }).toList();
+
     notifyListeners();
-  }
-
-  void clearAIModel() {
-    _aiModel = null;
-    notifyListeners();
-  }
-
-  // Projects
-  Future<void> addProject(ProjectModel project) async {
-    try {
-      project.addListener(notifyListeners);
-      final currentDoc =
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(FirebaseAuth.instance.currentUser?.uid)
-              .collection('projects')
-              .doc();
-      project.id = currentDoc.id;
-
-      await currentDoc.set({
-        "Name": project.name,
-        "Description": project.description,
-        "DateStart": project.dateBegun,
-        "DateEnd": project.dateEnded,
-        "Image": project.imageUrl,
-      });
-
-      notifyListeners();
-    } catch (e) {
-      return;
-    }
   }
 
   Future<void> removeProject(String projectId) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection("projects")
-          .doc(projectId)
-          .delete();
-      notifyListeners();
-    } catch (e) {
-      return;
-    }
+    final userId = _profile?.userId;
+    if (userId == null) return;
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('projects')
+        .doc(projectId)
+        .delete();
+    _projects.removeWhere((project) => project.id == projectId);
   }
 
-  // Work Experience
-  void addWorkExperience(WorkExperienceModel experience) {
-    experience.addListener(notifyListeners);
-    _workExperiences.add(experience);
-    notifyListeners();
-  }
+  Future<void> addProject(ProjectModel newProject) async {
+    final userId = _profile?.userId;
+    if (userId == null) return;
 
-  void removeWorkExperience(WorkExperienceModel experience) {
-    experience.removeListener(notifyListeners);
-    _workExperiences.remove(experience);
-    notifyListeners();
-  }
+    final docRef =
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('projects')
+            .doc();
 
-  // Certificates
-  void addCertDegree(CertDegreesModel cert) {
-    cert.addListener(notifyListeners);
-    _certDegrees.add(cert);
-    notifyListeners();
-  }
-
-  void removeCertDegree(CertDegreesModel cert) {
-    cert.removeListener(notifyListeners);
-    _certDegrees.remove(cert);
-    notifyListeners();
-  }
-
-  // Personal Stories
-  void addPersonalStory(PersonalStoriesModel story) {
-    story.addListener(notifyListeners);
-    _personalStories.add(story);
-    notifyListeners();
-  }
-
-  void removePersonalStory(PersonalStoriesModel story) {
-    story.removeListener(notifyListeners);
-    _personalStories.remove(story);
-    notifyListeners();
-  }
-
-  // Volunteering Work
-  void addVolunteeringWork(VolunteeringWorkModel work) {
-    work.addListener(notifyListeners);
-    _volunteeringWork.add(work);
-    notifyListeners();
-  }
-
-  void removeVolunteeringWork(VolunteeringWorkModel work) {
-    work.removeListener(notifyListeners);
-    _volunteeringWork.remove(work);
-    notifyListeners();
-  }
-
-  // Skills & Strengths
-  void addSkillStrength(SkillsStrengthsModel skill) {
-    skill.addListener(notifyListeners);
-    _skillsStrengths.add(skill);
-    notifyListeners();
-  }
-
-  void removeSkillStrength(SkillsStrengthsModel skill) {
-    skill.removeListener(notifyListeners);
-    _skillsStrengths.remove(skill);
+    newProject.updateUserID(docRef.id);
+    await docRef.set(newProject.toJSON());
+    _projects.add(newProject);
     notifyListeners();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:screens/data/globals.dart';
-import 'package:screens/features/profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
-import 'package:screens/widgets/header.dart';
+import '../../../data/globals.dart';
+import '../profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
+import '../../../../widgets/header.dart';
 
 class MyEditProfileScreen extends StatefulWidget {
   const MyEditProfileScreen({super.key});
@@ -28,15 +28,15 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
     ProfileAttribute.profile:
         (context) => const MyEditProfileAttributesScreen(),
     ProfileAttribute.projects: (context) => const MyEditProjectsScreen(),
-    ProfileAttribute.workExperience:
-        (context) => const MyEditWorkExperiencesScreen(),
-    ProfileAttribute.certDegrees: (context) => const MyEditCertDegreesScreen(),
-    ProfileAttribute.skillsStrengths:
-        (context) => const MyEditSkillsStrengthsScreen(),
-    ProfileAttribute.personalStories:
-        (context) => const MyEditPersonalStoriesScreen(),
-    ProfileAttribute.volunteeringWork:
-        (context) => const MyEditVolunteeringWorksScreen(),
+    // ProfileAttribute.workExperience:
+    //     (context) => const MyEditWorkExperiencesScreen(),
+    // ProfileAttribute.certDegrees: (context) => const MyEditCertDegreesScreen(),
+    // ProfileAttribute.skillsStrengths:
+    //     (context) => const MyEditSkillsStrengthsScreen(),
+    // ProfileAttribute.personalStories:
+    //     (context) => const MyEditPersonalStoriesScreen(),
+    // ProfileAttribute.volunteeringWork:
+    //     (context) => const MyEditVolunteeringWorksScreen(),
   };
 
   @override

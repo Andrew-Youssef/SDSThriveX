@@ -6,6 +6,23 @@
 
 enum UserType { student, coach, recruiter, professor }
 
+extension UserTypeExtension on UserType {
+  static UserType fromString(String type) {
+    switch (type.toLowerCase()) {
+      case 'coach':
+        return UserType.coach;
+      case 'student':
+        return UserType.student;
+      case 'professor':
+        return UserType.professor;
+      case 'recruiter':
+        return UserType.recruiter;
+      default:
+        throw ArgumentError('Invalid user type: $type');
+    }
+  }
+}
+
 enum ProfileAttribute {
   profile,
   projects,

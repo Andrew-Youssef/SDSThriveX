@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/features/dashboard/dashboard_screen.dart';
-import 'package:screens/features/notifications/notifications_screen.dart';
 import 'package:screens/features/profile/profile_screen.dart';
-import 'package:screens/providers/user_provider.dart';
+import '../features/dashboard_screen.dart';
+import '../features/notifications/notifications_screen.dart';
+import '../providers/user_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,9 +14,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentPageIndex = 1;
-  final user = FirebaseAuth.instance.currentUser!;
-  get userRef =>
-      FirebaseFirestore.instance.collection('users').doc(user.uid).snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +28,7 @@ class _HomePageState extends State<HomePage> {
         page = MyDashBoardScreen();
         break;
       case 2:
-        page = MyProfileScreen();
+        page = MyProfileScreen(); //Profile
         break;
       default:
         throw UnimplementedError("THIS AINT IMPLEMENTED YET\n");
@@ -43,7 +38,6 @@ class _HomePageState extends State<HomePage> {
       data: theme,
       child: Scaffold(
         body: page,
-        //Might change this if there is no need for User Data might implement it to the other pages
         bottomNavigationBar: NavigationBar(
           onDestinationSelected: (int index) {
             setState(() {

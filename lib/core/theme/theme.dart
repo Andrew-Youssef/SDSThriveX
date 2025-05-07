@@ -1,5 +1,3 @@
-//theme data
-
 //TUTORIAL
 //theme data is automatically assigned so its whatever dont need to worry abt it
 //bitter is now the default font
@@ -17,8 +15,6 @@
 import 'package:flutter/material.dart';
 import '../../data/globals.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import '../providers/user_provider.dart';
 
 // Color.fromARGB(255, 255, 255, 255) // first   color white
 // Color.fromARGB(255, 162, 155, 254) // second  color blue/purple
@@ -31,6 +27,9 @@ import '../providers/user_provider.dart';
 class MyThemeData {
   late UserType _userType;
   late ThemeData _myTheme;
+
+  static final ThemeData defaultTheme =
+      MyThemeData(UserType.student).getMyTheme();
 
   final Map<UserType, Color> _myPrimaryColor = {
     UserType.coach: Color.fromARGB(255, 255, 112, 90),

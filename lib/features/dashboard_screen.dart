@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/data/globals.dart';
-import 'package:screens/providers/user_provider.dart';
-import 'package:screens/features/calendar/calendar_screen.dart';
-import 'package:screens/features/project_approval/project_approval_screen.dart';
+import '../data/globals.dart';
+import '../../providers/user_provider.dart';
+import '../features/calendar_screen.dart';
+import '../features/project_approval_screen.dart';
 import '../../widgets/search_bar.dart';
 
 class MyDashBoardScreen extends StatefulWidget {
@@ -77,7 +77,7 @@ Widget buildMyUserTypeButtons(BuildContext context) {
           UserType.values.map((userType) {
             return ElevatedButton(
               onPressed: () {
-                userProvider.setUserType(userType);
+                userProvider.setUserTheme(userType);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor:

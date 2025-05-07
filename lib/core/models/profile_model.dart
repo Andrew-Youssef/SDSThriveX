@@ -1,11 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:screens/data/globals.dart';
 
 class ProfileModel extends ChangeNotifier {
-  final String
-  userId; //like the unique database key or whatever to do queriries
+  final String userId;
   String name;
-  final UserType userType;
+  final String userType;
   String? profilePicUrl;
   String? backgroundPicUrl;
 
@@ -15,6 +14,15 @@ class ProfileModel extends ChangeNotifier {
     required this.userType,
     this.profilePicUrl,
   });
+
+  factory ProfileModel.fromDB(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return ProfileModel(
+      userId: doc.id,
+      name: data['name'],
+      userType: data['userType'],
+    );
+  }
 
   void updateName(String newName) {
     name = newName;

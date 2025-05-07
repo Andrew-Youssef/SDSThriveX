@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyADg7P71tnLVdLPtzs6U24D7TyXa8m9xU0',
-    appId: '1:262456158294:android:c756e7e7c3d96627b8b3f7',
+    appId: '1:262456158294:android:e0c9a6383bf216dab8b3f7',
     messagingSenderId: '262456158294',
     projectId: 'thrive-x-50728',
     storageBucket: 'thrive-x-50728.firebasestorage.app',
@@ -59,10 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBNLUzOzeSoCbEbiZQ2vDvUULh_NHnto74',
-    appId: '1:262456158294:ios:710baf2e8ab8215ab8b3f7',
+    appId: '1:262456158294:ios:6419eb27346e9a37b8b3f7',
     messagingSenderId: '262456158294',
     projectId: 'thrive-x-50728',
     storageBucket: 'thrive-x-50728.firebasestorage.app',
-    iosBundleId: 'com.example.thrivex',
+    iosBundleId: 'com.example.screens',
   );
+
 }
