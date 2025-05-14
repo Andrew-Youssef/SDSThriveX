@@ -59,6 +59,14 @@ class WorkExperienceModel extends ChangeNotifier {
     };
   }
 
+  String toPrompt() {
+    return "Work Experience Name: $role, "
+        "Institution Name (Where the experience is acquired): $name"
+        "Work Experience Description: $description, "
+        "Work Experience Starting Date: $dateBegun"
+        "Work Experience Ending Date: $dateEnded";
+  }
+
   factory WorkExperienceModel.convertMap(Map<String, dynamic> map, String id) {
     return WorkExperienceModel(
       id: id,

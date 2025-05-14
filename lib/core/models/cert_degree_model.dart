@@ -71,4 +71,12 @@ class CertDegreesModel extends ChangeNotifier {
               : null,
     );
   }
+
+  String toPrompt() {
+    return "Insitution Name (Where the Certificate/Degree is from): $institutionName, "
+        "Certificate/Degree Name: $certificateName, "
+        "Certificate/Degree Description: $description, "
+        "Certificate/Degree Starting Date: $dateStarted, "
+        "PCertificate/Degree Ending Date: $dateEnded";
+  }
 }

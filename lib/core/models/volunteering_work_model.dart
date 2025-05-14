@@ -59,6 +59,14 @@ class VolunteeringWorkModel extends ChangeNotifier {
     };
   }
 
+  String toPrompt() {
+    return "Volunteering Experience Name: $role, "
+        "Institution Name (Where the experience is acquired): $institutionName"
+        "Volunteering Experience Description: $description, "
+        "Volunteering Experience Starting Date: $dateStarted"
+        "Volunteering Experience Ending Date: $dateEnded";
+  }
+
   factory VolunteeringWorkModel.convertMap(
     Map<String, dynamic> map,
     String id,

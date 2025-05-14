@@ -41,6 +41,12 @@ class SkillsStrengthsModel extends ChangeNotifier {
     };
   }
 
+  String toPrompt() {
+    return "Skill Name: $skill, "
+        "Company Name (Where this skill is acquired): $acquiredAt, "
+        "Skill Description: $description, ";
+  }
+
   factory SkillsStrengthsModel.convertMap(Map<String, dynamic> map, String id) {
     return SkillsStrengthsModel(
       id: id,
