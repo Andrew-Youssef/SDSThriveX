@@ -21,6 +21,14 @@ import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profi
 import 'package:flutter_innatex_student_screens/features/profile_edit/profile_edit_screen.dart';
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
+import 'package:flutter_innatex_student_screens/widgets/profile_screen/project_display.dart';
+import 'package:flutter_innatex_student_screens/widgets/profile_screen/workexperiences_display.dart';
+// import 'package:flutter_innatex_student_screens/widgets/profile_screen/certdegrees_display.dart';
+// import 'package:flutter_innatex_student_screens/widgets/profile_screen/personalstories_display.dart';
+// import 'package:flutter_innatex_student_screens/widgets/profile_screen/project_display.dart';
+// import 'package:flutter_innatex_student_screens/widgets/profile_screen/skillsstrengths_display.dart';
+// import 'package:flutter_innatex_student_screens/widgets/profile_screen/volunteeringworks_display.dart';
+// import 'package:flutter_innatex_student_screens/widgets/profile_screen/workexperiences_display.dart';
 import 'package:provider/provider.dart';
 import '../../data/globals.dart';
 
@@ -105,7 +113,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   }
 
   //projects
-  //certificates
+  //certDegrees
   //
   Widget buildContent(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -315,111 +323,154 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   
   */
 
-  Widget showExistingProjects(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<ProjectModel> projects = userProvider.projects;
+  // Widget showExistingProjects(BuildContext context) {
+  //   UserProvider userProvider = Provider.of<UserProvider>(context);
+  //   ThemeData theme = Theme.of(context);
+  //   List<ProjectModel> projects = userProvider.projects;
 
-    if (projects.isEmpty) {
-      return Text(
-        'Place holder text for Projects',
-        style: theme.textTheme.displayMedium,
-      );
-    } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in projects) ...[
-              GestureDetector(
-                onTap: () {
-                  if (selectedProject == p) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyEditProjectScreen(project: p),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedProject = p;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MyEditProjectScreen(project: p),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedProject ? 5 : 3,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(p.name),
-                      Text(p.dateBegun.toString().split(' ')[0]),
-                      Text(
-                        p.dateEnded != null
-                            ? p.dateEnded!.toString().split(' ')[0]
-                            : 'Unknown',
-                      ),
-                      Text(p.description),
-                      Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
-      );
-    }
-  }
+  //   if (projects.isEmpty) {
+  //     return Text('Add some projects!', style: theme.textTheme.displayMedium);
+  //   } else {
+  //     return Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children:
+  //           projects.map((project) {
+  //             final String startDate =
+  //                 '${project.dateBegun.toLocal().toString().split(' ')[0]} - ';
+  //             final String endDate =
+  //                 '${project.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+
+  //             return GestureDetector(
+  //               onTap: () {
+  //                 if (selectedProject == project) {
+  //                   Navigator.push(
+  //                     context,
+  //                     MaterialPageRoute(
+  //                       builder:
+  //                           (context) => MyEditProjectScreen(project: project),
+  //                     ),
+  //                   );
+  //                 }
+  //                 setState(() {
+  //                   selectedProject = project;
+  //                 });
+  //               },
+  //               onLongPress: () {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(
+  //                     builder:
+  //                         (context) => MyEditProjectScreen(project: project),
+  //                   ),
+  //                 );
+  //               },
+  //               child: Container(
+  //                 decoration: BoxDecoration(
+  //                   border:
+  //                       project == selectedProject
+  //                           ? Border.all(color: theme.primaryColor, width: 3)
+  //                           : null,
+  //                 ),
+  //                 child: Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Divider(thickness: 1),
+  //                     Row(
+  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                       children: [
+  //                         Flexible(
+  //                           child: Text(
+  //                             project.name,
+  //                             style: theme.textTheme.bodyMedium!.copyWith(
+  //                               fontSize: 16,
+  //                               fontWeight: FontWeight.bold,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         Column(
+  //                           children: [
+  //                             Text(
+  //                               startDate,
+  //                               style: theme.textTheme.bodyMedium!.copyWith(
+  //                                 fontSize: 16,
+  //                                 fontWeight: FontWeight.bold,
+  //                               ),
+  //                             ),
+  //                             Text(
+  //                               endDate,
+  //                               style: theme.textTheme.bodyMedium!.copyWith(
+  //                                 fontSize: 16,
+  //                                 fontWeight: FontWeight.bold,
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     const SizedBox(height: 4),
+  //                     Text(
+  //                       project.description,
+  //                       style: theme.textTheme.displayMedium,
+  //                     ),
+  //                     if (project.imageUrl != null &&
+  //                         project.imageUrl!.isNotEmpty)
+  //                       Padding(
+  //                         padding: const EdgeInsets.only(top: 8.0),
+  //                         child: ClipRRect(
+  //                           borderRadius: BorderRadius.circular(8),
+  //                           child: Image.network(
+  //                             project.imageUrl!,
+  //                             fit: BoxFit.cover,
+  //                             errorBuilder: (context, error, stackTrace) {
+  //                               return const Icon(Icons.broken_image);
+  //                             },
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     const SizedBox(height: 10),
+  //                   ],
+  //                 ),
+  //               ),
+  //             );
+  //           }).toList(),
+  //     );
+  //   }
+  // }
 
   Widget showExistingWorkExperiences(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<WorkExperienceModel> projects = userProvider.workExperiences;
+    List<WorkExperienceModel> workExperiences = userProvider.workExperiences;
 
-    if (projects.isEmpty) {
+    if (workExperiences.isEmpty) {
       return Text(
-        'Place holder text for Work Experience',
+        'Add some work experience!',
         style: theme.textTheme.displayMedium,
       );
     } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in projects) ...[
-              GestureDetector(
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            workExperiences.map((exp) {
+              final String startDate =
+                  '${exp.dateBegun.toLocal().toString().split(' ')[0]}';
+              final String endDate =
+                  '${exp.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+
+              return GestureDetector(
                 onTap: () {
-                  if (selectedWorkExperience == p) {
+                  if (selectedWorkExperience == exp) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
                             (context) =>
-                                MyEditWorkExperienceScreen(workExperience: p),
+                                MyEditWorkExperienceScreen(workExperience: exp),
                       ),
                     );
                   }
                   setState(() {
-                    selectedWorkExperience = p;
+                    selectedWorkExperience = exp;
                   });
                 },
                 onLongPress: () {
@@ -428,73 +479,105 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     MaterialPageRoute(
                       builder:
                           (context) =>
-                              MyEditWorkExperienceScreen(workExperience: p),
+                              MyEditWorkExperienceScreen(workExperience: exp),
                     ),
                   );
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedWorkExperience ? 5 : 3,
-                    ),
+                    border:
+                        exp == selectedWorkExperience
+                            ? Border.all(color: theme.primaryColor, width: 3)
+                            : null,
                   ),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(p.name),
-                      Text(p.dateBegun.toString().split(' ')[0]),
-                      Text(
-                        p.dateEnded != null
-                            ? p.dateEnded!.toString().split(' ')[0]
-                            : 'Unknown',
+                      Divider(thickness: 1),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              exp.name,
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                startDate,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                endDate,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      Text(p.description),
-                      Text(p.role),
+                      const SizedBox(height: 4),
+                      Text(exp.role, style: theme.textTheme.displayMedium),
+                      const SizedBox(height: 4),
+                      Text(
+                        exp.description,
+                        style: theme.textTheme.displayMedium,
+                      ),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
+              );
+            }).toList(),
       );
     }
   }
 
   Widget showExistingCertDegrees(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<CertDegreesModel> projects = userProvider.certDegrees;
+    List<CertDegreesModel> certDegrees = userProvider.certDegrees;
 
-    if (projects.isEmpty) {
+    if (certDegrees.isEmpty) {
       return Text(
-        'Place holder text for Certs & Degrees',
+        'Add some certDegrees!',
         style: theme.textTheme.displayMedium,
       );
     } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in projects) ...[
-              GestureDetector(
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            certDegrees.map((cert) {
+              final String startDate =
+                  '${cert.dateStarted.toLocal().toString().split(' ')[0]}';
+              final String endDate =
+                  '${cert.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+
+              return GestureDetector(
                 onTap: () {
-                  if (selectedCertDegree == p) {
+                  if (selectedCertDegree == cert) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
-                            (context) => MyEditCertDegreeScreen(certDegree: p),
+                            (context) =>
+                                MyEditCertDegreeScreen(certDegree: cert),
                       ),
                     );
                   }
                   setState(() {
-                    selectedCertDegree = p;
+                    selectedCertDegree = cert;
                   });
                 },
                 onLongPress: () {
@@ -502,215 +585,197 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (context) => MyEditCertDegreeScreen(certDegree: p),
+                          (context) => MyEditCertDegreeScreen(certDegree: cert),
                     ),
                   );
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedCertDegree ? 5 : 3,
-                    ),
+                    border:
+                        cert == selectedCertDegree
+                            ? Border.all(color: theme.primaryColor, width: 3)
+                            : null,
                   ),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(p.institutionName),
-                      Text(p.certificateName),
-                      Text(p.dateStarted.toString().split(' ')[0]),
-                      Text(
-                        p.dateEnded != null
-                            ? p.dateEnded!.toString().split(' ')[0]
-                            : 'Unknown',
+                      Divider(thickness: 1),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              cert.certificateName,
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                startDate,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                endDate,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      Text(p.description),
+                      const SizedBox(height: 4),
+                      Text(
+                        cert.institutionName,
+                        style: theme.textTheme.displayMedium,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        cert.description,
+                        style: theme.textTheme.displayMedium,
+                      ),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
+              );
+            }).toList(),
       );
     }
   }
 
   Widget showExistingSkillsStrengths(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<SkillsStrengthsModel> projects = userProvider.skillsStrengths;
+    List<SkillsStrengthsModel> skills = userProvider.skillsStrengths;
 
-    if (projects.isEmpty) {
+    if (skills.isEmpty) {
       return Text(
-        'Place holder text for Skills & Strengths',
+        'Add some skills & strengths!',
         style: theme.textTheme.displayMedium,
       );
     } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in projects) ...[
-              GestureDetector(
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            skills.map((skillModel) {
+              return GestureDetector(
                 onTap: () {
-                  if (selectedSkillStrength == p) {
+                  if (selectedSkillStrength == skillModel) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
-                            (context) =>
-                                MyEditSkillStrengthScreen(skillStrength: p),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedSkillStrength = p;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              MyEditSkillStrengthScreen(skillStrength: p),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedSkillStrength ? 5 : 3,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(p.skill),
-                      Text(p.acquiredAt),
-                      Text(p.description),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
-      );
-    }
-  }
-
-  Widget showExistingPersonalStories(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<PersonalStoriesModel> projects = userProvider.personalStories;
-
-    if (projects.isEmpty) {
-      return Text(
-        'Place holder text for Personal Stories',
-        style: theme.textTheme.displayMedium,
-      );
-    } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in projects) ...[
-              GestureDetector(
-                onTap: () {
-                  if (selectedPersonalStory == p) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                MyEditPersonalStoryScreen(personalStory: p),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedPersonalStory = p;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              MyEditPersonalStoryScreen(personalStory: p),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedPersonalStory ? 5 : 3,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(p.title),
-                      Text(p.date.toString().split(' ')[0]),
-                      Text(p.description),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
-      );
-    }
-  }
-
-  Widget showExistingVolunteeringWorks(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<VolunteeringWorkModel> projects = userProvider.volunteeringWork;
-
-    if (projects.isEmpty) {
-      return Text(
-        'Place holder text for Volunteering Work',
-        style: theme.textTheme.displayMedium,
-      );
-    } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in projects) ...[
-              GestureDetector(
-                onTap: () {
-                  if (selectedVolunteeringWork == p) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => MyEditVolunteeringWorkScreen(
-                              volunteeringWork: p,
+                            (context) => MyEditSkillStrengthScreen(
+                              skillStrength: skillModel,
                             ),
                       ),
                     );
                   }
                   setState(() {
-                    selectedVolunteeringWork = p;
+                    selectedSkillStrength = skillModel;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => MyEditSkillStrengthScreen(
+                            skillStrength: skillModel,
+                          ),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border:
+                        skillModel == selectedSkillStrength
+                            ? Border.all(color: theme.primaryColor, width: 3)
+                            : null,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Divider(thickness: 1),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // No ellipsis — allow wrapping
+                          Flexible(
+                            child: Text(
+                              skillModel.skill,
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            skillModel.acquiredAt,
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        skillModel.description,
+                        style: theme.textTheme.displayMedium,
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+      );
+    }
+  }
+
+  Widget showExistingPersonalStories(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<PersonalStoriesModel> stories = userProvider.personalStories;
+
+    if (stories.isEmpty) {
+      return Text(
+        'Add a personal story!',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            stories.map((story) {
+              final String formattedDate =
+                  story.date.toLocal().toString().split(' ')[0];
+
+              return GestureDetector(
+                onTap: () {
+                  if (selectedPersonalStory == story) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                MyEditPersonalStoryScreen(personalStory: story),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedPersonalStory = story;
                   });
                 },
                 onLongPress: () {
@@ -719,37 +784,163 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     MaterialPageRoute(
                       builder:
                           (context) =>
-                              MyEditVolunteeringWorkScreen(volunteeringWork: p),
+                              MyEditPersonalStoryScreen(personalStory: story),
                     ),
                   );
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedVolunteeringWork ? 5 : 3,
-                    ),
+                    border:
+                        story == selectedPersonalStory
+                            ? Border.all(color: theme.primaryColor, width: 3)
+                            : null,
                   ),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(p.institutionName),
-                      Text(p.role),
-                      Text(p.dateStarted.toString().split(' ')[0]),
-                      Text(
-                        p.dateEnded != null
-                            ? p.dateEnded!.toString().split(' ')[0]
-                            : 'Unknown',
+                      Divider(thickness: 1),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              story.title,
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            formattedDate,
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(p.description),
+                      const SizedBox(height: 4),
+                      Text(
+                        story.description,
+                        style: theme.textTheme.displayMedium,
+                      ),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
+              );
+            }).toList(),
+      );
+    }
+  }
+
+  Widget showExistingVolunteeringWorks(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<VolunteeringWorkModel> volunteeringWorks =
+        userProvider.volunteeringWork;
+
+    if (volunteeringWorks.isEmpty) {
+      return Text(
+        'Add some volunteering work!',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            volunteeringWorks.map((work) {
+              final String startDate =
+                  '${work.dateStarted.toLocal().toString().split(' ')[0]}';
+              final String endDate =
+                  '${work.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+
+              return GestureDetector(
+                onTap: () {
+                  if (selectedVolunteeringWork == work) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => MyEditVolunteeringWorkScreen(
+                              volunteeringWork: work,
+                            ),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedVolunteeringWork = work;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => MyEditVolunteeringWorkScreen(
+                            volunteeringWork: work,
+                          ),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border:
+                        work == selectedVolunteeringWork
+                            ? Border.all(color: theme.primaryColor, width: 3)
+                            : null,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Divider(thickness: 1),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              work.institutionName,
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                startDate,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                endDate,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(work.role, style: theme.textTheme.displayMedium),
+                      const SizedBox(height: 4),
+                      Text(
+                        work.description,
+                        style: theme.textTheme.displayMedium,
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
       );
     }
   }
@@ -758,8 +949,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     ThemeData theme = Theme.of(context);
 
     return {
-      ProfileAttribute.projects: showExistingProjects(context),
-      ProfileAttribute.workExperience: showExistingWorkExperiences(context),
+      ProfileAttribute.projects: const MyExistingProjectsWidget(),
+      ProfileAttribute.workExperience: const MyExistingWorkExperiencesWidget(),
       ProfileAttribute.certDegrees: showExistingCertDegrees(context),
       ProfileAttribute.skillsStrengths: showExistingSkillsStrengths(context),
       ProfileAttribute.personalStories: showExistingPersonalStories(context),
