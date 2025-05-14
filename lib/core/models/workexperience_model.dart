@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class WorkExperienceModel extends ChangeNotifier {
+  String id;
   String name; // name of business
   String role;
   DateTime dateBegun;
@@ -8,6 +10,7 @@ class WorkExperienceModel extends ChangeNotifier {
   String description;
 
   WorkExperienceModel({
+    required this.id,
     required this.name,
     required this.role,
     required this.dateBegun,
@@ -39,5 +42,34 @@ class WorkExperienceModel extends ChangeNotifier {
   void updateDescription(String newDescription) {
     description = newDescription;
     notifyListeners();
+  }
+
+  void updateUserID(String newID) {
+    id = newID;
+    notifyListeners();
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {
+      'name': name,
+      'description': description,
+      'role': role,
+      'dateBegun': dateBegun,
+      'dateEnded': dateEnded,
+    };
+  }
+
+  factory WorkExperienceModel.convertMap(Map<String, dynamic> map, String id) {
+    return WorkExperienceModel(
+      id: id,
+      name: map["name"],
+      description: map["description"],
+      role: map["role"],
+      dateBegun: (map['dateBegun'] as Timestamp).toDate(),
+      dateEnded:
+          map['dateEnded'] != null
+              ? (map['dateEnded'] as Timestamp).toDate()
+              : null,
+    );
   }
 }

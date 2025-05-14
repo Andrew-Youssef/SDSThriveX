@@ -30,15 +30,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     ProfileAttribute.profile:
         (context) => const MyEditProfileAttributesScreen(),
     ProfileAttribute.projects: (context) => const MyEditProjectsScreen(),
-    // ProfileAttribute.workExperience:
-    //     (context) => const MyEditWorkExperiencesScreen(),
-    // ProfileAttribute.certDegrees: (context) => const MyEditCertDegreesScreen(),
-    // ProfileAttribute.skillsStrengths:
-    //     (context) => const MyEditSkillsStrengthsScreen(),
-    // ProfileAttribute.personalStories:
-    //     (context) => const MyEditPersonalStoriesScreen(),
-    // ProfileAttribute.volunteeringWork:
-    //     (context) => const MyEditVolunteeringWorksScreen(),
+    ProfileAttribute.workExperience:
+        (context) => const MyEditWorkExperiencesScreen(),
+    ProfileAttribute.certDegrees: (context) => const MyEditCertDegreesScreen(),
+    ProfileAttribute.skillsStrengths:
+        (context) => const MyEditSkillsStrengthsScreen(),
+    ProfileAttribute.personalStories:
+        (context) => const MyEditPersonalStoriesScreen(),
+    ProfileAttribute.volunteeringWork:
+        (context) => const MyEditVolunteeringWorksScreen(),
   };
 
   void toggleProfileAttributes(ProfileAttribute key) {
@@ -314,381 +314,381 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }
   }
 
-  // Widget showExistingWorkExperiences(BuildContext context) {
-  //   UserProvider userProvider = Provider.of<UserProvider>(context);
-  //   ThemeData theme = Theme.of(context);
-  //   List<WorkExperienceModel> projects = userProvider.workExperiences;
+  Widget showExistingWorkExperiences(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<WorkExperienceModel> workExperiences = userProvider.workExperiences;
 
-  //   if (projects.isEmpty) {
-  //     return Text(
-  //       'Place holder text for Work Experience',
-  //       style: theme.textTheme.displayMedium,
-  //     );
-  //   } else {
-  //     return SizedBox(
-  //       height: 200,
-  //       child: ListView(
-  //         padding: EdgeInsets.all(8.0),
-  //         scrollDirection: Axis.horizontal,
-  //         shrinkWrap: true,
-  //         children: [
-  //           for (final p in projects) ...[
-  //             GestureDetector(
-  //               onTap: () {
-  //                 if (selectedWorkExperience == p) {
-  //                   Navigator.push(
-  //                     context,
-  //                     MaterialPageRoute(
-  //                       builder:
-  //                           (context) =>
-  //                               MyEditWorkExperienceScreen(workExperience: p),
-  //                     ),
-  //                   );
-  //                 }
-  //                 setState(() {
-  //                   selectedWorkExperience = p;
-  //                 });
-  //               },
-  //               onLongPress: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder:
-  //                         (context) =>
-  //                             MyEditWorkExperienceScreen(workExperience: p),
-  //                   ),
-  //                 );
-  //               },
-  //               child: Container(
-  //                 decoration: BoxDecoration(
-  //                   border: Border.all(
-  //                     color: theme.primaryColor,
-  //                     width: p == selectedWorkExperience ? 5 : 3,
-  //                   ),
-  //                 ),
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     Text(p.name),
-  //                     Text(p.dateBegun.toString().split(' ')[0]),
-  //                     Text(
-  //                       p.dateEnded != null
-  //                           ? p.dateEnded!.toString().split(' ')[0]
-  //                           : 'Unknown',
-  //                     ),
-  //                     Text(p.description),
-  //                     Text(p.role),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //             SizedBox(width: 20),
-  //           ],
-  //         ],
-  //       ),
-  //     );
-  //   }
-  // }
+    if (workExperiences.isEmpty) {
+      return Text(
+        'Place holder text for Work Experience',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in workExperiences) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedWorkExperience == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                MyEditWorkExperienceScreen(workExperience: p),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedWorkExperience = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              MyEditWorkExperienceScreen(workExperience: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedWorkExperience ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.name),
+                      Text(p.dateBegun.toString().split(' ')[0]),
+                      Text(
+                        p.dateEnded != null
+                            ? p.dateEnded!.toString().split(' ')[0]
+                            : 'Unknown',
+                      ),
+                      Text(p.description),
+                      Text(p.role),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
 
-  // Widget showExistingCertDegrees(BuildContext context) {
-  //   UserProvider userProvider = Provider.of<UserProvider>(context);
-  //   ThemeData theme = Theme.of(context);
-  //   List<CertDegreesModel> projects = userProvider.certDegrees;
+  Widget showExistingCertDegrees(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<CertDegreesModel> certDegrees = userProvider.certDegrees;
 
-  //   if (projects.isEmpty) {
-  //     return Text(
-  //       'Place holder text for Certs & Degrees',
-  //       style: theme.textTheme.displayMedium,
-  //     );
-  //   } else {
-  //     return SizedBox(
-  //       height: 200,
-  //       child: ListView(
-  //         padding: EdgeInsets.all(8.0),
-  //         scrollDirection: Axis.horizontal,
-  //         shrinkWrap: true,
-  //         children: [
-  //           for (final p in projects) ...[
-  //             GestureDetector(
-  //               onTap: () {
-  //                 if (selectedCertDegree == p) {
-  //                   Navigator.push(
-  //                     context,
-  //                     MaterialPageRoute(
-  //                       builder:
-  //                           (context) => MyEditCertDegreeScreen(certDegree: p),
-  //                     ),
-  //                   );
-  //                 }
-  //                 setState(() {
-  //                   selectedCertDegree = p;
-  //                 });
-  //               },
-  //               onLongPress: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder:
-  //                         (context) => MyEditCertDegreeScreen(certDegree: p),
-  //                   ),
-  //                 );
-  //               },
-  //               child: Container(
-  //                 decoration: BoxDecoration(
-  //                   border: Border.all(
-  //                     color: theme.primaryColor,
-  //                     width: p == selectedCertDegree ? 5 : 3,
-  //                   ),
-  //                 ),
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     Text(p.institutionName),
-  //                     Text(p.certificateName),
-  //                     Text(p.dateStarted.toString().split(' ')[0]),
-  //                     Text(
-  //                       p.dateEnded != null
-  //                           ? p.dateEnded!.toString().split(' ')[0]
-  //                           : 'Unknown',
-  //                     ),
-  //                     Text(p.description),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //             SizedBox(width: 20),
-  //           ],
-  //         ],
-  //       ),
-  //     );
-  //   }
-  // }
+    if (certDegrees.isEmpty) {
+      return Text(
+        'Place holder text for Certs & Degrees',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in certDegrees) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedCertDegree == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => MyEditCertDegreeScreen(certDegree: p),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedCertDegree = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => MyEditCertDegreeScreen(certDegree: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedCertDegree ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.institutionName),
+                      Text(p.certificateName),
+                      Text(p.dateStarted.toString().split(' ')[0]),
+                      Text(
+                        p.dateEnded != null
+                            ? p.dateEnded!.toString().split(' ')[0]
+                            : 'Unknown',
+                      ),
+                      Text(p.description),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
 
-  // Widget showExistingSkillsStrengths(BuildContext context) {
-  //   UserProvider userProvider = Provider.of<UserProvider>(context);
-  //   ThemeData theme = Theme.of(context);
-  //   List<SkillsStrengthsModel> projects = userProvider.skillsStrengths;
+  Widget showExistingSkillsStrengths(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<SkillsStrengthsModel> skillsStrengths = userProvider.skillsStrengths;
 
-  //   if (projects.isEmpty) {
-  //     return Text(
-  //       'Place holder text for Skills & Strengths',
-  //       style: theme.textTheme.displayMedium,
-  //     );
-  //   } else {
-  //     return SizedBox(
-  //       height: 200,
-  //       child: ListView(
-  //         padding: EdgeInsets.all(8.0),
-  //         scrollDirection: Axis.horizontal,
-  //         shrinkWrap: true,
-  //         children: [
-  //           for (final p in projects) ...[
-  //             GestureDetector(
-  //               onTap: () {
-  //                 if (selectedSkillStrength == p) {
-  //                   Navigator.push(
-  //                     context,
-  //                     MaterialPageRoute(
-  //                       builder:
-  //                           (context) =>
-  //                               MyEditSkillStrengthScreen(skillStrength: p),
-  //                     ),
-  //                   );
-  //                 }
-  //                 setState(() {
-  //                   selectedSkillStrength = p;
-  //                 });
-  //               },
-  //               onLongPress: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder:
-  //                         (context) =>
-  //                             MyEditSkillStrengthScreen(skillStrength: p),
-  //                   ),
-  //                 );
-  //               },
-  //               child: Container(
-  //                 decoration: BoxDecoration(
-  //                   border: Border.all(
-  //                     color: theme.primaryColor,
-  //                     width: p == selectedSkillStrength ? 5 : 3,
-  //                   ),
-  //                 ),
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     Text(p.skill),
-  //                     Text(p.acquiredAt),
-  //                     Text(p.description),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //             SizedBox(width: 20),
-  //           ],
-  //         ],
-  //       ),
-  //     );
-  //   }
-  // }
+    if (skillsStrengths.isEmpty) {
+      return Text(
+        'Place holder text for Skills & Strengths',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in skillsStrengths) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedSkillStrength == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                MyEditSkillStrengthScreen(skillStrength: p),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedSkillStrength = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              MyEditSkillStrengthScreen(skillStrength: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedSkillStrength ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.skill),
+                      Text(p.acquiredAt),
+                      Text(p.description),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
 
-  // Widget showExistingPersonalStories(BuildContext context) {
-  //   UserProvider userProvider = Provider.of<UserProvider>(context);
-  //   ThemeData theme = Theme.of(context);
-  //   List<PersonalStoriesModel> projects = userProvider.personalStories;
+  Widget showExistingPersonalStories(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<PersonalStoriesModel> stories = userProvider.personalStories;
 
-  //   if (projects.isEmpty) {
-  //     return Text(
-  //       'Place holder text for Personal Stories',
-  //       style: theme.textTheme.displayMedium,
-  //     );
-  //   } else {
-  //     return SizedBox(
-  //       height: 200,
-  //       child: ListView(
-  //         padding: EdgeInsets.all(8.0),
-  //         scrollDirection: Axis.horizontal,
-  //         shrinkWrap: true,
-  //         children: [
-  //           for (final p in projects) ...[
-  //             GestureDetector(
-  //               onTap: () {
-  //                 if (selectedPersonalStory == p) {
-  //                   Navigator.push(
-  //                     context,
-  //                     MaterialPageRoute(
-  //                       builder:
-  //                           (context) =>
-  //                               MyEditPersonalStoryScreen(personalStory: p),
-  //                     ),
-  //                   );
-  //                 }
-  //                 setState(() {
-  //                   selectedPersonalStory = p;
-  //                 });
-  //               },
-  //               onLongPress: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder:
-  //                         (context) =>
-  //                             MyEditPersonalStoryScreen(personalStory: p),
-  //                   ),
-  //                 );
-  //               },
-  //               child: Container(
-  //                 decoration: BoxDecoration(
-  //                   border: Border.all(
-  //                     color: theme.primaryColor,
-  //                     width: p == selectedPersonalStory ? 5 : 3,
-  //                   ),
-  //                 ),
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     Text(p.title),
-  //                     Text(p.date.toString().split(' ')[0]),
-  //                     Text(p.description),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //             SizedBox(width: 20),
-  //           ],
-  //         ],
-  //       ),
-  //     );
-  //   }
-  // }
+    if (stories.isEmpty) {
+      return Text(
+        'Place holder text for Personal Stories',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in stories) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedPersonalStory == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                MyEditPersonalStoryScreen(personalStory: p),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedPersonalStory = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              MyEditPersonalStoryScreen(personalStory: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedPersonalStory ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.title),
+                      Text(p.date.toString().split(' ')[0]),
+                      Text(p.description),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
 
-  // Widget showExistingVolunteeringWorks(BuildContext context) {
-  //   UserProvider userProvider = Provider.of<UserProvider>(context);
-  //   ThemeData theme = Theme.of(context);
-  //   List<VolunteeringWorkModel> projects = userProvider.volunteeringWork;
+  Widget showExistingVolunteeringWorks(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    List<VolunteeringWorkModel> voluteers = userProvider.volunteeringWorks;
 
-  //   if (projects.isEmpty) {
-  //     return Text(
-  //       'Place holder text for Volunteering Work',
-  //       style: theme.textTheme.displayMedium,
-  //     );
-  //   } else {
-  //     return SizedBox(
-  //       height: 200,
-  //       child: ListView(
-  //         padding: EdgeInsets.all(8.0),
-  //         scrollDirection: Axis.horizontal,
-  //         shrinkWrap: true,
-  //         children: [
-  //           for (final p in projects) ...[
-  //             GestureDetector(
-  //               onTap: () {
-  //                 if (selectedVolunteeringWork == p) {
-  //                   Navigator.push(
-  //                     context,
-  //                     MaterialPageRoute(
-  //                       builder:
-  //                           (context) => MyEditVolunteeringWorkScreen(
-  //                             volunteeringWork: p,
-  //                           ),
-  //                     ),
-  //                   );
-  //                 }
-  //                 setState(() {
-  //                   selectedVolunteeringWork = p;
-  //                 });
-  //               },
-  //               onLongPress: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder:
-  //                         (context) =>
-  //                             MyEditVolunteeringWorkScreen(volunteeringWork: p),
-  //                   ),
-  //                 );
-  //               },
-  //               child: Container(
-  //                 decoration: BoxDecoration(
-  //                   border: Border.all(
-  //                     color: theme.primaryColor,
-  //                     width: p == selectedVolunteeringWork ? 5 : 3,
-  //                   ),
-  //                 ),
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     Text(p.institutionName),
-  //                     Text(p.role),
-  //                     Text(p.dateStarted.toString().split(' ')[0]),
-  //                     Text(
-  //                       p.dateEnded != null
-  //                           ? p.dateEnded!.toString().split(' ')[0]
-  //                           : 'Unknown',
-  //                     ),
-  //                     Text(p.description),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //             SizedBox(width: 20),
-  //           ],
-  //         ],
-  //       ),
-  //     );
-  //   }
-  // }
+    if (voluteers.isEmpty) {
+      return Text(
+        'Place holder text for Volunteering Work',
+        style: theme.textTheme.displayMedium,
+      );
+    } else {
+      return SizedBox(
+        height: 200,
+        child: ListView(
+          padding: EdgeInsets.all(8.0),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            for (final p in voluteers) ...[
+              GestureDetector(
+                onTap: () {
+                  if (selectedVolunteeringWork == p) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => MyEditVolunteeringWorkScreen(
+                              volunteeringWork: p,
+                            ),
+                      ),
+                    );
+                  }
+                  setState(() {
+                    selectedVolunteeringWork = p;
+                  });
+                },
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              MyEditVolunteeringWorkScreen(volunteeringWork: p),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: p == selectedVolunteeringWork ? 5 : 3,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(p.institutionName),
+                      Text(p.role),
+                      Text(p.dateStarted.toString().split(' ')[0]),
+                      Text(
+                        p.dateEnded != null
+                            ? p.dateEnded!.toString().split(' ')[0]
+                            : 'Unknown',
+                      ),
+                      Text(p.description),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
+          ],
+        ),
+      );
+    }
+  }
 
   Map<ProfileAttribute, Widget> getAttributeWidgetData(context) {
     return {
       ProfileAttribute.projects: showExistingProjects(context),
-      // ProfileAttribute.workExperience: showExistingWorkExperiences(context),
-      // ProfileAttribute.certDegrees: showExistingCertDegrees(context),
-      // ProfileAttribute.skillsStrengths: showExistingSkillsStrengths(context),
-      // ProfileAttribute.personalStories: showExistingPersonalStories(context),
-      // ProfileAttribute.volunteeringWork: showExistingVolunteeringWorks(context),
+      ProfileAttribute.workExperience: showExistingWorkExperiences(context),
+      ProfileAttribute.certDegrees: showExistingCertDegrees(context),
+      ProfileAttribute.skillsStrengths: showExistingSkillsStrengths(context),
+      ProfileAttribute.personalStories: showExistingPersonalStories(context),
+      ProfileAttribute.volunteeringWork: showExistingVolunteeringWorks(context),
     };
   }
 }
