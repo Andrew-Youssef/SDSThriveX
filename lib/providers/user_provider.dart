@@ -35,6 +35,16 @@ class UserProvider extends ChangeNotifier {
     return _themeData.getMyTheme();
   }
 
+  Future<String> getUserType(String userId) async{
+    final ref =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get();
+
+    return ref.data()?['userType'];
+  }
+
   void setUserTheme(UserType newType) {
     _themeData.setUserType(newType);
     notifyListeners();
