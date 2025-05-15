@@ -29,6 +29,7 @@ class ProfileModel extends ChangeNotifier {
 
   void updateEndorsement(){
     isEndorsed = !isEndorsed;
+    notifyListeners();
   }
 
   void updateName(String newName) {

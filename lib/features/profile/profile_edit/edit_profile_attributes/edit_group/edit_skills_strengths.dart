@@ -27,6 +27,8 @@ class _MyEditSkillsStrengthsScreenState
     _skillController = TextEditingController();
     _acquiredAtController = TextEditingController();
     _descriptionController = TextEditingController();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.loadProjects(userProvider.profile!.userId);
   }
 
   @override

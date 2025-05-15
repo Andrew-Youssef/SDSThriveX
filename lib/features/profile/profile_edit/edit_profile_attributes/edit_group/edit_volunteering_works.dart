@@ -31,6 +31,8 @@ class _MyEditVolunteeringWorkScreenState
     _descriptionController = TextEditingController();
     _startDate = TextEditingController();
     _endDate = TextEditingController();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.loadProjects(userProvider.profile!.userId);
   }
 
   @override

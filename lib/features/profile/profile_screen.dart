@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/user_provider.dart';
@@ -52,7 +53,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    // currUID = FirebaseAuth.instance.currentUser?.uid
+    // selectUID 
+    // if currID != selectUID
+    // 
+    //
+    //
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
