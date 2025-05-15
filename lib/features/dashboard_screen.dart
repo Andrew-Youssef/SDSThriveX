@@ -41,14 +41,6 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
                 child: ListView(
                   padding: const EdgeInsets.only(top: 10),
                   children: [
-                    Text("HELLO ${userProvider.projects.length}"),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        userProvider.generateSummary();
-                      },
-                      child: Text("HELLO ${userProvider.aiSummary}"),
-                    ),
                     const SizedBox(height: 10),
                     buildMyUserTypeButtons(context),
                     const SizedBox(height: 10),

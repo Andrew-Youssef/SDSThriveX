@@ -6,7 +6,7 @@ import '../core/theme/theme.dart';
 import '../data/globals.dart';
 
 class UserProvider extends ChangeNotifier {
-  late String? _aiSummary;
+  AIModel? _aiSummary;
   late MyThemeData _themeData;
   ProfileModel? _profile;
   List<ProjectModel> _projects = [];
@@ -17,11 +17,10 @@ class UserProvider extends ChangeNotifier {
   List<VolunteeringWorkModel> _volunteeringWorks = [];
 
   UserProvider() {
-    _aiSummary = "";
     _themeData = MyThemeData(UserType.student);
   }
 
-  String? get aiSummary => _aiSummary;
+  AIModel? get aiSummary => _aiSummary;
   ProfileModel? get profile => _profile;
   UserType get type => UserTypeExtension.fromString(_profile!.userType);
   List<ProjectModel> get projects => _projects;
@@ -47,7 +46,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setProfile(ProfileModel profileData) {
+  void setProfileAndDetails(ProfileModel profileData) {
     _profile = profileData;
     loadProjects(profileData.userId);
     loadCertDegrees(profileData.userId);
@@ -477,5 +476,34 @@ class UserProvider extends ChangeNotifier {
     final response = await gemini.prompt(parts: [Part.text(prompt)]);
 
     return response?.output ?? "No story generated.";
+  }
+
+  Future<void> addAISummary(AIModel newSummary) async {
+    final userId = _profile?.userId;
+    if (userId == null) return;
+
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('summary')
+        .doc('AI');
+
+    await docRef.set(newSummary.toJSON());
+    _aiSummary = newSummary;
+    notifyListeners();
+  }
+
+  Future<void> loadSummary(String userId) async {
+    final ref =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('summary')
+            .doc('AI')
+            .get();
+
+    _aiSummary = AIModel.convertMap(ref.data()!, 'AI');
+
+    notifyListeners();
   }
 }
