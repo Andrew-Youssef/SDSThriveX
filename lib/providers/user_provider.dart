@@ -35,12 +35,9 @@ class UserProvider extends ChangeNotifier {
     return _themeData.getMyTheme();
   }
 
-  Future<String> getUserType(String userId) async{
+  Future<String> getUserType(String userId) async {
     final ref =
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .get();
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
     return ref.data()?['userType'];
   }
@@ -53,6 +50,11 @@ class UserProvider extends ChangeNotifier {
   void setProfile(ProfileModel profileData) {
     _profile = profileData;
     loadProjects(profileData.userId);
+    loadCertDegrees(profileData.userId);
+    loadPersonalStories(profileData.userId);
+    loadSkillsStrengths(profileData.userId);
+    loadVolunteeringWorks(profileData.userId);
+    loadWorkExperiences(profileData.userId);
     notifyListeners();
   }
 
@@ -362,13 +364,13 @@ class UserProvider extends ChangeNotifier {
     ].join('\n\n===\n\n');
 
     final prompt =
-        "You are an expert career assistant helping job seekers present themselves professionally. \n\n" 
-        "I will give you a list of information about a person, including their education, work experience, volunteer work, achievements, and other relevant background. \n\n" 
-        "Your task is to write a professional and engaging summary of 250 words that could appear on a professional profile page such as LinkedIn or a job application site. \n\n" 
+        "You are an expert career assistant helping job seekers present themselves professionally. \n\n"
+        "I will give you a list of information about a person, including their education, work experience, volunteer work, achievements, and other relevant background. \n\n"
+        "Your task is to write a professional and engaging summary of 250 words that could appear on a professional profile page such as LinkedIn or a job application site. \n\n"
         "The summary should: \n\n"
-        "- Focus on the most important facts a recruiter who are looking for fresh talents would care about. \n\n" 
-        "- Highlight skills, experience, achievements, and personality traits relevant to employability. \n\n" 
-        "- Be written in the third person (Example: Hong is a Software Engineering Student...). \n\n" 
+        "- Focus on the most important facts a recruiter who are looking for fresh talents would care about. \n\n"
+        "- Highlight skills, experience, achievements, and personality traits relevant to employability. \n\n"
+        "- Be written in the third person (Example: Hong is a Software Engineering Student...). \n\n"
         "- Be clear, concise, and professional. \n\n"
         "- Be appropriate for a reader who is quickly scanning a candidate profile. \n\n"
         "Please do not include headings or bullet points, just a well-written paragraph summary. \n\n"

@@ -53,9 +53,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     // currUID = FirebaseAuth.instance.currentUser?.uid
-    // selectUID 
+    // selectUID
     // if currID != selectUID
-    // 
+    //
     //
     //
     return Container(
