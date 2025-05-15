@@ -27,7 +27,7 @@ class ProfileModel extends ChangeNotifier {
     );
   }
 
-  void updateEndorsement(){
+  void updateEndorsement() {
     isEndorsed = !isEndorsed;
     notifyListeners();
   }

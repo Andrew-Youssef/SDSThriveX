@@ -93,6 +93,22 @@ class UserProvider extends ChangeNotifier {
     _projects.removeWhere((project) => project.id == projectId);
   }
 
+  Future<void> updateProject(
+    String projectId,
+    Map<String, dynamic> fieldsToUpdate,
+  ) async {
+    final userId = _profile?.userId;
+    if (userId == null) return;
+
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('projects')
+        .doc(projectId);
+    await docRef.update(fieldsToUpdate);
+    notifyListeners();
+  }
+
   Future<void> loadProjects(String userId) async {
     final ref =
         await FirebaseFirestore.instance
@@ -142,6 +158,22 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
+  Future<void> updateWorkExperience(
+    String workExperienceId,
+    Map<String, dynamic> fieldsToUpdate,
+  ) async {
+    final userId = _profile?.userId;
+    if (userId == null) return;
+
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('workExperiences')
+        .doc(workExperienceId);
+    await docRef.update(fieldsToUpdate);
+    notifyListeners();
+  }
+
   Future<void> loadWorkExperiences(String userId) async {
     final ref =
         await FirebaseFirestore.instance
@@ -187,6 +219,22 @@ class UserProvider extends ChangeNotifier {
         .doc(certDegreeId)
         .delete();
     _certDegrees.removeWhere((certDegree) => certDegree.id == certDegreeId);
+  }
+
+  Future<void> updateCertDegree(
+    String certDegreeId,
+    Map<String, dynamic> fieldsToUpdate,
+  ) async {
+    final userId = _profile?.userId;
+    if (userId == null) return;
+
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('certDegree')
+        .doc(certDegreeId);
+    await docRef.update(fieldsToUpdate);
+    notifyListeners();
   }
 
   Future<void> loadCertDegrees(String userId) async {
@@ -236,6 +284,22 @@ class UserProvider extends ChangeNotifier {
     _skillsStrengths.removeWhere((skill) => skill.id == skillId);
   }
 
+  Future<void> updateSkillsStrengths(
+    String skillId,
+    Map<String, dynamic> fieldsToUpdate,
+  ) async {
+    final userId = _profile?.userId;
+    if (userId == null) return;
+
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('skills')
+        .doc(skillId);
+    await docRef.update(fieldsToUpdate);
+    notifyListeners();
+  }
+
   Future<void> loadSkillsStrengths(String userId) async {
     final ref =
         await FirebaseFirestore.instance
@@ -281,6 +345,22 @@ class UserProvider extends ChangeNotifier {
         .doc(storyId)
         .delete();
     _personalStories.removeWhere((story) => story.id == storyId);
+  }
+
+  Future<void> updatePersonalStory(
+    String storyId,
+    Map<String, dynamic> fieldsToUpdate,
+  ) async {
+    final userId = _profile?.userId;
+    if (userId == null) return;
+
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('stories')
+        .doc(storyId);
+    await docRef.update(fieldsToUpdate);
+    notifyListeners();
   }
 
   Future<void> loadPersonalStories(String userId) async {
@@ -330,6 +410,22 @@ class UserProvider extends ChangeNotifier {
     _volunteeringWorks.removeWhere((volunteer) => volunteer.id == volunteerId);
   }
 
+  Future<void> updateVolunteerWork(
+    String volunteerId,
+    Map<String, dynamic> fieldsToUpdate,
+  ) async {
+    final userId = _profile?.userId;
+    if (userId == null) return;
+
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('volunteeringWorks')
+        .doc(volunteerId);
+    await docRef.update(fieldsToUpdate);
+    notifyListeners();
+  }
+
   Future<void> loadVolunteeringWorks(String userId) async {
     final ref =
         await FirebaseFirestore.instance
@@ -347,7 +443,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> generateSummary() async {
+  Future<String> generateSummary() async {
     final gemini = Gemini.instance;
     await loadProjects(profile!.userId);
     await loadCertDegrees(profile!.userId);
@@ -380,6 +476,6 @@ class UserProvider extends ChangeNotifier {
 
     final response = await gemini.prompt(parts: [Part.text(prompt)]);
 
-    _aiSummary = response?.output ?? "No story generated.";
+    return response?.output ?? "No story generated.";
   }
 }
