@@ -337,11 +337,11 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> generateSummary() async {
     final gemini = Gemini.instance;
-    loadProjects(profile!.userId);
-    loadCertDegrees(profile!.userId);
-    loadSkillsStrengths(profile!.userId);
-    loadWorkExperiences(profile!.userId);
-    loadVolunteeringWorks(profile!.userId);
+    await loadProjects(profile!.userId);
+    await loadCertDegrees(profile!.userId);
+    await loadSkillsStrengths(profile!.userId);
+    await loadWorkExperiences(profile!.userId);
+    await loadVolunteeringWorks(profile!.userId);
 
     String combinedInformation = [
       projects.map((p) => p.toPrompt()).join('\n\n'),
@@ -352,17 +352,19 @@ class UserProvider extends ChangeNotifier {
     ].join('\n\n===\n\n');
 
     final prompt =
-        "You are an expert career assistant helping job seekers present themselves professionally. \n\n"
-        "I will give you a list of information about a person, including their education, work experience, volunteer work, achievements, and other relevant background. \n\n"
-        "Your task is to write a professional and engaging summary of 300 to 500 words that could appear on a professional profile page such as LinkedIn or a job application site. \n\n"
+        "You are an expert career assistant helping job seekers present themselves professionally. \n\n" 
+        "I will give you a list of information about a person, including their education, work experience, volunteer work, achievements, and other relevant background. \n\n" 
+        "Your task is to write a professional and engaging summary of 250 words that could appear on a professional profile page such as LinkedIn or a job application site. \n\n" 
         "The summary should: \n\n"
-        "- Focus on the most important facts a recruiter who are looking for fresh talents would care about. \n\n"
-        "- Highlight skills, experience, achievements, and personality traits relevant to employability. \n\n"
-        "- Be written in the third person (Example: Hong is a Software Engineering Student...). \n\n"
-        "- Be clear, concise, and professional. \n\n";
-    "- Be appropriate for a reader who is quickly scanning a candidate profile. \n\n"
+        "- Focus on the most important facts a recruiter who are looking for fresh talents would care about. \n\n" 
+        "- Highlight skills, experience, achievements, and personality traits relevant to employability. \n\n" 
+        "- Be written in the third person (Example: Hong is a Software Engineering Student...). \n\n" 
+        "- Be clear, concise, and professional. \n\n"
+        "- Be appropriate for a reader who is quickly scanning a candidate profile. \n\n"
         "Please do not include headings or bullet points, just a well-written paragraph summary. \n\n"
-        "Here's the list of information: $combinedInformation";
+        "Do not give any advice on how to improve it, Do not mention about insufficient data and Do not critise it since this is for the recruiter and not for the student usage. \n\n"
+        "If there is not enough information, do not give a summary and says to view the profile themselves"
+        "Here's the list of information: $combinedInformation  \n\n";
 
     final response = await gemini.prompt(parts: [Part.text(prompt)]);
 
