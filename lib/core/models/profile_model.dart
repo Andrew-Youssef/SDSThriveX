@@ -23,7 +23,7 @@ class ProfileModel extends ChangeNotifier {
       userId: doc.id,
       name: data['name'],
       userType: data['userType'],
-      isEndorsed: data['isEndorsed'],
+      isEndorsed: data['isEndorsed'] ?? false,
     );
   }
 
