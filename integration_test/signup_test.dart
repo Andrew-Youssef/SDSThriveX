@@ -56,7 +56,7 @@ void main() {
     expect(result, contains('Passwords do not match'));
   });
 
-    testWidgets('Signup should fail with passwords that do not have a special character', (WidgetTester tester) async {
+  testWidgets('Signup should fail with passwords that do not have a special character', (WidgetTester tester) async {
     final context = await getTestContext(tester);
 
     final result = await authService.signup(
@@ -71,12 +71,12 @@ void main() {
     expect(result, isNotNull, reason: 'Signup should fail when a password does not have a special character');
   });
 
-      testWidgets('Signup should fail with passwords that do not have a number', (WidgetTester tester) async {
+  testWidgets('Signup should fail with passwords that do not have a number', (WidgetTester tester) async {
     final context = await getTestContext(tester);
 
     final result = await authService.signup(
-      name: 'No Special Characters',
-      email: 'LackOfSpecialCharacters@test.com',
+      name: 'No Numbers',
+      email: 'LackOfNumbers@test.com',
       password: 'Password!',
       confirmPassword: 'Password!',
       userType: 'Professor',
