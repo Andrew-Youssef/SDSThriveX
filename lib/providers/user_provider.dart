@@ -48,6 +48,9 @@ class UserProvider extends ChangeNotifier {
 
   void setProfileAndDetails(ProfileModel profileData) {
     _profile = profileData;
+    _themeData = MyThemeData(
+      UserTypeExtension.fromString(profileData.userType),
+    );
     loadProjects(profileData.userId);
     loadCertDegrees(profileData.userId);
     loadPersonalStories(profileData.userId);

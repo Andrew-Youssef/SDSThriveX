@@ -37,6 +37,7 @@ class AuthService {
               .get();
 
       final userProvider = Provider.of<UserProvider>(context, listen: false);
+      // final userProvider = Provider.of<UserProvider>(context);
       userProvider.setProfileAndDetails(ProfileModel.fromDB(doc));
 
       Navigator.pushReplacement(
@@ -67,6 +68,7 @@ class AuthService {
               .collection('users')
               .doc(FirebaseAuth.instance.currentUser?.uid)
               .get();
+      // final userProvider = Provider.of<UserProvider>(context);
       final userProvider = Provider.of<UserProvider>(context, listen: false);
       userProvider.setProfileAndDetails(ProfileModel.fromDB(doc));
 
