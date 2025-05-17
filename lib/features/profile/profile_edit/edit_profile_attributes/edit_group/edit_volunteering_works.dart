@@ -32,7 +32,7 @@ class _MyEditVolunteeringWorkScreenState
     _startDate = TextEditingController();
     _endDate = TextEditingController();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.loadProjects(userProvider.profile!.userId);
+    userProvider.loadVolunteeringWorks(userProvider.profile!.userId);
   }
 
   @override

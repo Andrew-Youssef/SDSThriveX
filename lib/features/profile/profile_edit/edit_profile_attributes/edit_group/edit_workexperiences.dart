@@ -22,7 +22,6 @@ class _MyEditWorkExperienceScreenState
   late final TextEditingController _descriptionController;
   late final TextEditingController _startDate;
   late final TextEditingController _endDate;
-  
 
   @override
   void initState() {
@@ -33,7 +32,7 @@ class _MyEditWorkExperienceScreenState
     _startDate = TextEditingController();
     _endDate = TextEditingController();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.loadProjects(userProvider.profile!.userId);
+    userProvider.loadWorkExperiences(userProvider.profile!.userId);
   }
 
   @override

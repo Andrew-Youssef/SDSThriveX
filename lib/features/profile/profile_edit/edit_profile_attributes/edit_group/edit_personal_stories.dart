@@ -28,7 +28,7 @@ class _MyEditPersonalStoriesScreenState
     _dateController = TextEditingController();
     _descriptionController = TextEditingController();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.loadProjects(userProvider.profile!.userId);
+    userProvider.loadPersonalStories(userProvider.profile!.userId);
   }
 
   @override

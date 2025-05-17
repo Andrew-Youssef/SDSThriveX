@@ -76,13 +76,20 @@ class UserProvider extends ChangeNotifier {
     newProject.updateUserID(docRef.id);
     await docRef.set(newProject.toJSON());
     _projects.add(newProject);
+    // print("addProject projectid: ${docRef.id}\n");
+
     notifyListeners();
   }
 
   Future<void> removeProject(String projectId) async {
     final userId = _profile?.userId;
-    if (userId == null) return;
+    if (userId == null) {
+      // print("removeProject userid null\n");
+      return;
+    }
 
+    // print("removeProject userId: {$userId}\n");
+    // print("trying to delete project ID: $projectId\n");
     await FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
@@ -90,6 +97,8 @@ class UserProvider extends ChangeNotifier {
         .doc(projectId)
         .delete();
     _projects.removeWhere((project) => project.id == projectId);
+    // print("isProjects empty: ${_projects.isEmpty}\n");
+    notifyListeners();
   }
 
   Future<void> updateProject(
@@ -119,7 +128,8 @@ class UserProvider extends ChangeNotifier {
     _projects =
         ref.docs.map((doc) {
           final data = doc.data();
-          return ProjectModel.convertMap(data, userId);
+          doc.id;
+          return ProjectModel.convertMap(data, doc.id);
         }).toList();
 
     notifyListeners();
@@ -155,6 +165,7 @@ class UserProvider extends ChangeNotifier {
     _workExperiences.removeWhere(
       (workExperience) => workExperience.id == workExperienceId,
     );
+    notifyListeners();
   }
 
   Future<void> updateWorkExperience(
@@ -184,7 +195,7 @@ class UserProvider extends ChangeNotifier {
     _workExperiences =
         ref.docs.map((doc) {
           final data = doc.data();
-          return WorkExperienceModel.convertMap(data, userId);
+          return WorkExperienceModel.convertMap(data, doc.id);
         }).toList();
 
     notifyListeners();
@@ -218,6 +229,7 @@ class UserProvider extends ChangeNotifier {
         .doc(certDegreeId)
         .delete();
     _certDegrees.removeWhere((certDegree) => certDegree.id == certDegreeId);
+    notifyListeners();
   }
 
   Future<void> updateCertDegree(
@@ -247,7 +259,7 @@ class UserProvider extends ChangeNotifier {
     _certDegrees =
         ref.docs.map((doc) {
           final data = doc.data();
-          return CertDegreesModel.convertMap(data, userId);
+          return CertDegreesModel.convertMap(data, doc.id);
         }).toList();
 
     notifyListeners();
@@ -281,6 +293,7 @@ class UserProvider extends ChangeNotifier {
         .doc(skillId)
         .delete();
     _skillsStrengths.removeWhere((skill) => skill.id == skillId);
+    notifyListeners();
   }
 
   Future<void> updateSkillsStrengths(
@@ -310,7 +323,7 @@ class UserProvider extends ChangeNotifier {
     _skillsStrengths =
         ref.docs.map((doc) {
           final data = doc.data();
-          return SkillsStrengthsModel.convertMap(data, userId);
+          return SkillsStrengthsModel.convertMap(data, doc.id);
         }).toList();
 
     notifyListeners();
@@ -344,6 +357,7 @@ class UserProvider extends ChangeNotifier {
         .doc(storyId)
         .delete();
     _personalStories.removeWhere((story) => story.id == storyId);
+    notifyListeners();
   }
 
   Future<void> updatePersonalStory(
@@ -373,7 +387,7 @@ class UserProvider extends ChangeNotifier {
     _personalStories =
         ref.docs.map((doc) {
           final data = doc.data();
-          return PersonalStoriesModel.convertMap(data, userId);
+          return PersonalStoriesModel.convertMap(data, doc.id);
         }).toList();
 
     notifyListeners();
@@ -407,6 +421,7 @@ class UserProvider extends ChangeNotifier {
         .doc(volunteerId)
         .delete();
     _volunteeringWorks.removeWhere((volunteer) => volunteer.id == volunteerId);
+    notifyListeners();
   }
 
   Future<void> updateVolunteerWork(
@@ -436,7 +451,7 @@ class UserProvider extends ChangeNotifier {
     _volunteeringWorks =
         ref.docs.map((doc) {
           final data = doc.data();
-          return VolunteeringWorkModel.convertMap(data, userId);
+          return VolunteeringWorkModel.convertMap(data, doc.id);
         }).toList();
 
     notifyListeners();
@@ -493,6 +508,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  //load summary
   Future<void> loadSummary(String userId) async {
     final ref =
         await FirebaseFirestore.instance
