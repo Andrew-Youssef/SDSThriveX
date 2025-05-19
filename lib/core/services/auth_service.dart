@@ -28,7 +28,12 @@ class AuthService {
       await FirebaseFirestore.instance
           .collection("users")
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .set({'name': name, 'email': email, 'userType': userType});
+          .set({
+            'name': name,
+            'email': email,
+            'userType': userType,
+            'isEndorsed': false,
+          });
 
       final doc =
           await FirebaseFirestore.instance
