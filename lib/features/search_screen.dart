@@ -72,7 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       MaterialPageRoute(
                         builder:
                             (context) =>
-                                MyProfileScreen(selectedUserId: data.id),
+                                MyProfileScreen(selectedUserId: data['id']),
                       ),
                     );
                   },

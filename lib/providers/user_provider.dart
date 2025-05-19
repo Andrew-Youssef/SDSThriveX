@@ -16,15 +16,6 @@ class UserProvider extends ChangeNotifier {
   List<PersonalStoriesModel> _personalStories = [];
   List<VolunteeringWorkModel> _volunteeringWorks = [];
 
-  final Map<ProfileAttribute, bool> _profileAttributes = {
-    ProfileAttribute.projects: false,
-    ProfileAttribute.workExperience: false,
-    ProfileAttribute.certDegrees: false,
-    ProfileAttribute.skillsStrengths: false,
-    ProfileAttribute.personalStories: false,
-    ProfileAttribute.volunteeringWork: false,
-  };
-
   UserProvider() {
     _themeData = MyThemeData(UserType.student);
   }
@@ -39,7 +30,6 @@ class UserProvider extends ChangeNotifier {
   List<PersonalStoriesModel> get personalStories => _personalStories;
   List<VolunteeringWorkModel> get volunteeringWorks => _volunteeringWorks;
   String get userId => _profile!.userId;
-  Map<ProfileAttribute, bool> get profileAttributes => _profileAttributes;
 
   ThemeData getTheme() {
     return _themeData.getMyTheme();
@@ -76,19 +66,6 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateProfileAttributes() {
-    profileAttributes[ProfileAttribute.projects] = _projects.isNotEmpty;
-    profileAttributes[ProfileAttribute.workExperience] =
-        _workExperiences.isNotEmpty;
-    profileAttributes[ProfileAttribute.certDegrees] = _certDegrees.isNotEmpty;
-    profileAttributes[ProfileAttribute.skillsStrengths] =
-        _skillsStrengths.isNotEmpty;
-    profileAttributes[ProfileAttribute.personalStories] =
-        _personalStories.isNotEmpty;
-    profileAttributes[ProfileAttribute.volunteeringWork] =
-        _volunteeringWorks.isNotEmpty;
-  }
-
   Future<void> addProject(ProjectModel newProject) async {
     final userId = _profile?.userId;
     if (userId == null) return;
@@ -104,7 +81,7 @@ class UserProvider extends ChangeNotifier {
     await docRef.set(newProject.toJSON());
     _projects.add(newProject);
     // print("addProject projectid: ${docRef.id}\n");
-    updateProfileAttributes();
+
     notifyListeners();
   }
 
@@ -125,7 +102,6 @@ class UserProvider extends ChangeNotifier {
         .delete();
     _projects.removeWhere((project) => project.id == projectId);
     // print("isProjects empty: ${_projects.isEmpty}\n");
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -159,7 +135,7 @@ class UserProvider extends ChangeNotifier {
           doc.id;
           return ProjectModel.convertMap(data, doc.id);
         }).toList();
-    updateProfileAttributes();
+
     notifyListeners();
   }
 
@@ -177,7 +153,6 @@ class UserProvider extends ChangeNotifier {
     newWorkExperience.updateUserID(docRef.id);
     await docRef.set(newWorkExperience.toJSON());
     _workExperiences.add(newWorkExperience);
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -194,7 +169,6 @@ class UserProvider extends ChangeNotifier {
     _workExperiences.removeWhere(
       (workExperience) => workExperience.id == workExperienceId,
     );
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -227,7 +201,7 @@ class UserProvider extends ChangeNotifier {
           final data = doc.data();
           return WorkExperienceModel.convertMap(data, doc.id);
         }).toList();
-    updateProfileAttributes();
+
     notifyListeners();
   }
 
@@ -245,7 +219,6 @@ class UserProvider extends ChangeNotifier {
     newCertDegree.updateUserID(docRef.id);
     await docRef.set(newCertDegree.toJSON());
     _certDegrees.add(newCertDegree);
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -260,7 +233,6 @@ class UserProvider extends ChangeNotifier {
         .doc(certDegreeId)
         .delete();
     _certDegrees.removeWhere((certDegree) => certDegree.id == certDegreeId);
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -293,7 +265,7 @@ class UserProvider extends ChangeNotifier {
           final data = doc.data();
           return CertDegreesModel.convertMap(data, doc.id);
         }).toList();
-    updateProfileAttributes();
+
     notifyListeners();
   }
 
@@ -311,7 +283,6 @@ class UserProvider extends ChangeNotifier {
     newSkill.updateUserID(docRef.id);
     await docRef.set(newSkill.toJSON());
     _skillsStrengths.add(newSkill);
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -326,7 +297,6 @@ class UserProvider extends ChangeNotifier {
         .doc(skillId)
         .delete();
     _skillsStrengths.removeWhere((skill) => skill.id == skillId);
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -359,7 +329,7 @@ class UserProvider extends ChangeNotifier {
           final data = doc.data();
           return SkillsStrengthsModel.convertMap(data, doc.id);
         }).toList();
-    updateProfileAttributes();
+
     notifyListeners();
   }
 
@@ -377,7 +347,6 @@ class UserProvider extends ChangeNotifier {
     newStory.updateUserID(docRef.id);
     await docRef.set(newStory.toJSON());
     _personalStories.add(newStory);
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -392,7 +361,6 @@ class UserProvider extends ChangeNotifier {
         .doc(storyId)
         .delete();
     _personalStories.removeWhere((story) => story.id == storyId);
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -425,7 +393,7 @@ class UserProvider extends ChangeNotifier {
           final data = doc.data();
           return PersonalStoriesModel.convertMap(data, doc.id);
         }).toList();
-    updateProfileAttributes();
+
     notifyListeners();
   }
 
@@ -443,7 +411,6 @@ class UserProvider extends ChangeNotifier {
     newVolunteer.updateUserID(docRef.id);
     await docRef.set(newVolunteer.toJSON());
     _volunteeringWorks.add(newVolunteer);
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -458,7 +425,6 @@ class UserProvider extends ChangeNotifier {
         .doc(volunteerId)
         .delete();
     _volunteeringWorks.removeWhere((volunteer) => volunteer.id == volunteerId);
-    updateProfileAttributes();
     notifyListeners();
   }
 
@@ -491,7 +457,7 @@ class UserProvider extends ChangeNotifier {
           final data = doc.data();
           return VolunteeringWorkModel.convertMap(data, doc.id);
         }).toList();
-    updateProfileAttributes();
+
     notifyListeners();
   }
 
