@@ -21,24 +21,6 @@ class _SearchScreenState extends State<SearchScreen> {
     return Theme(
       data: theme,
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: theme.primaryColor,
-          title: SizedBox(
-            height: 40,
-            child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  searchName = value;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: Icon(Icons.search, color: Colors.white),
-              ),
-            ),
-          ),
-        ),
-
         body: StreamBuilder<QuerySnapshot>(
           stream:
               FirebaseFirestore.instance

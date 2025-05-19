@@ -506,4 +506,15 @@ class UserProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> toggleEndorsement(String userId) async {
+    final ref = FirebaseFirestore.instance.collection('users').doc(userId);
+    final snapshot = await ref.get();
+
+    if (snapshot.exists) {
+      await ref.update({'isEndorsed': !snapshot.data()?['isEndorsed']});
+    }
+
+    notifyListeners();
+  }
 }
