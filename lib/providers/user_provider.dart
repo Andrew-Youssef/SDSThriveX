@@ -380,6 +380,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> loadPersonalStories(String userId) async {
+    // print("inside personal Stories load\n");
     final ref =
         await FirebaseFirestore.instance
             .collection('users')
@@ -392,7 +393,7 @@ class UserProvider extends ChangeNotifier {
           final data = doc.data();
           return PersonalStoriesModel.convertMap(data, doc.id);
         }).toList();
-
+    // print({_personalStories});
     notifyListeners();
   }
 

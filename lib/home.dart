@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:screens/core/models/profile_model.dart';
 import 'package:screens/features/profile/profile_screen.dart';
 import '../features/dashboard_screen.dart';
 import '../features/notifications/notifications_screen.dart';
@@ -14,6 +15,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentPageIndex = 1;
+
+  @override
+  void initState() {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.setProfileAndDetails(
+      ProfileModel(
+        userId: 'VYnmUWEQamgO2aoHTfqNDwxti6f2',
+        name: 'Wilson',
+        userType: 'Student',
+        isEndorsed: false,
+      ),
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
