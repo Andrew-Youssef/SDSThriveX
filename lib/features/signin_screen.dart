@@ -32,6 +32,7 @@ class _SigninPageState extends State<SigninPage> {
     return Form(
       key: _formKey,
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
