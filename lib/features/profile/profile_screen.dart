@@ -114,15 +114,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
               Expanded(child: SizedBox()),
               IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyEditProfileScreen(),
-                    ),
-                  );
-                },
-                icon: Icon(Icons.edit),
+                onPressed:
+                    isLoggedInUser
+                        ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MyEditProfileScreen(),
+                            ),
+                          );
+                        }
+                        : null,
+                icon: isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
               ),
             ],
           ),
@@ -133,7 +136,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              buildAttributeButtons(),
+              // buildAttributeButtons(),
               Text(
                 'About',
                 textAlign: TextAlign.left,
@@ -151,33 +154,37 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  Widget buildAttributeButtons() {
-    return Wrap(
-      spacing: 8,
-      children:
-          profileAttributes.keys.map((key) {
-            return ElevatedButton(
-              onPressed: () {
-                toggleProfileAttributes(key);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    profileAttributes[key]! ? Colors.blue : Colors.white70,
-              ),
-              child: Text(profileAttributeLabels[key]!),
-            );
-          }).toList(),
-    );
-  }
+  // Widget buildAttributeButtons() {
+  //   return Wrap(
+  //     spacing: 8,
+  //     children:
+  //         profileAttributes.keys.map((key) {
+  //           return ElevatedButton(
+  //             onPressed: () {
+  //               toggleProfileAttributes(key);
+  //             },
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor:
+  //                   profileAttributes[key]! ? Colors.blue : Colors.white70,
+  //             ),
+  //             child: Text(profileAttributeLabels[key]!),
+  //           );
+  //         }).toList(),
+  //   );
+  // }
 
   Widget buildAttributeData(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    final attributes = userProvider.profileAttributes;
     ThemeData theme = Theme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children:
-          profileAttributes.keys.map((key) {
-            if (profileAttributes[key]!) {
+          attributes.keys.map((key) {
+            //displays all attributes to logged in user
+            //only displays filled attributes when viewing other user
+            if (attributes[key]! || isLoggedInUser) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -195,15 +202,21 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             ),
                             Expanded(child: SizedBox()),
                             IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: attributeScreens[key]!,
-                                  ),
-                                );
-                              },
-                              icon: Icon(Icons.edit),
+                              onPressed:
+                                  isLoggedInUser
+                                      ? () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: attributeScreens[key]!,
+                                          ),
+                                        );
+                                      }
+                                      : null,
+                              icon:
+                                  isLoggedInUser
+                                      ? Icon(Icons.edit)
+                                      : SizedBox.shrink(),
                             ),
                           ],
                         ),
