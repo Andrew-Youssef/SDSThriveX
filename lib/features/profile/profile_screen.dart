@@ -38,13 +38,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         (context) => const MyEditVolunteeringWorksScreen(),
   };
 
-  void toggleProfileAttributes(ProfileAttribute key) {
-    setState(() {
-      if (profileAttributes.containsKey(key)) {
-        profileAttributes[key] = !profileAttributes[key]!;
-      }
-    });
-  }
+  // void toggleProfileAttributes(ProfileAttribute key) {
+  //   setState(() {
+  //     if (profileAttributes.containsKey(key)) {
+  //       profileAttributes[key] = !profileAttributes[key]!;
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         onPressed:
                             isLoggedInUser
                                 ? () {
-                                  userProvider.profile!.updateEndorsement();
+                                  //THIS NEEDS TO BE CHANGED TO
+                                  userProvider.toggleEndorsement(
+                                    userProvider.userId,
+                                  );
                                 }
                                 : null,
                         icon: Icon(Icons.check_circle_outline_outlined),
@@ -122,7 +125,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     ),
                   );
                 },
-                icon: Icon(Icons.edit),
+                icon: isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
               ),
             ],
           ),
@@ -133,7 +136,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              buildAttributeButtons(),
+              // buildAttributeButtons(),
               Text(
                 'About',
                 textAlign: TextAlign.left,
@@ -151,33 +154,38 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  Widget buildAttributeButtons() {
-    return Wrap(
-      spacing: 8,
-      children:
-          profileAttributes.keys.map((key) {
-            return ElevatedButton(
-              onPressed: () {
-                toggleProfileAttributes(key);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    profileAttributes[key]! ? Colors.blue : Colors.white70,
-              ),
-              child: Text(profileAttributeLabels[key]!),
-            );
-          }).toList(),
-    );
-  }
+  // Widget buildAttributeButtons() {
+  //   return Wrap(
+  //     spacing: 8,
+  //     children:
+  //         profileAttributes.keys.map((key) {
+  //           return ElevatedButton(
+  //             onPressed: () {
+  //               toggleProfileAttributes(key);
+  //             },
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor:
+  //                   profileAttributes[key]! ? Colors.blue : Colors.white70,
+  //             ),
+  //             child: Text(profileAttributeLabels[key]!),
+  //           );
+  //         }).toList(),
+  //   );
+  // }
 
   Widget buildAttributeData(BuildContext context) {
+    // final attributes = selectedUserProvider.profileAttributes;
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    final attributes = userProvider.profileAttributes;
     ThemeData theme = Theme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children:
-          profileAttributes.keys.map((key) {
-            if (profileAttributes[key]!) {
+          attributes.keys.map((key) {
+            //displays all attributes to logged in user
+            //only displays filled attributes when viewing other user
+            if (attributes[key]! || isLoggedInUser) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -195,24 +203,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             ),
                             Expanded(child: SizedBox()),
                             IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: attributeScreens[key]!,
-                                  ),
-                                );
-                              },
-                              icon: Icon(Icons.edit),
+                              onPressed:
+                                  isLoggedInUser
+                                      ? () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: attributeScreens[key]!,
+                                          ),
+                                        );
+                                      }
+                                      : null,
+                              icon:
+                                  isLoggedInUser
+                                      ? Icon(Icons.edit)
+                                      : SizedBox.shrink(),
                             ),
                           ],
                         ),
-
-                        //og
-                        // Text(
-                        //   'Place holder text for ${profileAttributeLabels[key]}',
-                        //   style: theme.textTheme.displayMedium,
-                        // ),
                         getAttributeWidgetData(context)[key]!,
                         const SizedBox(height: 10),
                       ],

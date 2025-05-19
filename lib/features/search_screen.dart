@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   .endAt([
                     '$searchName\uf8ff',
                   ]) // Allow you to get all character after the searched name
-                  .limit(10)
+                  .limit(20)
                   .snapshots(),
 
           builder: (context, snapshot) {
@@ -72,7 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       MaterialPageRoute(
                         builder:
                             (context) =>
-                                MyProfileScreen(selectedUserId: data['id']),
+                                MyProfileScreen(selectedUserId: data.id),
                       ),
                     );
                   },
