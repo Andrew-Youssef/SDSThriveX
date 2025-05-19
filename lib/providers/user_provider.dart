@@ -29,6 +29,7 @@ class UserProvider extends ChangeNotifier {
   List<SkillsStrengthsModel> get skillsStrengths => _skillsStrengths;
   List<PersonalStoriesModel> get personalStories => _personalStories;
   List<VolunteeringWorkModel> get volunteeringWorks => _volunteeringWorks;
+  String get userId => _profile!.userId;
 
   ThemeData getTheme() {
     return _themeData.getMyTheme();

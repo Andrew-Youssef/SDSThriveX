@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
         page = MyDashBoardScreen();
         break;
       case 2:
-        page = MyProfileScreen(); //Profile
+        page = MyProfileScreen(selectedUserId: userProvider.userId); //Profile
         break;
       default:
         throw UnimplementedError("THIS AINT IMPLEMENTED YET\n");

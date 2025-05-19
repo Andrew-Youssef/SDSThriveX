@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/user_provider.dart';
+import 'package:screens/providers/user_provider.dart';
 import '../../data/globals.dart';
 import '../../core/models/export_models.dart';
 import '../profile/profile_edit/profile_edit_screen.dart';
 import '../profile/profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
-import '../profile/profile_edit/edit_profile_attributes/edit_individual/export_edit_individual.dart';
 import '../../widgets/header.dart';
 import '../../widgets/profile_screen/export_attribute_display_widgets.dart';
 
 class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({super.key});
+  final String selectedUserId;
+
+  const MyProfileScreen({super.key, required this.selectedUserId});
 
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
+  bool isLoggedInUser = false;
+
   final double coverHeight = 140;
   final double profileHeight = 130;
 
@@ -45,11 +48,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     final theme = Theme.of(context);
-    // currUID = FirebaseAuth.instance.currentUser?.uid
-    // selectUID
-    // if currID != selectUID
-    //
+    String currUID = userProvider.userId;
+
+    isLoggedInUser = (currUID == widget.selectedUserId);
+
     //
     //
     return Container(
@@ -74,6 +78,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   //certificates
   //
   Widget buildContent(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
     return Column(
       children: [
@@ -85,9 +90,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'John Smith',
-                    style: theme.textTheme.titleMedium!.copyWith(fontSize: 28),
+                  Row(
+                    children: [
+                      Text(
+                        'John Smith',
+                        style: theme.textTheme.titleMedium!.copyWith(
+                          fontSize: 28,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed:
+                            isLoggedInUser
+                                ? () {
+                                  userProvider.profile!.updateEndorsement();
+                                }
+                                : null,
+                        icon: Icon(Icons.check_circle_outline_outlined),
+                      ),
+                    ],
                   ),
                   Text('Student at UTS', style: theme.textTheme.displayMedium),
                 ],

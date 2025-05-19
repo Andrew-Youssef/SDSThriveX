@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:screens/features/profile/profile_screen.dart';
 import '../../providers/user_provider.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -66,12 +67,14 @@ class _SearchScreenState extends State<SearchScreen> {
                 var data = snapshot.data!.docs[index];
                 return ListTile(
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => MyProfileScreen(userId: data['id']),
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                MyProfileScreen(selectedUserId: data['id']),
+                      ),
+                    );
                   },
                   title: Text(data['name']),
                   subtitle: Text(data['email']),
