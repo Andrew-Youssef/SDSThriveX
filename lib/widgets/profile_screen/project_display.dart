@@ -18,6 +18,7 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget> {
   ProjectModel? selectedProject;
   UserProvider? selectedUserProvider;
   bool _hadLoadedProfile = false;
+  bool _isLoggedInUser = false;
 
   @override
   void didChangeDependencies() {
@@ -29,6 +30,7 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget> {
       UserProvider userProvider = Provider.of<UserProvider>(context);
       if (widget.selectedUserId == userProvider.userId) {
         selectedUserProvider = userProvider;
+        _isLoggedInUser = true;
       } else {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           selectedUserProvider = UserProvider();
@@ -44,30 +46,6 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget> {
   @override
   Widget build(BuildContext context) {
     List<ProjectModel> projects = selectedUserProvider!.projects;
-    // final userProvider = Provider.of<UserProvider>(context);
-
-    // //logged in user
-    // if (widget.selectedUserId == userProvider.userId) {
-    //   selectedUserProvider = userProvider;
-    //   projects = selectedUserProvider!.projects; //this works can see projects
-    // }
-    // //not logged in user
-    // else {
-    //   selectedUserProvider = UserProvider();
-    //   //object IS created, always in else clause
-    //   if (selectedUserProvider == null) {
-    //     print("yeah this is still null :(\n");
-    //   } else {
-    //     selectedUserProvider!.setTemporaryProfile(
-    //       widget.selectedUserId,
-    //     ); //idk if works
-    //     selectedUserProvider!.testPrint(); //works pre sure
-    //     projects = selectedUserProvider!.projects; //does not work?
-    //     if (projects.isEmpty) {
-    //       print("projects is empty?\n"); //always here
-    //     }
-    //   }
-    // }
 
     ThemeData theme = Theme.of(context);
 
@@ -84,32 +62,40 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget> {
                   '${project.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
 
               return GestureDetector(
-                onTap: () {
-                  if (selectedProject == project) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => MyEditProjectScreen(project: project),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedProject = project;
-                  });
-                },
-                onLongPress: () {
-                  setState(() {
-                    selectedProject = project;
-                  });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => MyEditProjectScreen(project: project),
-                    ),
-                  );
-                },
+                onTap:
+                    _isLoggedInUser
+                        ? () {
+                          if (selectedProject == project) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) =>
+                                        MyEditProjectScreen(project: project),
+                              ),
+                            );
+                          }
+                          setState(() {
+                            selectedProject = project;
+                          });
+                        }
+                        : null,
+                onLongPress:
+                    _isLoggedInUser
+                        ? () {
+                          setState(() {
+                            selectedProject = project;
+                          });
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      MyEditProjectScreen(project: project),
+                            ),
+                          );
+                        }
+                        : null,
                 child: Container(
                   decoration: BoxDecoration(
                     border:

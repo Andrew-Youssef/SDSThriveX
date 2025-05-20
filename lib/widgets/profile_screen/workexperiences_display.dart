@@ -5,7 +5,12 @@ import 'package:screens/features/profile/profile_edit/edit_profile_attributes/ed
 import 'package:screens/providers/user_provider.dart';
 
 class MyExistingWorkExperiencesWidget extends StatefulWidget {
-  const MyExistingWorkExperiencesWidget({super.key});
+  final String selectedUserId;
+
+  const MyExistingWorkExperiencesWidget({
+    super.key,
+    required this.selectedUserId,
+  });
 
   @override
   State<MyExistingWorkExperiencesWidget> createState() =>
@@ -15,12 +20,38 @@ class MyExistingWorkExperiencesWidget extends StatefulWidget {
 class _MyExistingWorkExperiencesWidgetState
     extends State<MyExistingWorkExperiencesWidget> {
   WorkExperienceModel? selectedWorkExperience;
+  UserProvider? selectedUserProvider;
+  bool _hadLoadedProfile = false;
+  bool _isLoggedInUser = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_hadLoadedProfile) {
+      _hadLoadedProfile = true;
+
+      UserProvider userProvider = Provider.of<UserProvider>(context);
+      if (widget.selectedUserId == userProvider.userId) {
+        selectedUserProvider = userProvider;
+        _isLoggedInUser = true;
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          selectedUserProvider = UserProvider();
+          await selectedUserProvider!.setTemporaryProfile(
+            widget.selectedUserId,
+          );
+          setState(() {});
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
+    List<WorkExperienceModel> workExperiences =
+        selectedUserProvider!.workExperiences;
     ThemeData theme = Theme.of(context);
-    List<WorkExperienceModel> workExperiences = userProvider.workExperiences;
 
     if (workExperiences.isEmpty) {
       return Text(
@@ -38,34 +69,42 @@ class _MyExistingWorkExperiencesWidgetState
                   '${exp.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
 
               return GestureDetector(
-                onTap: () {
-                  if (selectedWorkExperience == exp) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                MyEditWorkExperienceScreen(workExperience: exp),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedWorkExperience = exp;
-                  });
-                },
-                onLongPress: () {
-                  setState(() {
-                    selectedWorkExperience = exp;
-                  });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              MyEditWorkExperienceScreen(workExperience: exp),
-                    ),
-                  );
-                },
+                onTap:
+                    _isLoggedInUser
+                        ? () {
+                          if (selectedWorkExperience == exp) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => MyEditWorkExperienceScreen(
+                                      workExperience: exp,
+                                    ),
+                              ),
+                            );
+                          }
+                          setState(() {
+                            selectedWorkExperience = exp;
+                          });
+                        }
+                        : null,
+                onLongPress:
+                    _isLoggedInUser
+                        ? () {
+                          setState(() {
+                            selectedWorkExperience = exp;
+                          });
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => MyEditWorkExperienceScreen(
+                                    workExperience: exp,
+                                  ),
+                            ),
+                          );
+                        }
+                        : null,
                 child: Container(
                   decoration: BoxDecoration(
                     border:

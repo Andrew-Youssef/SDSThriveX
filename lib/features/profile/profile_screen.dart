@@ -18,7 +18,9 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  bool isLoggedInUser = false;
+  UserProvider? selectedUserProvider;
+  bool _hadLoadedProfile = false;
+  bool _isLoggedInUser = false;
 
   final double coverHeight = 140;
   final double profileHeight = 130;
@@ -47,12 +49,31 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   // }
 
   @override
-  Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    final theme = Theme.of(context);
-    String currUID = userProvider.userId;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    isLoggedInUser = (currUID == widget.selectedUserId);
+    if (!_hadLoadedProfile) {
+      _hadLoadedProfile = true;
+
+      UserProvider userProvider = Provider.of<UserProvider>(context);
+      if (widget.selectedUserId == userProvider.userId) {
+        selectedUserProvider = userProvider;
+        _isLoggedInUser = true;
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          selectedUserProvider = UserProvider();
+          await selectedUserProvider!.setTemporaryProfile(
+            widget.selectedUserId,
+          );
+          setState(() {});
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
 
     //
     //
@@ -78,7 +99,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   //certificates
   //
   Widget buildContent(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
     return Column(
       children: [
@@ -100,11 +120,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                       IconButton(
                         onPressed:
-                            isLoggedInUser
+                            _isLoggedInUser
                                 ? () {
                                   //THIS NEEDS TO BE CHANGED TO
-                                  userProvider.toggleEndorsement(
-                                    userProvider.userId,
+                                  selectedUserProvider!.toggleEndorsement(
+                                    selectedUserProvider!.userId,
                                   );
                                 }
                                 : null,
@@ -125,7 +145,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     ),
                   );
                 },
-                icon: isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
+                icon: _isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
               ),
             ],
           ),
@@ -174,9 +194,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   // }
 
   Widget buildAttributeData(BuildContext context) {
-    // final attributes = selectedUserProvider.profileAttributes;
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    final attributes = userProvider.profileAttributes;
+    final attributes = selectedUserProvider!.profileAttributes;
     ThemeData theme = Theme.of(context);
 
     return Column(
@@ -185,7 +203,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           attributes.keys.map((key) {
             //displays all attributes to logged in user
             //only displays filled attributes when viewing other user
-            if (attributes[key]! || isLoggedInUser) {
+            if (attributes[key]! || _isLoggedInUser) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -204,7 +222,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             Expanded(child: SizedBox()),
                             IconButton(
                               onPressed:
-                                  isLoggedInUser
+                                  _isLoggedInUser
                                       ? () {
                                         Navigator.push(
                                           context,
@@ -215,7 +233,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                       }
                                       : null,
                               icon:
-                                  isLoggedInUser
+                                  _isLoggedInUser
                                       ? Icon(Icons.edit)
                                       : SizedBox.shrink(),
                             ),
@@ -274,7 +292,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       ProfileAttribute.projects: MyExistingProjectsWidget(
         selectedUserId: widget.selectedUserId,
       ),
-      ProfileAttribute.workExperience: MyExistingWorkExperiencesWidget(),
+      ProfileAttribute.workExperience: MyExistingWorkExperiencesWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
       ProfileAttribute.certDegrees: MyExistingCertDegreesWidget(),
       ProfileAttribute.skillsStrengths: MyExistingSkillsStrengthsWidget(),
       ProfileAttribute.personalStories: MyExistingPersonalStoriesWidget(),

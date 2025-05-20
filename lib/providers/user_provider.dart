@@ -76,18 +76,12 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> setTemporaryProfile(String userId) async {
-    // print("in setTemporaryProfile\n");
     await loadProjects(userId);
-    // int count = 1;
-    // if (_projects.isEmpty) print('projects empty \n');
-    // for (final p in _projects) {
-    //   print('${count++} : ${p.name}\n');
-    // }
-    // loadCertDegrees(userId);
-    // loadPersonalStories(userId);
-    // loadSkillsStrengths(userId);
-    // loadVolunteeringWorks(userId);
-    // loadWorkExperiences(userId);
+    await loadWorkExperiences(userId);
+    await loadCertDegrees(userId);
+    await loadPersonalStories(userId);
+    await loadSkillsStrengths(userId);
+    await loadVolunteeringWorks(userId);
   }
 
   void clearProfile() {
@@ -250,6 +244,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> loadWorkExperiences(String userId) async {
+    print("in load work experiences\n");
     final ref =
         await FirebaseFirestore.instance
             .collection('users')
@@ -264,6 +259,7 @@ class UserProvider extends ChangeNotifier {
         }).toList();
     updateProfileAttributes();
     notifyListeners();
+    if (_workExperiences.isEmpty) print("this is empty in workexp\n");
   }
 
   Future<void> addCertDegree(CertDegreesModel newCertDegree) async {
