@@ -149,29 +149,24 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                 );
               },
               child: Container(
+                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: theme.primaryColor,
                     width: p == selectedProject ? 5 : 3,
                   ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(p.name),
-                    Text(p.dateBegun.toString().split(' ')[0]),
-                    Text(
-                      p.dateEnded != null
-                          ? p.dateEnded!.toString().split(' ')[0]
-                          : 'Unknown',
-                    ),
-                    Text(p.description),
-                    Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
-                  ],
+                child: Text(
+                  p.name,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.normal, // not bold
+                      
+                  ),
                 ),
               ),
             ),
-            SizedBox(width: 20),
+            SizedBox(width: 10),
           ],
         ],
       ),
