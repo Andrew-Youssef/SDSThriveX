@@ -5,7 +5,9 @@ import 'package:screens/features/profile/profile_edit/edit_profile_attributes/ed
 import 'package:screens/providers/user_provider.dart';
 
 class MyExistingCertDegreesWidget extends StatefulWidget {
-  const MyExistingCertDegreesWidget({super.key});
+  final String selectedUserId;
+
+  const MyExistingCertDegreesWidget({super.key, required this.selectedUserId});
 
   @override
   State<MyExistingCertDegreesWidget> createState() =>
@@ -15,12 +17,37 @@ class MyExistingCertDegreesWidget extends StatefulWidget {
 class MyExistingCertDegreesWidgetState
     extends State<MyExistingCertDegreesWidget> {
   CertDegreesModel? selectedCertDegree;
+  UserProvider? selectedUserProvider;
+  bool _hadLoadedProfile = false;
+  bool _isLoggedInUser = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_hadLoadedProfile) {
+      _hadLoadedProfile = true;
+
+      UserProvider userProvider = Provider.of<UserProvider>(context);
+      if (widget.selectedUserId == userProvider.userId) {
+        selectedUserProvider = userProvider;
+        _isLoggedInUser = true;
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          selectedUserProvider = UserProvider();
+          await selectedUserProvider!.setTemporaryProfile(
+            widget.selectedUserId,
+          );
+          setState(() {});
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<CertDegreesModel> certDegrees = userProvider.certDegrees;
+    List<CertDegreesModel> certDegrees = selectedUserProvider!.certDegrees;
 
     if (certDegrees.isEmpty) {
       return Text(
@@ -38,30 +65,38 @@ class MyExistingCertDegreesWidgetState
                   '${cert.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
 
               return GestureDetector(
-                onTap: () {
-                  if (selectedCertDegree == cert) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                MyEditCertDegreeScreen(certDegree: cert),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedCertDegree = cert;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => MyEditCertDegreeScreen(certDegree: cert),
-                    ),
-                  );
-                },
+                onTap:
+                    _isLoggedInUser
+                        ? () {
+                          if (selectedCertDegree == cert) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => MyEditCertDegreeScreen(
+                                      certDegree: cert,
+                                    ),
+                              ),
+                            );
+                          }
+                          setState(() {
+                            selectedCertDegree = cert;
+                          });
+                        }
+                        : null,
+                onLongPress:
+                    _isLoggedInUser
+                        ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      MyEditCertDegreeScreen(certDegree: cert),
+                            ),
+                          );
+                        }
+                        : null,
                 child: Container(
                   decoration: BoxDecoration(
                     border:

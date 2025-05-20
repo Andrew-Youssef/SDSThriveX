@@ -5,7 +5,12 @@ import 'package:screens/features/profile/profile_edit/edit_profile_attributes/ed
 import 'package:screens/providers/user_provider.dart';
 
 class MyExistingVolunteeringWorksWidget extends StatefulWidget {
-  const MyExistingVolunteeringWorksWidget({super.key});
+  final String selectedUserId;
+
+  const MyExistingVolunteeringWorksWidget({
+    super.key,
+    required this.selectedUserId,
+  });
 
   @override
   State<MyExistingVolunteeringWorksWidget> createState() =>
@@ -15,13 +20,38 @@ class MyExistingVolunteeringWorksWidget extends StatefulWidget {
 class _MyExistingVolunteeringWorksWidgetState
     extends State<MyExistingVolunteeringWorksWidget> {
   VolunteeringWorkModel? selectedVolunteeringWork;
+  UserProvider? selectedUserProvider;
+  bool _hadLoadedProfile = false;
+  bool _isLoggedInUser = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_hadLoadedProfile) {
+      _hadLoadedProfile = true;
+
+      UserProvider userProvider = Provider.of<UserProvider>(context);
+      if (widget.selectedUserId == userProvider.userId) {
+        selectedUserProvider = userProvider;
+        _isLoggedInUser = true;
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          selectedUserProvider = UserProvider();
+          await selectedUserProvider!.setTemporaryProfile(
+            widget.selectedUserId,
+          );
+          setState(() {});
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
     List<VolunteeringWorkModel> volunteeringWorks =
-        userProvider.volunteeringWorks;
+        selectedUserProvider!.volunteeringWorks;
 
     if (volunteeringWorks.isEmpty) {
       return Text(
@@ -39,33 +69,39 @@ class _MyExistingVolunteeringWorksWidgetState
                   '${work.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
 
               return GestureDetector(
-                onTap: () {
-                  if (selectedVolunteeringWork == work) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => MyEditVolunteeringWorkScreen(
-                              volunteeringWork: work,
+                onTap:
+                    _isLoggedInUser
+                        ? () {
+                          if (selectedVolunteeringWork == work) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => MyEditVolunteeringWorkScreen(
+                                      volunteeringWork: work,
+                                    ),
+                              ),
+                            );
+                          }
+                          setState(() {
+                            selectedVolunteeringWork = work;
+                          });
+                        }
+                        : null,
+                onLongPress:
+                    _isLoggedInUser
+                        ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => MyEditVolunteeringWorkScreen(
+                                    volunteeringWork: work,
+                                  ),
                             ),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedVolunteeringWork = work;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => MyEditVolunteeringWorkScreen(
-                            volunteeringWork: work,
-                          ),
-                    ),
-                  );
-                },
+                          );
+                        }
+                        : null,
                 child: Container(
                   decoration: BoxDecoration(
                     border:

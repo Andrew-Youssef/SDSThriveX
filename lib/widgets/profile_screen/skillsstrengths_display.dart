@@ -5,7 +5,12 @@ import 'package:screens/features/profile/profile_edit/edit_profile_attributes/ed
 import 'package:screens/providers/user_provider.dart';
 
 class MyExistingSkillsStrengthsWidget extends StatefulWidget {
-  const MyExistingSkillsStrengthsWidget({super.key});
+  final String selectedUserId;
+
+  const MyExistingSkillsStrengthsWidget({
+    super.key,
+    required this.selectedUserId,
+  });
 
   @override
   State<MyExistingSkillsStrengthsWidget> createState() =>
@@ -15,12 +20,37 @@ class MyExistingSkillsStrengthsWidget extends StatefulWidget {
 class _MyExistingSkillsStrengthsWidgetState
     extends State<MyExistingSkillsStrengthsWidget> {
   SkillsStrengthsModel? selectedSkillStrength;
+  UserProvider? selectedUserProvider;
+  bool _hadLoadedProfile = false;
+  bool _isLoggedInUser = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_hadLoadedProfile) {
+      _hadLoadedProfile = true;
+
+      UserProvider userProvider = Provider.of<UserProvider>(context);
+      if (widget.selectedUserId == userProvider.userId) {
+        selectedUserProvider = userProvider;
+        _isLoggedInUser = true;
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          selectedUserProvider = UserProvider();
+          await selectedUserProvider!.setTemporaryProfile(
+            widget.selectedUserId,
+          );
+          setState(() {});
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<SkillsStrengthsModel> skills = userProvider.skillsStrengths;
+    List<SkillsStrengthsModel> skills = selectedUserProvider!.skillsStrengths;
 
     if (skills.isEmpty) {
       return Text(
@@ -33,33 +63,39 @@ class _MyExistingSkillsStrengthsWidgetState
         children:
             skills.map((skillModel) {
               return GestureDetector(
-                onTap: () {
-                  if (selectedSkillStrength == skillModel) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => MyEditSkillStrengthScreen(
-                              skillStrength: skillModel,
+                onTap:
+                    _isLoggedInUser
+                        ? () {
+                          if (selectedSkillStrength == skillModel) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => MyEditSkillStrengthScreen(
+                                      skillStrength: skillModel,
+                                    ),
+                              ),
+                            );
+                          }
+                          setState(() {
+                            selectedSkillStrength = skillModel;
+                          });
+                        }
+                        : null,
+                onLongPress:
+                    _isLoggedInUser
+                        ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => MyEditSkillStrengthScreen(
+                                    skillStrength: skillModel,
+                                  ),
                             ),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedSkillStrength = skillModel;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => MyEditSkillStrengthScreen(
-                            skillStrength: skillModel,
-                          ),
-                    ),
-                  );
-                },
+                          );
+                        }
+                        : null,
                 child: Container(
                   decoration: BoxDecoration(
                     border:

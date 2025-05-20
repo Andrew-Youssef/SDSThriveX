@@ -295,11 +295,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       ProfileAttribute.workExperience: MyExistingWorkExperiencesWidget(
         selectedUserId: widget.selectedUserId,
       ),
-      ProfileAttribute.certDegrees: MyExistingCertDegreesWidget(),
-      ProfileAttribute.skillsStrengths: MyExistingSkillsStrengthsWidget(),
-      ProfileAttribute.personalStories: MyExistingPersonalStoriesWidget(),
-      ProfileAttribute.volunteeringWork:
-          const MyExistingVolunteeringWorksWidget(),
+      ProfileAttribute.certDegrees: MyExistingCertDegreesWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
+      ProfileAttribute.skillsStrengths: MyExistingSkillsStrengthsWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
+      ProfileAttribute.personalStories: MyExistingPersonalStoriesWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
+      ProfileAttribute.volunteeringWork: MyExistingVolunteeringWorksWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
     };
   }
 }

@@ -5,7 +5,12 @@ import 'package:screens/features/profile/profile_edit/edit_profile_attributes/ed
 import 'package:screens/providers/user_provider.dart';
 
 class MyExistingPersonalStoriesWidget extends StatefulWidget {
-  const MyExistingPersonalStoriesWidget({super.key});
+  final String selectedUserId;
+
+  const MyExistingPersonalStoriesWidget({
+    super.key,
+    required this.selectedUserId,
+  });
 
   @override
   State<MyExistingPersonalStoriesWidget> createState() =>
@@ -15,12 +20,37 @@ class MyExistingPersonalStoriesWidget extends StatefulWidget {
 class _MyExistingPersonalStoriesWidgetState
     extends State<MyExistingPersonalStoriesWidget> {
   PersonalStoriesModel? selectedPersonalStory;
+  UserProvider? selectedUserProvider;
+  bool _hadLoadedProfile = false;
+  bool _isLoggedInUser = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_hadLoadedProfile) {
+      _hadLoadedProfile = true;
+
+      UserProvider userProvider = Provider.of<UserProvider>(context);
+      if (widget.selectedUserId == userProvider.userId) {
+        selectedUserProvider = userProvider;
+        _isLoggedInUser = true;
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          selectedUserProvider = UserProvider();
+          await selectedUserProvider!.setTemporaryProfile(
+            widget.selectedUserId,
+          );
+          setState(() {});
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<PersonalStoriesModel> stories = userProvider.personalStories;
+    List<PersonalStoriesModel> stories = selectedUserProvider!.personalStories;
 
     if (stories.isEmpty) {
       return Text(
@@ -36,31 +66,39 @@ class _MyExistingPersonalStoriesWidgetState
                   story.date.toLocal().toString().split(' ')[0];
 
               return GestureDetector(
-                onTap: () {
-                  if (selectedPersonalStory == story) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                MyEditPersonalStoryScreen(personalStory: story),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedPersonalStory = story;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              MyEditPersonalStoryScreen(personalStory: story),
-                    ),
-                  );
-                },
+                onTap:
+                    _isLoggedInUser
+                        ? () {
+                          if (selectedPersonalStory == story) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => MyEditPersonalStoryScreen(
+                                      personalStory: story,
+                                    ),
+                              ),
+                            );
+                          }
+                          setState(() {
+                            selectedPersonalStory = story;
+                          });
+                        }
+                        : null,
+                onLongPress:
+                    _isLoggedInUser
+                        ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => MyEditPersonalStoryScreen(
+                                    personalStory: story,
+                                  ),
+                            ),
+                          );
+                        }
+                        : null,
                 child: Container(
                   decoration: BoxDecoration(
                     border:
