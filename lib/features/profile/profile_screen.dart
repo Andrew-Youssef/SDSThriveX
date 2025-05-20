@@ -271,11 +271,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   Map<ProfileAttribute, Widget> getAttributeWidgetData(context) {
     return {
-      ProfileAttribute.projects: const MyExistingProjectsWidget(),
-      ProfileAttribute.workExperience: const MyExistingWorkExperiencesWidget(),
-      ProfileAttribute.certDegrees: const MyExistingCertDegreesWidget(),
-      ProfileAttribute.skillsStrengths: const MyExistingSkillsStrengthsWidget(),
-      ProfileAttribute.personalStories: const MyExistingPersonalStoriesWidget(),
+      ProfileAttribute.projects: MyExistingProjectsWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
+      ProfileAttribute.workExperience: MyExistingWorkExperiencesWidget(),
+      ProfileAttribute.certDegrees: MyExistingCertDegreesWidget(),
+      ProfileAttribute.skillsStrengths: MyExistingSkillsStrengthsWidget(),
+      ProfileAttribute.personalStories: MyExistingPersonalStoriesWidget(),
       ProfileAttribute.volunteeringWork:
           const MyExistingVolunteeringWorksWidget(),
     };

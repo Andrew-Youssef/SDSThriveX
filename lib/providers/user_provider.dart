@@ -71,15 +71,23 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setTemporaryProfile(String userID) {
-    loadProjects(userId);
-    loadProjects(userId);
-    loadCertDegrees(userId);
-    loadPersonalStories(userId);
-    loadSkillsStrengths(userId);
-    loadVolunteeringWorks(userId);
-    loadWorkExperiences(userId);
-    notifyListeners();
+  void testPrint() {
+    print("yooooooo");
+  }
+
+  Future<void> setTemporaryProfile(String userId) async {
+    // print("in setTemporaryProfile\n");
+    await loadProjects(userId);
+    // int count = 1;
+    // if (_projects.isEmpty) print('projects empty \n');
+    // for (final p in _projects) {
+    //   print('${count++} : ${p.name}\n');
+    // }
+    // loadCertDegrees(userId);
+    // loadPersonalStories(userId);
+    // loadSkillsStrengths(userId);
+    // loadVolunteeringWorks(userId);
+    // loadWorkExperiences(userId);
   }
 
   void clearProfile() {
@@ -169,19 +177,23 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> loadProjects(String userId) async {
+    print("inside loadProjects\n");
+    print("$userId\n");
     final ref =
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
             .collection('projects')
             .get();
-
+    int count = 1;
     _projects =
         ref.docs.map((doc) {
+          print('Found: ${count++}');
           final data = doc.data();
           doc.id;
           return ProjectModel.convertMap(data, doc.id);
         }).toList();
+    if (_projects.isEmpty) print('what the skibidi\n');
     updateProfileAttributes();
     notifyListeners();
   }

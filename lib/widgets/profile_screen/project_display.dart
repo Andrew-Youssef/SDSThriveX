@@ -5,7 +5,9 @@ import 'package:screens/features/profile/profile_edit/edit_profile_attributes/ed
 import 'package:screens/providers/user_provider.dart';
 
 class MyExistingProjectsWidget extends StatefulWidget {
-  const MyExistingProjectsWidget({super.key});
+  final String selectedUserId;
+
+  const MyExistingProjectsWidget({super.key, required this.selectedUserId});
 
   @override
   State<MyExistingProjectsWidget> createState() =>
@@ -14,12 +16,60 @@ class MyExistingProjectsWidget extends StatefulWidget {
 
 class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget> {
   ProjectModel? selectedProject;
+  UserProvider? selectedUserProvider;
+  bool _hadLoadedProfile = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_hadLoadedProfile) {
+      _hadLoadedProfile = true;
+
+      UserProvider userProvider = Provider.of<UserProvider>(context);
+      if (widget.selectedUserId == userProvider.userId) {
+        selectedUserProvider = userProvider;
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          selectedUserProvider = UserProvider();
+          await selectedUserProvider!.setTemporaryProfile(
+            widget.selectedUserId,
+          );
+          setState(() {});
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
+    List<ProjectModel> projects = selectedUserProvider!.projects;
+    // final userProvider = Provider.of<UserProvider>(context);
+
+    // //logged in user
+    // if (widget.selectedUserId == userProvider.userId) {
+    //   selectedUserProvider = userProvider;
+    //   projects = selectedUserProvider!.projects; //this works can see projects
+    // }
+    // //not logged in user
+    // else {
+    //   selectedUserProvider = UserProvider();
+    //   //object IS created, always in else clause
+    //   if (selectedUserProvider == null) {
+    //     print("yeah this is still null :(\n");
+    //   } else {
+    //     selectedUserProvider!.setTemporaryProfile(
+    //       widget.selectedUserId,
+    //     ); //idk if works
+    //     selectedUserProvider!.testPrint(); //works pre sure
+    //     projects = selectedUserProvider!.projects; //does not work?
+    //     if (projects.isEmpty) {
+    //       print("projects is empty?\n"); //always here
+    //     }
+    //   }
+    // }
+
     ThemeData theme = Theme.of(context);
-    List<ProjectModel> projects = userProvider.projects;
 
     if (projects.isEmpty) {
       return Text('Add some projects!', style: theme.textTheme.displayMedium);
