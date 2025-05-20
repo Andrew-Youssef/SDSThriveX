@@ -118,10 +118,20 @@ class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
             child: TextField(
               controller: _endDate,
               decoration: InputDecoration(
-                // border: OutlineInputBorder(),
                 labelText: 'End Date (optional)',
                 filled: true,
                 prefixIcon: Icon(Icons.calendar_today),
+                suffixIcon: _endDate.text.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () {
+                          setState(() {
+                            _endDate.clear();
+                            widget.project.updateDateEnded(null);
+                          });
+                        },
+                      )
+                    : null,
                 enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: theme.primaryColor),
@@ -133,6 +143,8 @@ class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
               },
             ),
           ),
+
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
@@ -181,5 +193,18 @@ class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
         updaterMap[controller]!.call(picked);
       });
     }
+    
+    if(picked != null) {
+      final isEndDate = controller == _endDate;
+      final currentStart = DateTime.tryParse(_startDate.text);
+
+      if (isEndDate && currentStart != null && picked.isBefore(currentStart)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('End date cannot be before start date.'), backgroundColor: Colors.red,),
+        );
+        return;
+      }
+    }
+    
   }
 }

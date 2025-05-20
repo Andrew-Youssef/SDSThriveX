@@ -137,13 +137,13 @@ class _MyEditPersonalStoriesScreenState
                     width: p == selectedPersonalStory ? 5 : 3,
                   ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(p.title),
-                    Text(p.date.toString().split(' ')[0]),
-                    Text(p.description),
-                  ],
+                child: Text(
+                  p.title,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.normal,
+                
+                  ),
                 ),
               ),
             ),

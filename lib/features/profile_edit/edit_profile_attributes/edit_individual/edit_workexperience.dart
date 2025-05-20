@@ -166,10 +166,6 @@ class _MyEditWorkExperienceScreenState
     TextEditingController controller,
     BuildContext context,
   ) async {
-    final Map<TextEditingController, void Function(DateTime)> updaterMap = {
-      _startDate: widget.workExperience.updateDateBegun,
-      _endDate: widget.workExperience.updateDateEnded,
-    };
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -177,11 +173,26 @@ class _MyEditWorkExperienceScreenState
       lastDate: DateTime(2100),
     );
 
-    if (picked != null) {
-      setState(() {
-        controller.text = picked.toString().split(" ")[0];
-        updaterMap[controller]!.call(picked);
-      });
+    if (picked == null) return;
+
+    final isEndDate = controller == _endDate;
+    final currentStart = DateTime.tryParse(_startDate.text);
+
+    if (isEndDate && currentStart != null && picked.isBefore(currentStart)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('End date cannot be before start date.'), backgroundColor: Colors.red,),
+      );
+      return;
     }
+
+    setState(() {
+      controller.text = picked.toString().split(" ")[0];
+
+      if (controller == _startDate) {
+        widget.workExperience.updateDateBegun(picked);
+      } else {
+        widget.workExperience.updateDateEnded(picked);
+      }
+    });
   }
 }

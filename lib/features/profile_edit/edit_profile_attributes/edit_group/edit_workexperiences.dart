@@ -72,6 +72,33 @@ class _MyEditWorkExperienceScreenState
                   ),
                   IconButton(
                     onPressed: () {
+                      final start = DateTime.tryParse(_startDate.text);
+                      final end = _endDate.text.isNotEmpty ? DateTime.tryParse(_endDate.text) : null;
+
+                      if (start !=null && end != null && end.isBefore(start)) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('End date cannot be before start date.'),
+                            backgroundColor: Colors.red,
+                            ),
+                          
+                        );
+                        return;
+                      }
+
+                      if (_nameController.text.isEmpty ||
+                        _roleController.text.isEmpty ||
+                        _descriptionController.text.isEmpty ||
+                        _startDate.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Please fill in all required fields.'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                      }
+
                       if (_nameController.text.isNotEmpty &&
                           _startDate.text.isNotEmpty &&
                           _descriptionController.text.isNotEmpty) {
@@ -81,7 +108,7 @@ class _MyEditWorkExperienceScreenState
                               dateBegun: DateTime.tryParse(_startDate.text)!,
                               dateEnded:
                                   _endDate.text.isNotEmpty
-                                      ? DateTime.tryParse(_startDate.text)
+                                      ? DateTime.tryParse(_endDate.text)
                                       : null,
                               description: _descriptionController.text,
                               role: _roleController.text,

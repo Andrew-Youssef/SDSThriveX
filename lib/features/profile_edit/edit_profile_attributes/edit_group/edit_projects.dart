@@ -211,10 +211,19 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
             child: TextField(
               controller: _endDate,
               decoration: InputDecoration(
-                // border: OutlineInputBorder(),
                 labelText: 'End Date (optional)',
                 filled: true,
                 prefixIcon: Icon(Icons.calendar_today),
+                suffixIcon: _endDate.text.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () {
+                          setState(() {
+                            _endDate.clear();
+                          });
+                        },
+                      )
+                    : null,
                 enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: theme.primaryColor),
@@ -226,6 +235,7 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
               },
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
@@ -286,6 +296,7 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
         );
         return;
       }
+
 
       setState(() {
         controller.text = picked.toString().split(" ")[0];

@@ -71,6 +71,9 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
                   ),
                   IconButton(
                     onPressed: () {
+                      final start = DateTime.tryParse(_startDate.text);
+                      final end = _endDate.text.isNotEmpty ? DateTime.tryParse(_endDate.text) : null;
+
                       if (_institutionNameController.text.isNotEmpty &&
                           _startDate.text.isNotEmpty &&
                           _descriptionController.text.isNotEmpty) {
@@ -86,6 +89,18 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
                         );
                         userProvider.addCertDegree(newCertDegree);
                       }
+
+                      if (start !=null && end != null && end.isBefore(start)) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('End date cannot be before start date.'),
+                            backgroundColor: Colors.red,
+                            ),
+                          
+                        );
+                        return;
+                      }
+
                     },
                     icon: Icon(Icons.add_box),
                   ),
@@ -146,20 +161,13 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
                     width: p == selectedCertDegree ? 5 : 3,
                   ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(p.institutionName),
-                    Text(p.certificateName),
-                    Text(p.dateStarted.toString().split(' ')[0]),
-                    Text(
-                      p.dateEnded != null
-                          ? p.dateEnded!.toString().split(' ')[0]
-                          : 'Unknown',
-                    ),
-                    Text(p.description),
-                  ],
-                ),
+                child: Text(
+                  p.certificateName,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.normal,
+                  ), 
+                ), 
               ),
             ),
             SizedBox(width: 20),

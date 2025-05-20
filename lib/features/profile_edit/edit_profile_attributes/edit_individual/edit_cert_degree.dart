@@ -183,5 +183,17 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
         updaterMap[controller]!.call(picked);
       });
     }
+
+    if (picked == null) return;
+
+    final isEndDate = controller == _endDate;
+    final currentStart = DateTime.tryParse(_startDate.text);
+
+    if (isEndDate && currentStart != null && picked.isBefore(currentStart)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('End date cannot be before start date.'), backgroundColor: Colors.red,),
+      );
+      return;
+    }
   }
 }
