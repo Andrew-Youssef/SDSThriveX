@@ -121,14 +121,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       IconButton(
                         onPressed:
                             _isLoggedInUser
-                                ? () {
+                                ? () async {
                                   //THIS NEEDS TO BE CHANGED TO
-                                  selectedUserProvider!.toggleEndorsement(
+                                  await selectedUserProvider!.toggleEndorsement(
                                     selectedUserProvider!.userId,
                                   );
                                 }
                                 : null,
-                        icon: Icon(Icons.check_circle_outline_outlined),
+                        icon:
+                            selectedUserProvider!.profile!.isEndorsed
+                                ? Icon(Icons.check_circle_outline_outlined)
+                                : Icon(Icons.check_circle),
                       ),
                     ],
                   ),

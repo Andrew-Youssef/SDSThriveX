@@ -76,6 +76,9 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> setTemporaryProfile(String userId) async {
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    _profile = ProfileModel.fromDB(doc);
     await loadProjects(userId);
     await loadWorkExperiences(userId);
     await loadCertDegrees(userId);
@@ -97,7 +100,7 @@ class UserProvider extends ChangeNotifier {
       await ref.update({'isEndorsed': !snapshot.data()?['isEndorsed']});
       _profile!.updateEndorsement();
     }
-
+    print('endorsment updates');
     notifyListeners();
   }
 

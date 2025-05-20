@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   .endAt([
                     '$searchName\uf8ff',
                   ]) // Allow you to get all character after the searched name
-                  .limit(20)
+                  .limit(30)
                   .snapshots(),
 
           builder: (context, snapshot) {
