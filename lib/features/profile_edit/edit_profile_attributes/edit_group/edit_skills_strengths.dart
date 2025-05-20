@@ -137,13 +137,12 @@ class _MyEditSkillsStrengthsScreenState
                     width: p == selectedSkillStrength ? 5 : 3,
                   ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(p.skill),
-                    Text(p.acquiredAt),
-                    Text(p.description),
-                  ],
+                child: Text(
+                  p.skill,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.normal,
+                ),
                 ),
               ),
             ),

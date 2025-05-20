@@ -163,19 +163,12 @@ class _MyEditVolunteeringWorkScreenState
                     width: p == selectedVolunteeringWork ? 5 : 3,
                   ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(p.institutionName),
-                    Text(p.role),
-                    Text(p.dateStarted.toString().split(' ')[0]),
-                    Text(
-                      p.dateEnded != null
-                          ? p.dateEnded!.toString().split(' ')[0]
-                          : 'Unknown',
-                    ),
-                    Text(p.description),
-                  ],
+                child: Text(
+                  p.institutionName,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

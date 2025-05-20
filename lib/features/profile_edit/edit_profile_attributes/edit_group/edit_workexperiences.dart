@@ -148,19 +148,12 @@ class _MyEditWorkExperienceScreenState
                     width: p == selectedWorkExperience ? 5 : 3,
                   ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(p.name),
-                    Text(p.dateBegun.toString().split(' ')[0]),
-                    Text(
-                      p.dateEnded != null
-                          ? p.dateEnded!.toString().split(' ')[0]
-                          : 'Unknown',
+                child: Text(
+                    p.name,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Text(p.description),
-                    Text(p.role),
-                  ],
                 ),
               ),
             ),

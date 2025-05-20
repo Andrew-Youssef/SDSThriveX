@@ -76,7 +76,7 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                           dateBegun: DateTime.tryParse(_startDate.text)!,
                           dateEnded:
                               _endDate.text.isNotEmpty
-                                  ? DateTime.tryParse(_startDate.text)
+                                  ? DateTime.tryParse(_endDate.text)
                                   : null,
                           description: _descriptionController.text,
                           imageUrl: _imageController.text,
@@ -255,14 +255,38 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
     TextEditingController controller,
     BuildContext context,
   ) async {
+    DateTime initialDate = DateTime.now();
+
+    // Try to parse the controller's current value for better UX
+    try {
+      initialDate = DateTime.parse(controller.text);
+    } catch (_) {}
+
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: initialDate,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
     );
 
     if (picked != null) {
+      DateTime? startDate;
+      try {
+        startDate = DateTime.parse(_startDate.text);
+      } catch (_) {}
+
+      if (controller == _endDate &&
+          startDate != null &&
+          picked.isBefore(startDate)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("End date cannot be before start date."),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
       setState(() {
         controller.text = picked.toString().split(" ")[0];
       });
