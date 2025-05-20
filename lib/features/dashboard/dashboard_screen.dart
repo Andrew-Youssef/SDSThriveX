@@ -231,27 +231,30 @@ Widget buildMyCard1(BuildContext context) {
           top: 12,
           bottom: 12,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'View Portfolio',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const Divider(color: Colors.grey),
-            ...[
-              '- Personal Projects',
-              '- Work Experience',
-              '- Volunteer Work',
-              '- Certifications & Degrees',
-              '- Personal Stories',
-            ].map(
-              (text) =>
-                  Text(text, style: Theme.of(context).textTheme.bodyMedium),
-            ),
-          ],
+        child: ExpansionTile(
+        title: Text(
+          'View Portfolio',
+          style: Theme.of(context).textTheme.titleMedium,
         ),
+        children: [
+          ...[
+            '- Personal Projects',
+            '- Work Experience',
+            '- Volunteer Work',
+            '- Certifications & Degrees',
+            '- Personal Stories',
+          ].map(
+            (text) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            ),
+          ),
+        ],
       ),
+    ),
     ),
   );
 }
@@ -265,27 +268,26 @@ Widget buildMyCard2(BuildContext context) {
         side: const BorderSide(color: Colors.orange, width: 2),
       ),
       elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: 15,
-          right: 10,
-          top: 12,
-          bottom: 12,
+      child: ExpansionTile(
+        title: Text(
+          'Upcoming Meetings',
+          style: Theme.of(context).textTheme.titleMedium,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Upcoming Meetings',
-              style: Theme.of(context).textTheme.titleMedium,
+        children: [
+          ...[
+            '- Coaching Sessions',
+            '- Job Interviews',
+            '- Seminars',
+          ].map(
+            (text) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
-            const Divider(color: Colors.grey),
-            ...['- Coaching Sessions', '- Job Interviews', '- Seminars'].map(
-              (text) =>
-                  Text(text, style: Theme.of(context).textTheme.bodyMedium),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     ),
   );
