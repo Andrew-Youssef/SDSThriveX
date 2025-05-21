@@ -57,6 +57,17 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateProfile(Map<String, dynamic> fieldsToUpdate) async {
+    if (_profile?.userId == null) return;
+
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_profile?.userId);
+
+    await docRef.update(fieldsToUpdate);
+    notifyListeners();
+  }
+
   void clearProfile() {
     _profile = null;
     notifyListeners();
