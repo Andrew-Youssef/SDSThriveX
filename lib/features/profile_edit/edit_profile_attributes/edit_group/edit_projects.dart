@@ -49,22 +49,70 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
-        child: Scaffold(
-          appBar: myAppBar('Edit Projects', context),
-          body: Column(
-            children: [
+        child: WillPopScope(
+          onWillPop: () async {
+            final hasNamedProject = userProvider.projects.any((p) => p.name.trim().isNotEmpty);
+
+            if (!hasNamedProject) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Please add at least one project with a name before going back."),
+                  backgroundColor: Colors.red,
+                ),
+              );
+              return false; // Prevent back navigation
+            }
+
+            return true; // Allow back navigation
+          },
+          child: Scaffold(
+            appBar: myAppBar('Edit Projects', context),
+            body: Column(
+      children: [
               Row(
                 children: [
                   Expanded(child: SizedBox()),
                   IconButton(
-                    onPressed:
-                        selectedProject == null
-                            ? null
-                            : () {
-                              userProvider.removeProject(selectedProject!);
-                              selectedProject = null;
+                    onPressed: selectedProject == null
+                      ? null
+                      : () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Confirm Deletion"),
+                                content: Text("Are you sure you want to delete this project?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(); // Close dialog
+                                    },
+                                    child: Text("Cancel"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(); // Close dialog
+                                      userProvider.removeProject(selectedProject!);
+                                      setState(() {
+                                        selectedProject = null;
+                                        _nameController.clear();
+                                        _descriptionController.clear();
+                                        _imageController.clear();
+                                        _startDate.clear();
+                                        _endDate.clear();
+                                      });
+                                    },
+                                    child: Text(
+                                      "Delete",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              );
                             },
-                    icon: Icon(Icons.delete),
+                          );
+                        },
+                  icon: Icon(Icons.delete),
                   ),
                   IconButton(
                     onPressed: () {
@@ -83,6 +131,17 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                         );
                         userProvider.addProject(newProject);
                       }
+
+                      if (_nameController.text.isEmpty ||
+                        _startDate.text.isEmpty ||
+                        _descriptionController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Please enter name, description, and start date."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                        };
                     },
                     icon: Icon(Icons.add_box),
                   ),
@@ -112,7 +171,8 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 
   Widget showExistingProjects(BuildContext context) {
@@ -132,6 +192,11 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
               onTap: () {
                 setState(() {
                   selectedProject = p;
+                  _nameController.text = p.name;
+                  _descriptionController.text = p.description;
+                  _imageController.text = p.imageUrl ?? '';
+                  _startDate.text = p.dateBegun.toString().split(' ')[0];
+                  _endDate.text = p.dateEnded?.toString().split(' ')[0] ?? '';
                 });
                 // print('yoooooo');
               },
@@ -184,9 +249,17 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _nameController,
+              readOnly: selectedProject != null,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Name of project',
+                 labelText: 'Project Name',
+                  suffixIcon: selectedProject != null
+                      ? Tooltip(
+                          message: "Project name can't be edited",
+                          child: Icon(Icons.lock, color: Colors.grey),
+                        )
+                      : null,
               ),
             ),
           ),

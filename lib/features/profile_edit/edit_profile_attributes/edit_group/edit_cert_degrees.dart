@@ -90,6 +90,8 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
                         userProvider.addCertDegree(newCertDegree);
                       }
 
+                      
+
                       if (start !=null && end != null && end.isBefore(start)) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
