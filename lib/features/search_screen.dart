@@ -66,19 +66,19 @@ class _SearchScreenState extends State<SearchScreen> {
                           ? FirebaseFirestore.instance
                               .collection('users')
                               .where('isEndorsed', isEqualTo: true)
-                              .orderBy('name')
-                              .startAt([searchName])
+                              .orderBy('nameLowerCase')
+                              .startAt([searchName.toLowerCase()])
                               .endAt(
-                                ['$searchName\uf8ff'],
+                                ['${searchName.toLowerCase()}\uf8ff'],
                               ) // Allow you to get all character after the searched name
                               .limit(20)
                               .snapshots()
                           : FirebaseFirestore.instance
                               .collection('users')
-                              .orderBy('name')
-                              .startAt([searchName])
+                              .orderBy('nameLowerCase')
+                              .startAt([searchName.toLowerCase()])
                               .endAt(
-                                ['$searchName\uf8ff'],
+                                ['${searchName.toLowerCase()}\uf8ff'],
                               ) // Allow you to get all character after the searched name
                               .limit(20)
                               .snapshots(),
