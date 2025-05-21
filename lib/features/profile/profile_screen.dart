@@ -144,8 +144,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 : null,
                         icon:
                             selectedUserProvider!.profile!.isEndorsed
-                                ? Icon(Icons.check_circle_outline_outlined)
-                                : Icon(Icons.check_circle),
+                                ? Icon(Icons.check_circle)
+                                : Icon(Icons.check_circle_outline_outlined),
                       ),
                     ],
                   ),

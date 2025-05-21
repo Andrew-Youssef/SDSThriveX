@@ -81,31 +81,6 @@ class _MyEditProfileDetailsScreenState
                     ),
                   ),
                 ),
-
-                // GestureDetector(
-                //   onTap: () {
-                //     userProvider.updateProfile({
-                //       'name': _nameController.text,
-                //       'title': _titleController.text,
-                //       'description': _descriptionController.text,
-                //       'profilePicUrl': _profilePicUrlController.text,
-                //     });
-                //   },
-                //   child: Container(
-                //     padding: EdgeInsets.all(8.0),
-                //     decoration: BoxDecoration(
-                //       color: theme.primaryColor,
-                //       borderRadius: BorderRadius.circular(12),
-                //     ),
-                //     // color: theme.primaryColor,
-                //     child: Text(
-                //       'Update Details',
-                //       style: theme.textTheme.displayMedium!.copyWith(
-                //         color: Colors.white,
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ),
             ],
           ),
