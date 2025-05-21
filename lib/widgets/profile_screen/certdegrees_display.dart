@@ -20,41 +20,32 @@ class MyExistingCertDegreesWidgetState
   UserProvider? selectedUserProvider;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
-  bool _isLoading = true;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_isLoading) {
-      if (!_hadLoadedProfile) {
-        _hadLoadedProfile = true;
 
-        UserProvider userProvider = Provider.of<UserProvider>(context);
-        if (widget.selectedUserId == userProvider.userId) {
-          selectedUserProvider = userProvider;
-          _isLoggedInUser = true;
-          _isLoading = false;
-        } else {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            selectedUserProvider = UserProvider();
-            await selectedUserProvider!.setTemporaryProfile(
-              widget.selectedUserId,
-            );
-            setState(() {
-              _isLoading = false;
-            });
-          });
-        }
+    if (!_hadLoadedProfile) {
+      _hadLoadedProfile = true;
+
+      UserProvider userProvider = Provider.of<UserProvider>(context);
+      if (widget.selectedUserId == userProvider.userId) {
+        selectedUserProvider = userProvider;
+        _isLoggedInUser = true;
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          selectedUserProvider = UserProvider();
+          await selectedUserProvider!.setTemporaryProfile(
+            widget.selectedUserId,
+          );
+          setState(() {});
+        });
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-
     ThemeData theme = Theme.of(context);
     List<CertDegreesModel> certDegrees = selectedUserProvider!.certDegrees;
 
