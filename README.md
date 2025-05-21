@@ -2,7 +2,7 @@
 
 ## Client: Innate X
 
-Description: A Mobile Application Prototype that represent a possible student portfolio platform to help students to stand out by showcasing their skills and capabiltiies to potential employers and mentors, and professors.
+Description: A Mobile Application Prototype that represent a possible student portfolio platform to help students to stand out by showcasing their skills and capabilities to potential employers and mentors, and professors.
 
 Team:
 
