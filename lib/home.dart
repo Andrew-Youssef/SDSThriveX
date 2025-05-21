@@ -18,7 +18,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-    final ThemeData theme = userProvider.getTheme();
     Widget page;
     switch (currentPageIndex) {
       case 0:

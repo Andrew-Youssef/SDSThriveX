@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:screens/core/models/profile_model.dart';
 import 'package:screens/providers/user_provider.dart';
 import '../../data/globals.dart';
-import '../../core/models/export_models.dart';
 import 'profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
 import '../../widgets/header.dart';
 import '../../widgets/profile_screen/export_attribute_display_widgets.dart';
@@ -26,8 +26,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final double profileHeight = 130;
 
   Map<ProfileAttribute, WidgetBuilder> attributeScreens = {
-    ProfileAttribute.profile:
-        (context) => const MyEditProfileAttributesScreen(),
     ProfileAttribute.projects: (context) => const MyEditProjectsScreen(),
     ProfileAttribute.workExperience:
         (context) => const MyEditWorkExperiencesScreen(),
@@ -129,7 +127,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   Row(
                     children: [
                       Text(
-                        'John Smith',
+                        selectedUserProvider!.profile!.name,
                         style: theme.textTheme.titleMedium!.copyWith(
                           fontSize: 28,
                         ),
@@ -151,25 +149,35 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                     ],
                   ),
-                  Text('Student at UTS', style: theme.textTheme.displayMedium),
+                  Text(
+                    selectedUserProvider!.profile!.title,
+                    style: theme.textTheme.displayMedium,
+                  ),
                 ],
               ),
+
               Expanded(child: SizedBox()),
               IconButton(
-                onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const MyEditProfileScreen(),
-                  //   ),
-                  // );
-                },
+                onPressed:
+                    _isLoggedInUser
+                        ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => MyEditProfileDetailsScreen(
+                                    profile: selectedUserProvider!.profile!,
+                                  ),
+                            ),
+                          );
+                        }
+                        : null,
                 icon: _isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
               ),
             ],
           ),
         ),
-        Divider(thickness: 3),
+        Divider(thickness: 1),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -182,7 +190,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 style: theme.textTheme.titleMedium,
               ),
               Text(
-                'Place holder text for About',
+                selectedUserProvider!.profile!.description,
                 textAlign: TextAlign.left,
                 style: theme.textTheme.displayMedium,
               ),
@@ -226,7 +234,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Divider(thickness: 3),
+                  Divider(thickness: 1),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(

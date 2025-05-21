@@ -5,6 +5,8 @@ class ProfileModel extends ChangeNotifier {
   final String userId;
   String name;
   final String userType;
+  String title;
+  String description;
   String? profilePicUrl;
   String? backgroundPicUrl;
   bool isEndorsed;
@@ -13,6 +15,8 @@ class ProfileModel extends ChangeNotifier {
     required this.userId,
     required this.name,
     required this.userType,
+    required this.title,
+    required this.description,
     this.profilePicUrl,
     required this.isEndorsed,
   });
@@ -23,6 +27,8 @@ class ProfileModel extends ChangeNotifier {
       userId: doc.id,
       name: data['name'],
       userType: data['userType'],
+      title: data['title'] ?? 'No title',
+      description: data['description'] ?? 'No Description',
       isEndorsed: data['isEndorsed'] ?? false,
     );
   }
@@ -34,6 +40,16 @@ class ProfileModel extends ChangeNotifier {
 
   void updateName(String newName) {
     name = newName;
+    notifyListeners();
+  }
+
+  void updateTitle(String newTitle) {
+    title = newTitle;
+    notifyListeners();
+  }
+
+  void updateDescription(String newDescription) {
+    description = newDescription;
     notifyListeners();
   }
 

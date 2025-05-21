@@ -123,6 +123,17 @@ class UserProvider extends ChangeNotifier {
         _volunteeringWorks.isNotEmpty;
   }
 
+  Future<void> updateProfile(Map<String, dynamic> fieldsToUpdate) async {
+    if (_profile?.userId == null) return;
+
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_profile?.userId);
+
+    await docRef.update(fieldsToUpdate);
+    notifyListeners();
+  }
+
   Future<void> addProject(ProjectModel newProject) async {
     final userId = _profile?.userId;
     if (userId == null) return;
