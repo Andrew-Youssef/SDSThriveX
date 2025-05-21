@@ -4,7 +4,7 @@ import 'package:screens/providers/user_provider.dart';
 import 'package:screens/widgets/header.dart';
 import 'package:provider/provider.dart';
 
-import '../edit_individual/edit_skills_strength.dart';
+import '../../edit_profile_attributes/edit_individual/edit_skills_strength.dart';
 
 class MyEditSkillsStrengthsScreen extends StatefulWidget {
   const MyEditSkillsStrengthsScreen({super.key});

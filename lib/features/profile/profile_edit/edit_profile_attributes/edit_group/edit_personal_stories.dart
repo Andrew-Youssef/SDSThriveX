@@ -4,7 +4,7 @@ import 'package:screens/providers/user_provider.dart';
 import '../../../../../widgets/header.dart';
 import 'package:provider/provider.dart';
 
-import '../edit_individual/edit_personal_story.dart';
+import '../../edit_profile_attributes/edit_individual/edit_personal_story.dart';
 
 class MyEditPersonalStoriesScreen extends StatefulWidget {
   const MyEditPersonalStoriesScreen({super.key});

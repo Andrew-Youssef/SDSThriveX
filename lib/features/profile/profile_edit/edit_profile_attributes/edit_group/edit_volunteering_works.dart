@@ -4,7 +4,7 @@ import 'package:screens/providers/user_provider.dart';
 import 'package:screens/widgets/header.dart';
 import 'package:provider/provider.dart';
 
-import '../edit_individual/edit_volunteering_work.dart';
+import '../../edit_profile_attributes/edit_individual/edit_volunteering_work.dart';
 
 class MyEditVolunteeringWorksScreen extends StatefulWidget {
   const MyEditVolunteeringWorksScreen({super.key});

@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:screens/providers/user_provider.dart';
 import '../../data/globals.dart';
 import '../../core/models/export_models.dart';
-import '../profile/profile_edit/profile_edit_screen.dart';
-import '../profile/profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
+import 'profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
 import '../../widgets/header.dart';
 import '../../widgets/profile_screen/export_attribute_display_widgets.dart';
 
@@ -21,6 +20,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   UserProvider? selectedUserProvider;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
+  bool _isLoading = true;
 
   final double coverHeight = 140;
   final double profileHeight = 130;
@@ -40,6 +40,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         (context) => const MyEditVolunteeringWorksScreen(),
   };
 
+  final Map<ProfileAttribute, String> profileAttributeLabels = {
+    ProfileAttribute.profile: 'Profile',
+    ProfileAttribute.projects: 'Projects',
+    ProfileAttribute.workExperience: 'Work Experience',
+    ProfileAttribute.certDegrees: 'Certificate & Degrees',
+    ProfileAttribute.skillsStrengths: 'Skills & Strengths',
+    ProfileAttribute.personalStories: 'Personal Stories',
+    ProfileAttribute.volunteeringWork: 'Volunteering Work',
+  };
   // void toggleProfileAttributes(ProfileAttribute key) {
   //   setState(() {
   //     if (profileAttributes.containsKey(key)) {
@@ -51,22 +60,26 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (_isLoading) {
+      if (!_hadLoadedProfile) {
+        _hadLoadedProfile = true;
 
-    if (!_hadLoadedProfile) {
-      _hadLoadedProfile = true;
-
-      UserProvider userProvider = Provider.of<UserProvider>(context);
-      if (widget.selectedUserId == userProvider.userId) {
-        selectedUserProvider = userProvider;
-        _isLoggedInUser = true;
-      } else {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          selectedUserProvider = UserProvider();
-          await selectedUserProvider!.setTemporaryProfile(
-            widget.selectedUserId,
-          );
-          setState(() {});
-        });
+        UserProvider userProvider = Provider.of<UserProvider>(context);
+        if (widget.selectedUserId == userProvider.userId) {
+          selectedUserProvider = userProvider;
+          _isLoggedInUser = true;
+          _isLoading = false;
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            selectedUserProvider = UserProvider();
+            await selectedUserProvider!.setTemporaryProfile(
+              widget.selectedUserId,
+            );
+            setState(() {
+              _isLoading = false;
+            });
+          });
+        }
       }
     }
   }
@@ -77,6 +90,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
     //
     //
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
@@ -141,12 +157,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               Expanded(child: SizedBox()),
               IconButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyEditProfileScreen(),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const MyEditProfileScreen(),
+                  //   ),
+                  // );
                 },
                 icon: _isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
               ),

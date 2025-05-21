@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/models/project_model.dart';
-import '../edit_individual/edit_project.dart';
+import '../../edit_profile_attributes/edit_individual/edit_project.dart';
 import '../../../../../widgets/header.dart';
 import '../../../../../providers/user_provider.dart';
 

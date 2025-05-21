@@ -5,6 +5,8 @@ import 'package:screens/core/models/export_models.dart';
 import '../core/theme/theme.dart';
 import '../data/globals.dart';
 
+//this user provider SHOULD be split into smaller providers/controllers,
+//one for each attribute
 class UserProvider extends ChangeNotifier {
   AIModel? _aiSummary;
   late MyThemeData _themeData;
@@ -16,6 +18,9 @@ class UserProvider extends ChangeNotifier {
   List<PersonalStoriesModel> _personalStories = [];
   List<VolunteeringWorkModel> _volunteeringWorks = [];
 
+  //used by the ProfileScreen UI to track what profileattributes to display
+  //eg. the UI will not show empty profile attributes when viewing another users profile
+  //map is managed locally in load/add/remove methods,
   final Map<ProfileAttribute, bool> _profileAttributes = {
     ProfileAttribute.projects: false,
     ProfileAttribute.workExperience: false,
@@ -75,6 +80,7 @@ class UserProvider extends ChangeNotifier {
     print("yooooooo");
   }
 
+  //see profile_screen or widgets/profile_screen/ for how to use
   Future<void> setTemporaryProfile(String userId) async {
     final doc =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
