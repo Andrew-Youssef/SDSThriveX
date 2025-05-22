@@ -177,6 +177,26 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ],
           ),
         ),
+        //Ai sumamry
+        Divider(thickness: 1),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'AI Sumary',
+                textAlign: TextAlign.left,
+                style: theme.textTheme.titleMedium,
+              ),
+              Text(
+                selectedUserProvider!.aiSummary == null
+                    ? 'No AI summary'
+                    : selectedUserProvider!.aiSummary!,
+              ),
+            ],
+          ),
+        ),
 
         //About Me
         Divider(thickness: 1),

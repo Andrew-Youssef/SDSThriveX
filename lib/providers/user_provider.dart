@@ -8,7 +8,8 @@ import '../data/globals.dart';
 //this user provider SHOULD be split into smaller providers/controllers,
 //one for each attribute
 class UserProvider extends ChangeNotifier {
-  AIModel? _aiSummary;
+  // AIModel? _aiSummary;
+  String? _aiSummary;
   late MyThemeData _themeData;
   ProfileModel? _profile;
   List<ProjectModel> _projects = [];
@@ -34,7 +35,8 @@ class UserProvider extends ChangeNotifier {
     _themeData = MyThemeData(UserType.student);
   }
 
-  AIModel? get aiSummary => _aiSummary;
+  // AIModel? get aiSummary => _aiSummary;
+  String? get aiSummary => _aiSummary;
   ProfileModel? get profile => _profile;
   UserType get type => UserTypeExtension.fromString(_profile!.userType);
   List<ProjectModel> get projects => _projects;
@@ -73,6 +75,7 @@ class UserProvider extends ChangeNotifier {
     loadSkillsStrengths(profileData.userId);
     loadVolunteeringWorks(profileData.userId);
     loadWorkExperiences(profileData.userId);
+    generateSummary();
     notifyListeners();
   }
 
@@ -91,6 +94,7 @@ class UserProvider extends ChangeNotifier {
     await loadPersonalStories(userId);
     await loadSkillsStrengths(userId);
     await loadVolunteeringWorks(userId);
+    await generateSummary();
   }
 
   void clearProfile() {
@@ -131,6 +135,7 @@ class UserProvider extends ChangeNotifier {
         .doc(_profile?.userId);
 
     await docRef.update(fieldsToUpdate);
+    generateSummary();
     notifyListeners();
   }
 
@@ -150,6 +155,7 @@ class UserProvider extends ChangeNotifier {
     _projects.add(newProject);
     // print("addProject projectid: ${docRef.id}\n");
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -171,6 +177,7 @@ class UserProvider extends ChangeNotifier {
     _projects.removeWhere((project) => project.id == projectId);
     // print("isProjects empty: ${_projects.isEmpty}\n");
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -187,6 +194,7 @@ class UserProvider extends ChangeNotifier {
         .collection('projects')
         .doc(projectId);
     await docRef.update(fieldsToUpdate);
+    await generateSummary();
     notifyListeners();
   }
 
@@ -227,6 +235,7 @@ class UserProvider extends ChangeNotifier {
     await docRef.set(newWorkExperience.toJSON());
     _workExperiences.add(newWorkExperience);
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -244,6 +253,7 @@ class UserProvider extends ChangeNotifier {
       (workExperience) => workExperience.id == workExperienceId,
     );
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -260,6 +270,7 @@ class UserProvider extends ChangeNotifier {
         .collection('workExperiences')
         .doc(workExperienceId);
     await docRef.update(fieldsToUpdate);
+    await generateSummary();
     notifyListeners();
   }
 
@@ -297,6 +308,7 @@ class UserProvider extends ChangeNotifier {
     await docRef.set(newCertDegree.toJSON());
     _certDegrees.add(newCertDegree);
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -312,6 +324,7 @@ class UserProvider extends ChangeNotifier {
         .delete();
     _certDegrees.removeWhere((certDegree) => certDegree.id == certDegreeId);
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -328,6 +341,7 @@ class UserProvider extends ChangeNotifier {
         .collection('certDegree')
         .doc(certDegreeId);
     await docRef.update(fieldsToUpdate);
+    await generateSummary();
     notifyListeners();
   }
 
@@ -363,6 +377,7 @@ class UserProvider extends ChangeNotifier {
     await docRef.set(newSkill.toJSON());
     _skillsStrengths.add(newSkill);
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -378,6 +393,7 @@ class UserProvider extends ChangeNotifier {
         .delete();
     _skillsStrengths.removeWhere((skill) => skill.id == skillId);
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -394,6 +410,7 @@ class UserProvider extends ChangeNotifier {
         .collection('skills')
         .doc(skillId);
     await docRef.update(fieldsToUpdate);
+    await generateSummary();
     notifyListeners();
   }
 
@@ -429,6 +446,7 @@ class UserProvider extends ChangeNotifier {
     await docRef.set(newStory.toJSON());
     _personalStories.add(newStory);
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -444,6 +462,7 @@ class UserProvider extends ChangeNotifier {
         .delete();
     _personalStories.removeWhere((story) => story.id == storyId);
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -460,6 +479,7 @@ class UserProvider extends ChangeNotifier {
         .collection('stories')
         .doc(storyId);
     await docRef.update(fieldsToUpdate);
+    await generateSummary();
     notifyListeners();
   }
 
@@ -495,6 +515,7 @@ class UserProvider extends ChangeNotifier {
     await docRef.set(newVolunteer.toJSON());
     _volunteeringWorks.add(newVolunteer);
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -510,6 +531,7 @@ class UserProvider extends ChangeNotifier {
         .delete();
     _volunteeringWorks.removeWhere((volunteer) => volunteer.id == volunteerId);
     updateProfileAttributes();
+    await generateSummary();
     notifyListeners();
   }
 
@@ -526,6 +548,7 @@ class UserProvider extends ChangeNotifier {
         .collection('volunteeringWorks')
         .doc(volunteerId);
     await docRef.update(fieldsToUpdate);
+    await generateSummary();
     notifyListeners();
   }
 
@@ -546,7 +569,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> generateSummary() async {
+  Future<void> generateSummary() async {
     final gemini = Gemini.instance;
     await loadProjects(profile!.userId);
     await loadCertDegrees(profile!.userId);
@@ -555,6 +578,8 @@ class UserProvider extends ChangeNotifier {
     await loadVolunteeringWorks(profile!.userId);
 
     String combinedInformation = [
+      _profile!.title,
+      _profile!.description,
       projects.map((p) => p.toPrompt()).join('\n\n'),
       certDegrees.map((c) => c.toPrompt()).join('\n\n'),
       skillsStrengths.map((s) => s.toPrompt()).join('\n\n'),
@@ -579,36 +604,37 @@ class UserProvider extends ChangeNotifier {
 
     final response = await gemini.prompt(parts: [Part.text(prompt)]);
 
-    return response?.output ?? "No story generated.";
+    _aiSummary = response?.output ?? "No story generated.";
+    print('GENERATE SUMMARY FINISHED\n');
   }
 
-  Future<void> addAISummary(AIModel newSummary) async {
-    final userId = _profile?.userId;
-    if (userId == null) return;
+  // Future<void> addAISummary(AIModel newSummary) async {
+  //   final userId = _profile?.userId;
+  //   if (userId == null) return;
 
-    final docRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('summary')
-        .doc('AI');
+  //   final docRef = FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(userId)
+  //       .collection('summary')
+  //       .doc('AI');
 
-    await docRef.set(newSummary.toJSON());
-    _aiSummary = newSummary;
-    notifyListeners();
-  }
+  //   await docRef.set(newSummary.toJSON());
+  //   _aiSummary = newSummary;
+  //   notifyListeners();
+  // }
 
-  //load summary
-  Future<void> loadSummary(String userId) async {
-    final ref =
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .collection('summary')
-            .doc('AI')
-            .get();
+  // //load summary
+  // Future<void> loadSummary(String userId) async {
+  //   final ref =
+  //       await FirebaseFirestore.instance
+  //           .collection('users')
+  //           .doc(userId)
+  //           .collection('summary')
+  //           .doc('AI')
+  //           .get();
 
-    _aiSummary = AIModel.convertMap(ref.data()!, 'AI');
+  //   _aiSummary = AIModel.convertMap(ref.data()!, 'AI');
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 }
