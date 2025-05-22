@@ -190,6 +190,7 @@ class UserProvider extends ChangeNotifier {
             .collection('users')
             .doc(userId)
             .collection('workExperiences')
+            .orderBy('Datebegun')
             .get();
 
     _workExperiences =
@@ -253,6 +254,7 @@ class UserProvider extends ChangeNotifier {
             .collection('users')
             .doc(userId)
             .collection('certDegree')
+            .orderBy('Datebegun')
             .get();
 
     _certDegrees =
@@ -442,6 +444,7 @@ class UserProvider extends ChangeNotifier {
             .collection('users')
             .doc(userId)
             .collection('volunteeringWorks')
+            .orderBy('Datebegun')
             .get();
 
     _volunteeringWorks =
