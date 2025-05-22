@@ -28,7 +28,8 @@ class ProfileModel extends ChangeNotifier {
     return ProfileModel(
       userId: doc.id,
       name: data['name'],
-      nameLowerCase: data['name'].toString().toLowerCase(),
+      nameLowerCase:
+          data['nameLowerCase'] ?? data['name'].toString().toLowerCase(),
       userType: data['userType'],
       title: data['title'] ?? '',
       description: data['description'] ?? '',

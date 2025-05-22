@@ -30,6 +30,7 @@ class AuthService {
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .set({
             'name': name,
+            'nameLowerCase': name.toLowerCase(),
             'email': email,
             'userType': userType,
             'isEndorsed': false,
