@@ -177,6 +177,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ],
           ),
         ),
+
+        //About Me
         Divider(thickness: 1),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -184,10 +186,33 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // buildAttributeButtons(),
-              Text(
-                'About',
-                textAlign: TextAlign.left,
-                style: theme.textTheme.titleMedium,
+              Row(
+                children: [
+                  Text(
+                    'About',
+                    textAlign: TextAlign.left,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  Expanded(child: SizedBox()),
+                  IconButton(
+                    onPressed:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditProfileDetailsScreen(
+                                        profile: selectedUserProvider!.profile!,
+                                      ),
+                                ),
+                              );
+                            }
+                            : null,
+                    icon:
+                        _isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
+                  ),
+                ],
               ),
               Text(
                 selectedUserProvider!.profile!.description,
