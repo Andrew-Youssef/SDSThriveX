@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:screens/core/models/export_models.dart';
+import '../../../../../core/models/export_models.dart';
 import '../core/theme/theme.dart';
 import '../data/globals.dart';
 

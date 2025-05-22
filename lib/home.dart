@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/features/profile/profile_screen.dart';
+import '../../../../../features/profile/profile_screen.dart';
 import '../features/dashboard_screen.dart';
 import '../features/notifications/notifications_screen.dart';
 import '../providers/user_provider.dart';
