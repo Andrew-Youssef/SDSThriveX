@@ -578,8 +578,8 @@ class UserProvider extends ChangeNotifier {
     await loadVolunteeringWorks(profile!.userId);
 
     String combinedInformation = [
-      _profile!.title,
-      _profile!.description,
+      {'Role/Title: ${_profile!.title}\n\n'},
+      {'About Me: ${_profile!.description}\n\n'},
       projects.map((p) => p.toPrompt()).join('\n\n'),
       certDegrees.map((c) => c.toPrompt()).join('\n\n'),
       skillsStrengths.map((s) => s.toPrompt()).join('\n\n'),
