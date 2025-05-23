@@ -70,14 +70,14 @@ class _SearchScreenState extends State<SearchScreen> {
                               .orderBy('nameLowerCase')
                               .startAt([searchName.toLowerCase()])
                               .endAt(['${searchName.toLowerCase()}\uf8ff'])
-                              .limit(20)
+                              // .limit(20)
                               .snapshots()
                           : FirebaseFirestore.instance
                               .collection('users')
                               .orderBy('nameLowerCase')
                               .startAt([searchName.toLowerCase()])
                               .endAt(['${searchName.toLowerCase()}\uf8ff'])
-                              .limit(20)
+                              // .limit(20)
                               .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {

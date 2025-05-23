@@ -5,9 +5,12 @@ import 'package:thrivex/features/profile/profile_edit/edit_profile_attributes/ed
 import 'package:thrivex/providers/user_provider.dart';
 
 class MyExistingProjectsWidget extends StatefulWidget {
-  final String selectedUserId;
+  final UserProvider selectedUserProvider;
 
-  const MyExistingProjectsWidget({super.key, required this.selectedUserId});
+  const MyExistingProjectsWidget({
+    super.key,
+    required this.selectedUserProvider,
+  });
 
   @override
   State<MyExistingProjectsWidget> createState() =>
@@ -18,47 +21,36 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget>
     with AutomaticKeepAliveClientMixin {
   ProjectModel? selectedProject;
   UserProvider? selectedUserProvider;
-  bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
-  bool _isLoading = true;
+  bool _hadLoadedProfile = false;
 
   @override
   bool get wantKeepAlive => true;
 
+  // @override
+  // void initState() {
+  //   UserProvider userProvider = Provider.of<UserProvider>(context);
+  //   _isLoggedInUser = userProvider.userId == widget.selectedUserProvider.userId;
+  //   super.initState();
+  // }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_isLoading) {
-      if (!_hadLoadedProfile) {
-        _hadLoadedProfile = true;
-
-        UserProvider userProvider = Provider.of<UserProvider>(context);
-        if (widget.selectedUserId == userProvider.userId) {
-          selectedUserProvider = userProvider;
-          _isLoggedInUser = true;
-          _isLoading = false;
-        } else {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            selectedUserProvider = UserProvider();
-            await selectedUserProvider!.setTemporaryProfile(
-              widget.selectedUserId,
-            );
-            setState(() {
-              _isLoading = false;
-            });
-          });
-        }
-      }
+    if (!_hadLoadedProfile) {
+      UserProvider userProvider = Provider.of<UserProvider>(context);
+      _isLoggedInUser =
+          userProvider.userId == widget.selectedUserProvider.userId;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (_isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-    List<ProjectModel> projects = selectedUserProvider!.projects;
+
+    print("MADE IT INSIDE PROJECT_DISPLAY??!!?!");
+
+    List<ProjectModel> projects = widget.selectedUserProvider.projects;
 
     ThemeData theme = Theme.of(context);
 

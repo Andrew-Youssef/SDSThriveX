@@ -348,7 +348,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Map<ProfileAttribute, Widget> getAttributeWidgetData(context) {
     return {
       ProfileAttribute.projects: MyExistingProjectsWidget(
-        selectedUserId: widget.selectedUserId,
+        selectedUserProvider: selectedUserProvider,
       ),
       ProfileAttribute.workExperience: MyExistingWorkExperiencesWidget(
         selectedUserId: widget.selectedUserId,
