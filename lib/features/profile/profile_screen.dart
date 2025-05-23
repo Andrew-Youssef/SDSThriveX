@@ -1,34 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/user_provider.dart';
+import 'package:screens/core/models/profile_model.dart';
+import 'package:screens/providers/user_provider.dart';
 import '../../data/globals.dart';
-import '../../core/models/export_models.dart';
-import '../profile/profile_edit/profile_edit_screen.dart';
-import '../profile/profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
-import '../profile/profile_edit/edit_profile_attributes/edit_individual/export_edit_individual.dart';
+import 'profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
 import '../../widgets/header.dart';
+import '../../widgets/profile_screen/export_attribute_display_widgets.dart';
 
 class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({super.key});
+  final String selectedUserId;
+
+  const MyProfileScreen({super.key, required this.selectedUserId});
 
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
+  UserProvider? selectedUserProvider;
+  bool _hadLoadedProfile = false;
+  bool _isLoggedInUser = false;
+  bool _isLoading = true;
+
   final double coverHeight = 140;
   final double profileHeight = 130;
 
-  ProjectModel? selectedProject;
-  WorkExperienceModel? selectedWorkExperience;
-  CertDegreesModel? selectedCertDegree;
-  SkillsStrengthsModel? selectedSkillStrength;
-  PersonalStoriesModel? selectedPersonalStory;
-  VolunteeringWorkModel? selectedVolunteeringWork;
-
   Map<ProfileAttribute, WidgetBuilder> attributeScreens = {
-    ProfileAttribute.profile:
-        (context) => const MyEditProfileAttributesScreen(),
     ProfileAttribute.projects: (context) => const MyEditProjectsScreen(),
     ProfileAttribute.workExperience:
         (context) => const MyEditWorkExperiencesScreen(),
@@ -41,23 +38,59 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         (context) => const MyEditVolunteeringWorksScreen(),
   };
 
-  void toggleProfileAttributes(ProfileAttribute key) {
-    setState(() {
-      if (profileAttributes.containsKey(key)) {
-        profileAttributes[key] = !profileAttributes[key]!;
+  final Map<ProfileAttribute, String> profileAttributeLabels = {
+    ProfileAttribute.profile: 'Profile',
+    ProfileAttribute.projects: 'Projects',
+    ProfileAttribute.workExperience: 'Work Experience',
+    ProfileAttribute.certDegrees: 'Certificate & Degrees',
+    ProfileAttribute.skillsStrengths: 'Skills & Strengths',
+    ProfileAttribute.personalStories: 'Personal Stories',
+    ProfileAttribute.volunteeringWork: 'Volunteering Work',
+  };
+  // void toggleProfileAttributes(ProfileAttribute key) {
+  //   setState(() {
+  //     if (profileAttributes.containsKey(key)) {
+  //       profileAttributes[key] = !profileAttributes[key]!;
+  //     }
+  //   });
+  // }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isLoading) {
+      if (!_hadLoadedProfile) {
+        _hadLoadedProfile = true;
+
+        UserProvider userProvider = Provider.of<UserProvider>(context);
+        if (widget.selectedUserId == userProvider.userId) {
+          selectedUserProvider = userProvider;
+          _isLoggedInUser = true;
+          _isLoading = false;
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            selectedUserProvider = UserProvider();
+            await selectedUserProvider!.setTemporaryProfile(
+              widget.selectedUserId,
+            );
+            setState(() {
+              _isLoading = false;
+            });
+          });
+        }
       }
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // currUID = FirebaseAuth.instance.currentUser?.uid
-    // selectUID
-    // if currID != selectUID
+
     //
     //
-    //
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
@@ -91,42 +124,118 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'John Smith',
-                    style: theme.textTheme.titleMedium!.copyWith(fontSize: 28),
+                  Row(
+                    children: [
+                      Text(
+                        selectedUserProvider!.profile!.name,
+                        style: theme.textTheme.titleMedium!.copyWith(
+                          fontSize: 28,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed:
+                            _isLoggedInUser
+                                ? () async {
+                                  //THIS NEEDS TO BE CHANGED TO
+                                  await selectedUserProvider!.toggleEndorsement(
+                                    selectedUserProvider!.userId,
+                                  );
+                                }
+                                : null,
+                        icon:
+                            selectedUserProvider!.profile!.isEndorsed
+                                ? Icon(Icons.check_circle)
+                                : Icon(Icons.check_circle_outline_outlined),
+                      ),
+                    ],
                   ),
-                  Text('Student at UTS', style: theme.textTheme.displayMedium),
+                  Text(
+                    selectedUserProvider!.profile!.title,
+                    style: theme.textTheme.displayMedium,
+                  ),
                 ],
               ),
+
               Expanded(child: SizedBox()),
               IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyEditProfileScreen(),
-                    ),
-                  );
-                },
-                icon: Icon(Icons.edit),
+                onPressed:
+                    _isLoggedInUser
+                        ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => MyEditProfileDetailsScreen(
+                                    profile: selectedUserProvider!.profile!,
+                                  ),
+                            ),
+                          );
+                        }
+                        : null,
+                icon: _isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
               ),
             ],
           ),
         ),
-        Divider(thickness: 3),
+        //Ai sumamry
+        Divider(thickness: 1),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'AI Sumary',
+                textAlign: TextAlign.left,
+                style: theme.textTheme.titleMedium,
+              ),
+              Text(
+                selectedUserProvider!.aiSummary == null
+                    ? 'No AI summary'
+                    : selectedUserProvider!.aiSummary!,
+              ),
+            ],
+          ),
+        ),
+
+        //About Me
+        Divider(thickness: 1),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              buildAttributeButtons(),
-              Text(
-                'About',
-                textAlign: TextAlign.left,
-                style: theme.textTheme.titleMedium,
+              // buildAttributeButtons(),
+              Row(
+                children: [
+                  Text(
+                    'About',
+                    textAlign: TextAlign.left,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  Expanded(child: SizedBox()),
+                  IconButton(
+                    onPressed:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditProfileDetailsScreen(
+                                        profile: selectedUserProvider!.profile!,
+                                      ),
+                                ),
+                              );
+                            }
+                            : null,
+                    icon:
+                        _isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
+                  ),
+                ],
               ),
               Text(
-                'Place holder text for About',
+                selectedUserProvider!.profile!.description,
                 textAlign: TextAlign.left,
                 style: theme.textTheme.displayMedium,
               ),
@@ -137,37 +246,40 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  Widget buildAttributeButtons() {
-    return Wrap(
-      spacing: 8,
-      children:
-          profileAttributes.keys.map((key) {
-            return ElevatedButton(
-              onPressed: () {
-                toggleProfileAttributes(key);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    profileAttributes[key]! ? Colors.blue : Colors.white70,
-              ),
-              child: Text(profileAttributeLabels[key]!),
-            );
-          }).toList(),
-    );
-  }
+  // Widget buildAttributeButtons() {
+  //   return Wrap(
+  //     spacing: 8,
+  //     children:
+  //         profileAttributes.keys.map((key) {
+  //           return ElevatedButton(
+  //             onPressed: () {
+  //               toggleProfileAttributes(key);
+  //             },
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor:
+  //                   profileAttributes[key]! ? Colors.blue : Colors.white70,
+  //             ),
+  //             child: Text(profileAttributeLabels[key]!),
+  //           );
+  //         }).toList(),
+  //   );
+  // }
 
   Widget buildAttributeData(BuildContext context) {
+    final attributes = selectedUserProvider!.profileAttributes;
     ThemeData theme = Theme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children:
-          profileAttributes.keys.map((key) {
-            if (profileAttributes[key]!) {
+          attributes.keys.map((key) {
+            //displays all attributes to logged in user
+            //only displays filled attributes when viewing other user
+            if (attributes[key]! || _isLoggedInUser) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Divider(thickness: 3),
+                  Divider(thickness: 1),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -181,24 +293,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             ),
                             Expanded(child: SizedBox()),
                             IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: attributeScreens[key]!,
-                                  ),
-                                );
-                              },
-                              icon: Icon(Icons.edit),
+                              onPressed:
+                                  _isLoggedInUser
+                                      ? () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: attributeScreens[key]!,
+                                          ),
+                                        );
+                                      }
+                                      : null,
+                              icon:
+                                  _isLoggedInUser
+                                      ? Icon(Icons.edit)
+                                      : SizedBox.shrink(),
                             ),
                           ],
                         ),
-
-                        //og
-                        // Text(
-                        //   'Place holder text for ${profileAttributeLabels[key]}',
-                        //   style: theme.textTheme.displayMedium,
-                        // ),
                         getAttributeWidgetData(context)[key]!,
                         const SizedBox(height: 10),
                       ],
@@ -247,453 +359,26 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  Widget showExistingProjects(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<ProjectModel> projects = userProvider.projects;
-
-    if (projects.isEmpty) {
-      return Text(
-        'Place holder text for Projects',
-        style: theme.textTheme.displayMedium,
-      );
-    } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in projects) ...[
-              GestureDetector(
-                onTap: () {
-                  if (selectedProject == p) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyEditProjectScreen(project: p),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedProject = p;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MyEditProjectScreen(project: p),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedProject ? 5 : 3,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(p.name),
-                      Text(p.dateBegun.toString().split(' ')[0]),
-                      Text(
-                        p.dateEnded != null
-                            ? p.dateEnded!.toString().split(' ')[0]
-                            : 'Unknown',
-                      ),
-                      Text(p.description),
-                      Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
-      );
-    }
-  }
-
-  Widget showExistingWorkExperiences(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<WorkExperienceModel> workExperiences = userProvider.workExperiences;
-
-    if (workExperiences.isEmpty) {
-      return Text(
-        'Place holder text for Work Experience',
-        style: theme.textTheme.displayMedium,
-      );
-    } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in workExperiences) ...[
-              GestureDetector(
-                onTap: () {
-                  if (selectedWorkExperience == p) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                MyEditWorkExperienceScreen(workExperience: p),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedWorkExperience = p;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              MyEditWorkExperienceScreen(workExperience: p),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedWorkExperience ? 5 : 3,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(p.name),
-                      Text(p.dateBegun.toString().split(' ')[0]),
-                      Text(
-                        p.dateEnded != null
-                            ? p.dateEnded!.toString().split(' ')[0]
-                            : 'Unknown',
-                      ),
-                      Text(p.description),
-                      Text(p.role),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
-      );
-    }
-  }
-
-  Widget showExistingCertDegrees(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<CertDegreesModel> certDegrees = userProvider.certDegrees;
-
-    if (certDegrees.isEmpty) {
-      return Text(
-        'Place holder text for Certs & Degrees',
-        style: theme.textTheme.displayMedium,
-      );
-    } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in certDegrees) ...[
-              GestureDetector(
-                onTap: () {
-                  if (selectedCertDegree == p) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => MyEditCertDegreeScreen(certDegree: p),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedCertDegree = p;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => MyEditCertDegreeScreen(certDegree: p),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedCertDegree ? 5 : 3,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(p.institutionName),
-                      Text(p.certificateName),
-                      Text(p.dateStarted.toString().split(' ')[0]),
-                      Text(
-                        p.dateEnded != null
-                            ? p.dateEnded!.toString().split(' ')[0]
-                            : 'Unknown',
-                      ),
-                      Text(p.description),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
-      );
-    }
-  }
-
-  Widget showExistingSkillsStrengths(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<SkillsStrengthsModel> skillsStrengths = userProvider.skillsStrengths;
-
-    if (skillsStrengths.isEmpty) {
-      return Text(
-        'Place holder text for Skills & Strengths',
-        style: theme.textTheme.displayMedium,
-      );
-    } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in skillsStrengths) ...[
-              GestureDetector(
-                onTap: () {
-                  if (selectedSkillStrength == p) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                MyEditSkillStrengthScreen(skillStrength: p),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedSkillStrength = p;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              MyEditSkillStrengthScreen(skillStrength: p),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedSkillStrength ? 5 : 3,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(p.skill),
-                      Text(p.acquiredAt),
-                      Text(p.description),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
-      );
-    }
-  }
-
-  Widget showExistingPersonalStories(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<PersonalStoriesModel> stories = userProvider.personalStories;
-
-    if (stories.isEmpty) {
-      return Text(
-        'Place holder text for Personal Stories',
-        style: theme.textTheme.displayMedium,
-      );
-    } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in stories) ...[
-              GestureDetector(
-                onTap: () {
-                  if (selectedPersonalStory == p) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                MyEditPersonalStoryScreen(personalStory: p),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedPersonalStory = p;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              MyEditPersonalStoryScreen(personalStory: p),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedPersonalStory ? 5 : 3,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(p.title),
-                      Text(p.date.toString().split(' ')[0]),
-                      Text(p.description),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
-      );
-    }
-  }
-
-  Widget showExistingVolunteeringWorks(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<VolunteeringWorkModel> voluteers = userProvider.volunteeringWorks;
-
-    if (voluteers.isEmpty) {
-      return Text(
-        'Place holder text for Volunteering Work',
-        style: theme.textTheme.displayMedium,
-      );
-    } else {
-      return SizedBox(
-        height: 200,
-        child: ListView(
-          padding: EdgeInsets.all(8.0),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            for (final p in voluteers) ...[
-              GestureDetector(
-                onTap: () {
-                  if (selectedVolunteeringWork == p) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => MyEditVolunteeringWorkScreen(
-                              volunteeringWork: p,
-                            ),
-                      ),
-                    );
-                  }
-                  setState(() {
-                    selectedVolunteeringWork = p;
-                  });
-                },
-                onLongPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              MyEditVolunteeringWorkScreen(volunteeringWork: p),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: p == selectedVolunteeringWork ? 5 : 3,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(p.institutionName),
-                      Text(p.role),
-                      Text(p.dateStarted.toString().split(' ')[0]),
-                      Text(
-                        p.dateEnded != null
-                            ? p.dateEnded!.toString().split(' ')[0]
-                            : 'Unknown',
-                      ),
-                      Text(p.description),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-            ],
-          ],
-        ),
-      );
-    }
-  }
-
   Map<ProfileAttribute, Widget> getAttributeWidgetData(context) {
     return {
-      ProfileAttribute.projects: showExistingProjects(context),
-      ProfileAttribute.workExperience: showExistingWorkExperiences(context),
-      ProfileAttribute.certDegrees: showExistingCertDegrees(context),
-      ProfileAttribute.skillsStrengths: showExistingSkillsStrengths(context),
-      ProfileAttribute.personalStories: showExistingPersonalStories(context),
-      ProfileAttribute.volunteeringWork: showExistingVolunteeringWorks(context),
+      ProfileAttribute.projects: MyExistingProjectsWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
+      ProfileAttribute.workExperience: MyExistingWorkExperiencesWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
+      ProfileAttribute.certDegrees: MyExistingCertDegreesWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
+      ProfileAttribute.skillsStrengths: MyExistingSkillsStrengthsWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
+      ProfileAttribute.personalStories: MyExistingPersonalStoriesWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
+      ProfileAttribute.volunteeringWork: MyExistingVolunteeringWorksWidget(
+        selectedUserId: widget.selectedUserId,
+      ),
     };
   }
 }

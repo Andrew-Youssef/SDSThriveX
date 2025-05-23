@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:screens/core/models/workexperience_model.dart';
-import 'package:screens/providers/user_provider.dart';
-import 'package:screens/widgets/header.dart';
+import '../../../../../core/models/workexperience_model.dart';
+import '../../../../../providers/user_provider.dart';
+import '../../../../../widgets/header.dart';
 import 'package:provider/provider.dart';
 
-import '../edit_individual/edit_workexperience.dart';
+import '../../edit_profile_attributes/edit_individual/edit_workexperience.dart';
 
 class MyEditWorkExperiencesScreen extends StatefulWidget {
   const MyEditWorkExperiencesScreen({super.key});
@@ -22,7 +22,6 @@ class _MyEditWorkExperienceScreenState
   late final TextEditingController _descriptionController;
   late final TextEditingController _startDate;
   late final TextEditingController _endDate;
-  
 
   @override
   void initState() {
@@ -33,7 +32,7 @@ class _MyEditWorkExperienceScreenState
     _startDate = TextEditingController();
     _endDate = TextEditingController();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.loadProjects(userProvider.profile!.userId);
+    userProvider.loadWorkExperiences(userProvider.profile!.userId);
   }
 
   @override

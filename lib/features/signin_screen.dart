@@ -3,6 +3,8 @@ import 'signup_screen.dart';
 import '../../core/services/auth_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+//themes have not been implemented here
+//bitter font applied manually
 class SigninPage extends StatefulWidget {
   const SigninPage({super.key});
 
@@ -32,6 +34,7 @@ class _SigninPageState extends State<SigninPage> {
     return Form(
       key: _formKey,
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

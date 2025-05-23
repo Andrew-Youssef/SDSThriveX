@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:screens/core/models/cert_degree_model.dart';
-import 'package:screens/providers/user_provider.dart';
-import 'package:screens/widgets/header.dart';
+import '../../../../../core/models/cert_degree_model.dart';
+import '../../../../../providers/user_provider.dart';
+import '../../../../../widgets/header.dart';
 import 'package:provider/provider.dart';
 
 import '../edit_individual/edit_cert_degree.dart';
@@ -31,7 +31,7 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
     _startDate = TextEditingController();
     _endDate = TextEditingController();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.loadProjects(userProvider.profile!.userId);
+    userProvider.loadCertDegrees(userProvider.profile!.userId);
   }
 
   @override

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:screens/core/models/skills_strengths_model.dart';
-import 'package:screens/providers/user_provider.dart';
-import 'package:screens/widgets/header.dart';
+import '../../../../../core/models/skills_strengths_model.dart';
+import '../../../../../providers/user_provider.dart';
+import '../../../../../widgets/header.dart';
 import 'package:provider/provider.dart';
 
-import '../edit_individual/edit_skills_strength.dart';
+import '../../edit_profile_attributes/edit_individual/edit_skills_strength.dart';
 
 class MyEditSkillsStrengthsScreen extends StatefulWidget {
   const MyEditSkillsStrengthsScreen({super.key});
@@ -28,7 +28,7 @@ class _MyEditSkillsStrengthsScreenState
     _acquiredAtController = TextEditingController();
     _descriptionController = TextEditingController();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.loadProjects(userProvider.profile!.userId);
+    userProvider.loadSkillsStrengths(userProvider.profile!.userId);
   }
 
   @override

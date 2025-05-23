@@ -36,7 +36,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Form(
       key: _formKey,
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: Center(
           child: SingleChildScrollView(
             child: Padding(

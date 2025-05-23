@@ -30,6 +30,7 @@ class AuthService {
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .set({
             'name': name,
+            'nameLowerCase': name.toLowerCase(),
             'email': email,
             'userType': userType,
             'isEndorsed': false,
@@ -42,8 +43,9 @@ class AuthService {
               .get();
 
       final userProvider = Provider.of<UserProvider>(context, listen: false);
+      // final userProvider = Provider.of<UserProvider>(context);
       userProvider.setProfileAndDetails(ProfileModel.fromDB(doc));
-
+      print('out of set profile and details');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (BuildContext context) => const HomePage()),
@@ -72,9 +74,10 @@ class AuthService {
               .collection('users')
               .doc(FirebaseAuth.instance.currentUser?.uid)
               .get();
+      // final userProvider = Provider.of<UserProvider>(context);
       final userProvider = Provider.of<UserProvider>(context, listen: false);
       userProvider.setProfileAndDetails(ProfileModel.fromDB(doc));
-
+      print('out of set profile and details\n');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (BuildContext context) => const HomePage()),

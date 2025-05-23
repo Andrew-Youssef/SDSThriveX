@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 class ProfileModel extends ChangeNotifier {
   final String userId;
   String name;
+  late String nameLowerCase;
   final String userType;
+  String? title;
+  String? description;
   String? profilePicUrl;
   String? backgroundPicUrl;
   bool isEndorsed;
@@ -12,7 +15,10 @@ class ProfileModel extends ChangeNotifier {
   ProfileModel({
     required this.userId,
     required this.name,
+    required this.nameLowerCase,
     required this.userType,
+    this.title,
+    this.description,
     this.profilePicUrl,
     required this.isEndorsed,
   });
@@ -22,7 +28,11 @@ class ProfileModel extends ChangeNotifier {
     return ProfileModel(
       userId: doc.id,
       name: data['name'],
+      nameLowerCase:
+          data['nameLowerCase'] ?? data['name'].toString().toLowerCase(),
       userType: data['userType'],
+      title: data['title'] ?? '',
+      description: data['description'] ?? '',
       isEndorsed: data['isEndorsed'] ?? false,
     );
   }
@@ -34,6 +44,16 @@ class ProfileModel extends ChangeNotifier {
 
   void updateName(String newName) {
     name = newName;
+    notifyListeners();
+  }
+
+  void updateTitle(String newTitle) {
+    title = newTitle;
+    notifyListeners();
+  }
+
+  void updateDescription(String newDescription) {
+    description = newDescription;
     notifyListeners();
   }
 

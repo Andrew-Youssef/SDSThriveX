@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:screens/core/models/personal_stories_model.dart';
-import 'package:screens/providers/user_provider.dart';
+import '../../../../../core/models/personal_stories_model.dart';
+import '../../../../../providers/user_provider.dart';
 import '../../../../../widgets/header.dart';
 import 'package:provider/provider.dart';
 
-import '../edit_individual/edit_personal_story.dart';
+import '../../edit_profile_attributes/edit_individual/edit_personal_story.dart';
 
 class MyEditPersonalStoriesScreen extends StatefulWidget {
   const MyEditPersonalStoriesScreen({super.key});
@@ -28,7 +28,7 @@ class _MyEditPersonalStoriesScreenState
     _dateController = TextEditingController();
     _descriptionController = TextEditingController();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.loadProjects(userProvider.profile!.userId);
+    userProvider.loadPersonalStories(userProvider.profile!.userId);
   }
 
   @override

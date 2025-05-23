@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:screens/core/models/cert_degree_model.dart';
-import 'package:screens/providers/user_provider.dart';
-import 'package:screens/widgets/header.dart';
+import '../../../../../core/models/cert_degree_model.dart';
+import '../../../../../providers/user_provider.dart';
+import '../../../../../widgets/header.dart';
 import 'package:provider/provider.dart';
 
 class MyEditCertDegreeScreen extends StatefulWidget {

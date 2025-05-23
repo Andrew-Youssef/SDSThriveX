@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/features/profile/profile_screen.dart';
+import '../../../../../features/profile/profile_screen.dart';
 import '../features/dashboard_screen.dart';
 import '../features/notifications/notifications_screen.dart';
 import '../providers/user_provider.dart';
@@ -18,7 +18,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-    final ThemeData theme = userProvider.getTheme();
     Widget page;
     switch (currentPageIndex) {
       case 0:
@@ -28,43 +27,40 @@ class _HomePageState extends State<HomePage> {
         page = MyDashBoardScreen();
         break;
       case 2:
-        page = MyProfileScreen(); //Profile
+        page = MyProfileScreen(selectedUserId: userProvider.userId); //Profile
         break;
       default:
         throw UnimplementedError("THIS AINT IMPLEMENTED YET\n");
     }
 
-    return Theme(
-      data: theme,
-      child: Scaffold(
-        body: page,
-        bottomNavigationBar: NavigationBar(
-          onDestinationSelected: (int index) {
-            setState(() {
-              currentPageIndex = index;
-            });
-          },
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-          selectedIndex: currentPageIndex,
-          height: 55,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.notifications_none),
-              selectedIcon: Icon(Icons.notifications),
-              label: 'Notifications',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outlined),
-              selectedIcon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-        ),
+    return Scaffold(
+      body: page,
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        selectedIndex: currentPageIndex,
+        height: 55,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.notifications_none),
+            selectedIcon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outlined),
+            selectedIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
