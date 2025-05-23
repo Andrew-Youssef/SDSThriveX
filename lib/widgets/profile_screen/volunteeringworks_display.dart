@@ -5,11 +5,11 @@ import 'package:thrivex/features/profile/profile_edit/edit_profile_attributes/ed
 import 'package:thrivex/providers/user_provider.dart';
 
 class MyExistingVolunteeringWorksWidget extends StatefulWidget {
-  final String selectedUserId;
+  final UserProvider selectedUserProvider;
 
   const MyExistingVolunteeringWorksWidget({
     super.key,
-    required this.selectedUserId,
+    required this.selectedUserProvider,
   });
 
   @override
@@ -21,10 +21,8 @@ class _MyExistingVolunteeringWorksWidgetState
     extends State<MyExistingVolunteeringWorksWidget>
     with AutomaticKeepAliveClientMixin {
   VolunteeringWorkModel? selectedVolunteeringWork;
-  UserProvider? selectedUserProvider;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
-  bool _isLoading = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -32,39 +30,20 @@ class _MyExistingVolunteeringWorksWidgetState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_isLoading) {
-      if (!_hadLoadedProfile) {
-        _hadLoadedProfile = true;
-
-        UserProvider userProvider = Provider.of<UserProvider>(context);
-        if (widget.selectedUserId == userProvider.userId) {
-          selectedUserProvider = userProvider;
-          _isLoggedInUser = true;
-          _isLoading = false;
-        } else {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            selectedUserProvider = UserProvider();
-            await selectedUserProvider!.setTemporaryProfile(
-              widget.selectedUserId,
-            );
-            setState(() {
-              _isLoading = false;
-            });
-          });
-        }
-      }
+    if (!_hadLoadedProfile) {
+      UserProvider userProvider = Provider.of<UserProvider>(context);
+      _isLoggedInUser =
+          userProvider.userId == widget.selectedUserProvider.userId;
+      _hadLoadedProfile = true;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (_isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
     ThemeData theme = Theme.of(context);
     List<VolunteeringWorkModel> volunteeringWorks =
-        selectedUserProvider!.volunteeringWorks;
+        widget.selectedUserProvider.volunteeringWorks;
 
     if (volunteeringWorks.isEmpty) {
       return Text(

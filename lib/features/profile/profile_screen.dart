@@ -351,19 +351,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         selectedUserProvider: selectedUserProvider,
       ),
       ProfileAttribute.workExperience: MyExistingWorkExperiencesWidget(
-        selectedUserId: widget.selectedUserId,
+        selectedUserProvider: selectedUserProvider,
       ),
       ProfileAttribute.certDegrees: MyExistingCertDegreesWidget(
-        selectedUserId: widget.selectedUserId,
+        selectedUserProvider: selectedUserProvider,
       ),
       ProfileAttribute.skillsStrengths: MyExistingSkillsStrengthsWidget(
-        selectedUserId: widget.selectedUserId,
+        selectedUserProvider: selectedUserProvider,
       ),
       ProfileAttribute.personalStories: MyExistingPersonalStoriesWidget(
-        selectedUserId: widget.selectedUserId,
+        selectedUserProvider: selectedUserProvider,
       ),
       ProfileAttribute.volunteeringWork: MyExistingVolunteeringWorksWidget(
-        selectedUserId: widget.selectedUserId,
+        selectedUserProvider: selectedUserProvider,
       ),
     };
   }

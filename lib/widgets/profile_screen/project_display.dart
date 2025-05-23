@@ -20,19 +20,11 @@ class MyExistingProjectsWidget extends StatefulWidget {
 class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget>
     with AutomaticKeepAliveClientMixin {
   ProjectModel? selectedProject;
-  UserProvider? selectedUserProvider;
   bool _isLoggedInUser = false;
   bool _hadLoadedProfile = false;
 
   @override
   bool get wantKeepAlive => true;
-
-  // @override
-  // void initState() {
-  //   UserProvider userProvider = Provider.of<UserProvider>(context);
-  //   _isLoggedInUser = userProvider.userId == widget.selectedUserProvider.userId;
-  //   super.initState();
-  // }
 
   @override
   void didChangeDependencies() {
@@ -41,17 +33,14 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget>
       UserProvider userProvider = Provider.of<UserProvider>(context);
       _isLoggedInUser =
           userProvider.userId == widget.selectedUserProvider.userId;
+      _hadLoadedProfile = true;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
-    print("MADE IT INSIDE PROJECT_DISPLAY??!!?!");
-
     List<ProjectModel> projects = widget.selectedUserProvider.projects;
-
     ThemeData theme = Theme.of(context);
 
     if (projects.isEmpty) {
