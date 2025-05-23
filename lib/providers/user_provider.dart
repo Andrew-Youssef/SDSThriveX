@@ -206,6 +206,7 @@ class UserProvider extends ChangeNotifier {
             .collection('users')
             .doc(userId)
             .collection('projects')
+            .orderBy('dateBegun')
             .get();
     int count = 1;
     _projects =
