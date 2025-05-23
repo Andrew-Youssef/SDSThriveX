@@ -43,7 +43,7 @@ class PersonalStoriesModel extends ChangeNotifier {
       id: id,
       title: map["title"],
       description: map["description"],
-      date: (map['dateBegun'] as Timestamp).toDate(),
+      date: (map['date'] as Timestamp).toDate(),
     );
   }
 }

@@ -47,6 +47,16 @@ class ProfileModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateTitle(String newTitle) {
+    title = newTitle;
+    notifyListeners();
+  }
+
+  void updateDescription(String newDescription) {
+    description = newDescription;
+    notifyListeners();
+  }
+
   void updateProfilePic(String newUrl) {
     profilePicUrl = newUrl;
     notifyListeners();

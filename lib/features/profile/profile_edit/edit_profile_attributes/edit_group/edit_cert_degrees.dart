@@ -31,7 +31,7 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
     _startDate = TextEditingController();
     _endDate = TextEditingController();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.loadProjects(userProvider.profile!.userId);
+    userProvider.loadCertDegrees(userProvider.profile!.userId);
   }
 
   @override

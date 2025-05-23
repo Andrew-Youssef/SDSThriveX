@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/models/project_model.dart';
-import '../edit_individual/edit_project.dart';
+import '../../edit_profile_attributes/edit_individual/edit_project.dart';
 import '../../../../../widgets/header.dart';
 import '../../../../../providers/user_provider.dart';
 
@@ -28,6 +28,8 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
     _imageController = TextEditingController();
     _startDate = TextEditingController();
     _endDate = TextEditingController();
+    //it should be impossible for new data to have been loaded,
+    //ie projects list is still valid.
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     userProvider.loadProjects(userProvider.profile!.userId);
   }
@@ -45,7 +47,7 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-    userProvider.loadProjects(userProvider.profile!.userId);
+    // userProvider.loadProjects(userProvider.profile!.userId);
     ThemeData theme = Theme.of(context);
     List<ProjectModel> projects = userProvider.projects;
 
@@ -64,7 +66,13 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                         selectedProject == null
                             ? null
                             : () {
+                              print(
+                                "selectedProject trash Id: ${selectedProject!.id}\n",
+                              );
                               userProvider.removeProject(selectedProject!.id);
+                              // userProvider.loadProjects(
+                              //   userProvider.profile!.userId,
+                              // );
                               selectedProject = null;
                             },
                     icon: Icon(Icons.delete),
@@ -136,12 +144,16 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
               onTap: () {
                 setState(() {
                   selectedProject = p;
+                  print("onTap selectedProject Id: ${selectedProject!.id}\n");
                 });
                 // print('yoooooo');
               },
               onLongPress: () {
                 setState(() {
                   selectedProject = p;
+                  print(
+                    "onLongPress selectedProject Id: ${selectedProject!.id}\n",
+                  );
                 });
                 Navigator.push(
                   context,
