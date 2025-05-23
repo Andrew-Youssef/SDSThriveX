@@ -18,12 +18,16 @@ class MyExistingSkillsStrengthsWidget extends StatefulWidget {
 }
 
 class _MyExistingSkillsStrengthsWidgetState
-    extends State<MyExistingSkillsStrengthsWidget> {
+    extends State<MyExistingSkillsStrengthsWidget>
+    with AutomaticKeepAliveClientMixin {
   SkillsStrengthsModel? selectedSkillStrength;
   UserProvider? selectedUserProvider;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
   bool _isLoading = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
@@ -54,6 +58,7 @@ class _MyExistingSkillsStrengthsWidgetState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (_isLoading) {
       return Center(child: CircularProgressIndicator());
     }

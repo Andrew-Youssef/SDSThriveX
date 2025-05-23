@@ -18,12 +18,16 @@ class MyExistingVolunteeringWorksWidget extends StatefulWidget {
 }
 
 class _MyExistingVolunteeringWorksWidgetState
-    extends State<MyExistingVolunteeringWorksWidget> {
+    extends State<MyExistingVolunteeringWorksWidget>
+    with AutomaticKeepAliveClientMixin {
   VolunteeringWorkModel? selectedVolunteeringWork;
   UserProvider? selectedUserProvider;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
   bool _isLoading = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
@@ -54,6 +58,7 @@ class _MyExistingVolunteeringWorksWidgetState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (_isLoading) {
       return Center(child: CircularProgressIndicator());
     }

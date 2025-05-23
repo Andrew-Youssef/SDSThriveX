@@ -18,12 +18,16 @@ class MyExistingPersonalStoriesWidget extends StatefulWidget {
 }
 
 class _MyExistingPersonalStoriesWidgetState
-    extends State<MyExistingPersonalStoriesWidget> {
+    extends State<MyExistingPersonalStoriesWidget>
+    with AutomaticKeepAliveClientMixin {
   PersonalStoriesModel? selectedPersonalStory;
   UserProvider? selectedUserProvider;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
   bool _isLoading = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
@@ -54,6 +58,7 @@ class _MyExistingPersonalStoriesWidgetState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (_isLoading) {
       return Center(child: CircularProgressIndicator());
     }

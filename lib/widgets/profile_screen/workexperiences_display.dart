@@ -18,12 +18,16 @@ class MyExistingWorkExperiencesWidget extends StatefulWidget {
 }
 
 class _MyExistingWorkExperiencesWidgetState
-    extends State<MyExistingWorkExperiencesWidget> {
+    extends State<MyExistingWorkExperiencesWidget>
+    with AutomaticKeepAliveClientMixin {
   WorkExperienceModel? selectedWorkExperience;
   UserProvider? selectedUserProvider;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
   bool _isLoading = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
@@ -54,6 +58,7 @@ class _MyExistingWorkExperiencesWidgetState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (_isLoading) {
       return Center(child: CircularProgressIndicator());
     }

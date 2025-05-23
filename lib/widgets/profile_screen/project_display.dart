@@ -14,12 +14,16 @@ class MyExistingProjectsWidget extends StatefulWidget {
       _MyExistingProjectsWidgetState();
 }
 
-class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget> {
+class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget>
+    with AutomaticKeepAliveClientMixin {
   ProjectModel? selectedProject;
   UserProvider? selectedUserProvider;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
   bool _isLoading = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
@@ -50,6 +54,7 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (_isLoading) {
       return Center(child: CircularProgressIndicator());
     }

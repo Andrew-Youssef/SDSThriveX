@@ -15,12 +15,16 @@ class MyExistingCertDegreesWidget extends StatefulWidget {
 }
 
 class MyExistingCertDegreesWidgetState
-    extends State<MyExistingCertDegreesWidget> {
+    extends State<MyExistingCertDegreesWidget>
+    with AutomaticKeepAliveClientMixin {
   CertDegreesModel? selectedCertDegree;
   UserProvider? selectedUserProvider;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
   bool _isLoading = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
@@ -51,6 +55,7 @@ class MyExistingCertDegreesWidgetState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (_isLoading) {
       return Center(child: CircularProgressIndicator());
     }

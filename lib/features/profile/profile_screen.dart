@@ -17,7 +17,7 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  UserProvider? selectedUserProvider;
+  late UserProvider selectedUserProvider;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
   bool _isLoading = true;
@@ -70,7 +70,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         } else {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             selectedUserProvider = UserProvider();
-            await selectedUserProvider!.setTemporaryProfile(
+            await selectedUserProvider.setTemporaryProfile(
               widget.selectedUserId,
             );
             setState(() {
@@ -137,20 +137,20 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             _isLoggedInUser
                                 ? () async {
                                   //THIS NEEDS TO BE CHANGED TO
-                                  await selectedUserProvider!.toggleEndorsement(
-                                    selectedUserProvider!.userId,
+                                  await selectedUserProvider.toggleEndorsement(
+                                    selectedUserProvider.userId,
                                   );
                                 }
                                 : null,
                         icon:
-                            selectedUserProvider!.profile!.isEndorsed
+                            selectedUserProvider.profile!.isEndorsed
                                 ? Icon(Icons.check_circle)
                                 : Icon(Icons.check_circle_outline_outlined),
                       ),
                     ],
                   ),
                   Text(
-                    selectedUserProvider!.profile!.title,
+                    selectedUserProvider.profile!.title,
                     style: theme.textTheme.displayMedium,
                   ),
                 ],
@@ -166,7 +166,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             MaterialPageRoute(
                               builder:
                                   (context) => MyEditProfileDetailsScreen(
-                                    profile: selectedUserProvider!.profile!,
+                                    profile: selectedUserProvider.profile!,
                                   ),
                             ),
                           );
@@ -181,7 +181,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         Divider(thickness: 1),
         Padding(
           padding: EdgeInsets.all(8.0),
-          child: MyAiSummaryWidget(userProvider: selectedUserProvider!),
+          child: MyAiSummaryWidget(userProvider: selectedUserProvider),
         ),
 
         //About Me
@@ -209,7 +209,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 MaterialPageRoute(
                                   builder:
                                       (context) => MyEditProfileDetailsScreen(
-                                        profile: selectedUserProvider!.profile!,
+                                        profile: selectedUserProvider.profile!,
                                       ),
                                 ),
                               );
@@ -221,7 +221,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ],
               ),
               Text(
-                selectedUserProvider!.profile!.description,
+                selectedUserProvider.profile!.description,
                 textAlign: TextAlign.left,
                 style: theme.textTheme.displayMedium,
               ),
@@ -252,7 +252,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   // }
 
   Widget buildAttributeData(BuildContext context) {
-    final attributes = selectedUserProvider!.profileAttributes;
+    final attributes = selectedUserProvider.profileAttributes;
     ThemeData theme = Theme.of(context);
 
     return Column(
