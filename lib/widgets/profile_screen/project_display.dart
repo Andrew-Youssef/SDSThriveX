@@ -3,6 +3,8 @@ import 'package:flutter_innatex_student_screens/core/models/project_model.dart';
 import 'package:flutter_innatex_student_screens/features/profile_edit/edit_profile_attributes/edit_individual/edit_project.dart';
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
 
 class MyExistingProjectsWidget extends StatefulWidget {
   const MyExistingProjectsWidget({super.key});
@@ -28,10 +30,12 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children:
             projects.map((project) {
-              final String startDate =
-                  '${project.dateBegun.toLocal().toString().split(' ')[0]} - ';
-              final String endDate =
-                  '${project.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+
+              final dateFormatter = DateFormat('dd/MM/yyyy');
+              final String startDate = '${dateFormatter.format(project.dateBegun)} - ';
+              final String endDate = project.dateEnded != null
+                  ? dateFormatter.format(project.dateEnded!)
+                  : "Present";
 
               return GestureDetector(
                 onTap: () {

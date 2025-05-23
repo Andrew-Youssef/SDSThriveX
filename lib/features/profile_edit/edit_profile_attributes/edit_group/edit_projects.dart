@@ -49,6 +49,7 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
+        // ignore: deprecated_member_use
         child: WillPopScope(
           onWillPop: () async {
             final hasNamedProject = userProvider.projects.any((p) => p.name.trim().isNotEmpty);
@@ -238,101 +239,195 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
     );
   }
 
-  Widget buildInputFields(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+  InputDecoration customInputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(
+        fontStyle: FontStyle.italic,
+        // ignore: deprecated_member_use
+        color: Colors.black.withOpacity(0.3),
+      ),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: Colors.black, width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: Colors.black, width: 2),
+      ),
+    );
+  }
 
-    return Expanded(
-      child: ListView(
-        padding: EdgeInsets.all(8.0),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _nameController,
-              readOnly: selectedProject != null,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Name of project',
-                 labelText: 'Project Name',
+  bool isOngoing = false; // toggles ongoing checkbox
+
+  Widget buildInputFields(BuildContext context) {
+  ThemeData theme = Theme.of(context);
+
+  return Expanded(
+    child: ListView(
+      padding: EdgeInsets.all(8.0),
+      children: [
+        // Title field
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Project Name:', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 6),
+              TextField(
+                controller: _nameController,
+                readOnly: selectedProject != null,
+                decoration: customInputDecoration('Enter project name').copyWith(
                   suffixIcon: selectedProject != null
                       ? Tooltip(
                           message: "Project name can't be edited",
                           child: Icon(Icons.lock, color: Colors.grey),
                         )
                       : null,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _startDate,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Start Date (required)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-              ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_startDate, context);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _endDate,
-              decoration: InputDecoration(
-                labelText: 'End Date (optional)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-                suffixIcon: _endDate.text.isNotEmpty
-                    ? IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          setState(() {
-                            _endDate.clear();
-                          });
-                        },
-                      )
-                    : null,
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: theme.primaryColor),
                 ),
               ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_endDate, context);
-              },
-            ),
+            ],
           ),
+        ),
 
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Description',
+        // Start Date
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Date begun:', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 6),
+              TextField(
+                controller: _startDate,
+                decoration: customInputDecoration('DD / MM / YYYY'),
+                readOnly: true,
+                onTap: () {
+                  _selectDate(_startDate, context);
+                },
+              ),
+            ],
+          ),
+        ),
+
+        // End Date + Ongoing checkbox
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Date ended:', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 6),
+              TextField(
+                controller: _endDate,
+                enabled: !isOngoing,
+                decoration: customInputDecoration('DD / MM / YYYY'),
+                readOnly: true,
+                onTap: () {
+                  if (!isOngoing) _selectDate(_endDate, context);
+                },
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text("OR", style: TextStyle(fontWeight: FontWeight.bold)),
+                  SizedBox(width: 8),
+                  Text("Ongoing?"),
+                  SizedBox(width: 8),
+                  Checkbox(
+                    value: isOngoing,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isOngoing = value ?? false;
+                        if (isOngoing) {
+                          _endDate.clear();
+                        }
+                      });
+                    },
+                    activeColor: Colors.cyan,
+                    side: BorderSide(color: Colors.black, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // Description
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Description:', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 6),
+              TextField(
+                controller: _descriptionController,
+                minLines: 3,
+                maxLines: 5,
+                decoration: customInputDecoration(
+                    'Enter a short description of your project'),
+              ),
+            ],
+          ),
+        ),
+
+        // Add button
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              if (_nameController.text.isNotEmpty &&
+                  _startDate.text.isNotEmpty &&
+                  _descriptionController.text.isNotEmpty) {
+                ProjectModel newProject = ProjectModel(
+                  name: _nameController.text,
+                  dateBegun: DateTime.tryParse(_startDate.text)!,
+                  dateEnded: isOngoing ? null : DateTime.tryParse(_endDate.text),
+                  description: _descriptionController.text,
+                  imageUrl: _imageController.text,
+                );
+                Provider.of<UserProvider>(context, listen: false)
+                    .addProject(newProject);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        "Please enter name, description, and start date."),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.cyanAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: BorderSide(color: Colors.black, width: 2),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 16),
+            ),
+            child: Text(
+              'Add new project!',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _imageController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Image URL (figure out later)',
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   Future<void> _selectDate(
     TextEditingController controller,

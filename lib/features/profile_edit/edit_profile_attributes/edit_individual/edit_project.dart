@@ -34,7 +34,7 @@ class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
       text: widget.project.dateBegun.toString().split(' ')[0],
     );
     _endDate = TextEditingController(
-      text: widget.project.dateEnded?.toString().split(' ')[0] ?? '',
+      text: widget.project.dateEnded?.toString().split(' ')[0] ?? 'Ongoing',
     );
   }
 
@@ -49,128 +49,190 @@ class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    return Container(
-      color: theme.primaryColor,
-      child: SafeArea(
-        child: Scaffold(
-          appBar: myAppBar('Edit Project', context),
-          body: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(child: SizedBox()),
-                  IconButton(
-                    onPressed: () {
+Widget build(BuildContext context) {
+  UserProvider userProvider = Provider.of<UserProvider>(context);
+  ThemeData theme = Theme.of(context);
+  return Container(
+    color: theme.primaryColor,
+    child: SafeArea(
+      child: Scaffold(
+        appBar: myAppBar('Edit Project', context),
+        body: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(child: SizedBox()),
+                IconButton(
+                  onPressed: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Delete Project"),
+                          content: const Text("Are you sure you want to delete this project? This action cannot be undone."),
+                          actions: [
+                            TextButton(
+                              child: const Text("Cancel"),
+                              onPressed: () => Navigator.of(context).pop(false),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                              child: const Text("Delete", style: TextStyle(color: Colors.white)),
+                              onPressed: () => Navigator.of(context).pop(true),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    if (confirm == true) {
                       userProvider.removeProject(widget.project);
                       Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.delete),
-                  ),
-                ],
-              ),
-              buildInputFields(context),
-            ],
-          ),
+                    }
+                  },
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                ),
+              ],
+            ),
+            buildInputFields(context),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget buildInputFields(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
+    bool isOngoing = _endDate.text.isEmpty;
 
     return Expanded(
       child: ListView(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: widget.project.updateName,
-              controller: _nameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Name of project',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _startDate,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Start Date (required)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-              ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_startDate, context);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _endDate,
-              decoration: InputDecoration(
-                labelText: 'End Date (optional)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-                suffixIcon: _endDate.text.isNotEmpty
-                    ? IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          setState(() {
-                            _endDate.clear();
-                            widget.project.updateDateEnded(null);
-                          });
-                        },
-                      )
-                    : null,
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: theme.primaryColor),
+          _buildLabeledField('Project Name:', _nameController, 'Enter project name', onChanged: widget.project.updateName),
+          const SizedBox(height: 12),
+          _buildLabeledDateField('Date begun:', _startDate, context, (date) => widget.project.updateDateBegun(date)),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildLabeledDateField(
+                  'Date ended:',
+                  _endDate,
+                  context,
+                  (date) => widget.project.updateDateEnded(date),
+                  enabled: !isOngoing,
                 ),
               ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_endDate, context);
-              },
-            ),
+              const SizedBox(width: 8),
+              const Text("OR", style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(width: 8),
+              Column(
+                children: [
+                  const Text("Ongoing?"),
+                  Checkbox(
+                    value: isOngoing,
+                    onChanged: (value) {
+                      setState(() {
+                        isOngoing = value!;
+                        if (isOngoing) {
+                          _endDate.clear();
+                          widget.project.updateDateEnded(null);
+                        }
+                      });
+                    },
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    checkColor: Colors.white,
+                    fillColor: MaterialStateProperty.all(Colors.cyan),
+                  ),
+                ],
+              )
+            ],
           ),
-
-
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: widget.project.updateDescription,
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Description',
-              ),
-            ),
+          const SizedBox(height: 12),
+          _buildLabeledField(
+            'Description:',
+            _descriptionController,
+            'Enter a short description of your project',
+            onChanged: widget.project.updateDescription,
+            maxLines: 4,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: widget.project.updateImageUrl,
-              controller: _imageController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Image URL (figure out later)',
-              ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              // save logic here
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.cyan,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            child: const Text(
+              'Confirm changes?',
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildLabeledField(String label, TextEditingController controller, String hint,
+      {void Function(String)? onChanged, int maxLines = 1}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 4),
+        TextField(
+          controller: controller,
+          onChanged: onChanged,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: hint,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLabeledDateField(String label, TextEditingController controller, BuildContext context,
+      void Function(DateTime) onDateSelected, {bool enabled = true}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 4),
+        TextField(
+          controller: controller,
+          readOnly: true,
+          enabled: enabled,
+          onTap: () async {
+            if (!enabled) return;
+            DateTime? picked = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime(2100),
+            );
+            if (picked != null) {
+              controller.text = picked.toString().split(" ")[0];
+              onDateSelected(picked);
+            }
+          },
+          decoration: InputDecoration(
+            hintText: 'DD / MM / YYYY',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
+        ),
+      ],
+    );
+  }
+
 
   Future<void> _selectDate(
     TextEditingController controller,
