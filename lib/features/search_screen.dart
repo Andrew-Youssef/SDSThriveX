@@ -13,6 +13,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   var searchName = "";
+  bool filterEndorsement = false;
 
   @override
   Widget build(BuildContext context) {
@@ -22,44 +23,76 @@ class _SearchScreenState extends State<SearchScreen> {
     return Theme(
       data: theme,
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: theme.primaryColor,
-          title: SizedBox(
-            height: 40,
-            child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  searchName = value;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: Icon(Icons.search, color: Colors.white),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(10, 8, 10, 0),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      searchName = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search, color: Colors.black),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
+                child: SizedBox(
+                  width: 350,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        filterEndorsement = !filterEndorsement;
+                      });
+                    },
+                    child: Text('Endorsed?'),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream:
+                      filterEndorsement
+                          ? FirebaseFirestore.instance
+                              .collection('users')
+                              .where('isEndorsed', isEqualTo: true)
+                              .orderBy('nameLowerCase')
+                              .startAt([searchName.toLowerCase()])
+                              .endAt(
+                                ['${searchName.toLowerCase()}\uf8ff'],
+                              ) // Allow you to get all character after the searched name
+                              .limit(20)
+                              .snapshots()
+                          : FirebaseFirestore.instance
+                              .collection('users')
+                              .orderBy('nameLowerCase')
+                              .startAt([searchName.toLowerCase()])
+                              .endAt(
+                                ['${searchName.toLowerCase()}\uf8ff'],
+                              ) // Allow you to get all character after the searched name
+                              .limit(20)
+                              .snapshots(),
 
-        body: StreamBuilder<QuerySnapshot>(
-          stream:
-              FirebaseFirestore.instance
-                  .collection('users')
-                  .orderBy('name')
-                  .startAt([searchName])
-                  .endAt([
-                    '$searchName\uf8ff',
-                  ]) // Allow you to get all character after the searched name
-                  .limit(30)
-                  .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Something went wrong');
+                    }
 
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Text('Something went wrong');
-            }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text("Loading");
+                    }
 
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text("Loading");
-            }
 
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
@@ -74,14 +107,16 @@ class _SearchScreenState extends State<SearchScreen> {
                             (context) =>
                                 MyProfileScreen(selectedUserId: data.id),
                       ),
-                    );
-                  },
                   title: Text(data['name']),
                   subtitle: Text(data['email']),
-                );
-              },
-            );
-          },
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

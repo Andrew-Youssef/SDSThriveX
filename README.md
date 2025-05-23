@@ -1,22 +1,13 @@
-<<<<<<< HEAD
+# Project Title: Thrive X
 
-# SDSThriveX
+## Client: Innate X
 
-=======
+Description: Thrive X is a mobile portfolio app designed to help students showcase their skills, experiences, and personal stories to potential employers, coaches, and recruiters. Built using Flutter and Firebase, the app allows users to create dynamic, professional profiles with sections like Projects, Work Experience, Certificates, and more. An integrated AI feature, powered by Google Gemini, generates tailored summaries to enhance profile presentation. The app was developed using Agile methodology, with a focus on student users and real-time data syncing through Firestore. Thrive X aims to bridge the gap between education and employment through modern, narrative-driven digital portfolios.
 
-# Thrive X
+Team:
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Xiang Hong Ong | 14352595
+- Adrian Rolfo | 24818686
+- Alexander Vlouhos | 24507612
+- Andrew Youssef | 24500530
+- Wilson Dao | 24764363

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:screens/core/models/export_models.dart';
+import '../../../../../core/models/export_models.dart';
 import '../core/theme/theme.dart';
 import '../data/globals.dart';
 
@@ -78,6 +78,7 @@ class UserProvider extends ChangeNotifier {
     generateSummary();
     notifyListeners();
   }
+
 
   void testPrint() {
     print("yooooooo");
@@ -281,6 +282,7 @@ class UserProvider extends ChangeNotifier {
             .collection('users')
             .doc(userId)
             .collection('workExperiences')
+            .orderBy('Datebegun')
             .get();
 
     _workExperiences =
@@ -351,6 +353,7 @@ class UserProvider extends ChangeNotifier {
             .collection('users')
             .doc(userId)
             .collection('certDegree')
+            .orderBy('Datebegun')
             .get();
 
     _certDegrees =
@@ -558,6 +561,7 @@ class UserProvider extends ChangeNotifier {
             .collection('users')
             .doc(userId)
             .collection('volunteeringWorks')
+            .orderBy('Datebegun')
             .get();
 
     _volunteeringWorks =

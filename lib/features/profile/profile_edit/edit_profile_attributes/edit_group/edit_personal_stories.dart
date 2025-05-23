@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:screens/core/models/personal_stories_model.dart';
-import 'package:screens/providers/user_provider.dart';
+import '../../../../../core/models/personal_stories_model.dart';
+import '../../../../../providers/user_provider.dart';
 import '../../../../../widgets/header.dart';
 import 'package:provider/provider.dart';
 
