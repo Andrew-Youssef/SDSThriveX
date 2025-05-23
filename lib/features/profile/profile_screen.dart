@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/core/models/profile_model.dart';
-import 'package:screens/providers/user_provider.dart';
+import 'package:thrivex/providers/user_provider.dart';
+import 'package:thrivex/widgets/profile_screen/ai_summary_display.dart';
 import '../../data/globals.dart';
 import 'profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
 import '../../widgets/header.dart';
@@ -181,21 +181,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         Divider(thickness: 1),
         Padding(
           padding: EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'AI Sumary',
-                textAlign: TextAlign.left,
-                style: theme.textTheme.titleMedium,
-              ),
-              Text(
-                selectedUserProvider!.aiSummary == null
-                    ? 'No AI summary'
-                    : selectedUserProvider!.aiSummary!,
-              ),
-            ],
-          ),
+          child: MyAiSummaryWidget(userProvider: selectedUserProvider!),
         ),
 
         //About Me

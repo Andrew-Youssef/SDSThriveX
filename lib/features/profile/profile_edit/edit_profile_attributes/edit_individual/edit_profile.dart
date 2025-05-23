@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/core/models/profile_model.dart';
-import 'package:screens/providers/user_provider.dart';
-import 'package:screens/widgets/header.dart';
+import 'package:thrivex/core/models/profile_model.dart';
+import 'package:thrivex/providers/user_provider.dart';
+import 'package:thrivex/widgets/header.dart';
 
 class MyEditProfileDetailsScreen extends StatefulWidget {
   final ProfileModel profile;

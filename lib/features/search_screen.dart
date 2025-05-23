@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/features/profile/profile_screen.dart';
+import 'package:thrivex/features/profile/profile_screen.dart';
 import '../../providers/user_provider.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -69,21 +69,16 @@ class _SearchScreenState extends State<SearchScreen> {
                               .where('isEndorsed', isEqualTo: true)
                               .orderBy('nameLowerCase')
                               .startAt([searchName.toLowerCase()])
-                              .endAt(
-                                ['${searchName.toLowerCase()}\uf8ff'],
-                              ) // Allow you to get all character after the searched name
+                              .endAt(['${searchName.toLowerCase()}\uf8ff'])
                               .limit(20)
                               .snapshots()
                           : FirebaseFirestore.instance
                               .collection('users')
                               .orderBy('nameLowerCase')
                               .startAt([searchName.toLowerCase()])
-                              .endAt(
-                                ['${searchName.toLowerCase()}\uf8ff'],
-                              ) // Allow you to get all character after the searched name
+                              .endAt(['${searchName.toLowerCase()}\uf8ff'])
                               .limit(20)
                               .snapshots(),
-
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return Text('Something went wrong');
@@ -93,22 +88,25 @@ class _SearchScreenState extends State<SearchScreen> {
                       return Text("Loading");
                     }
 
-
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                var data = snapshot.data!.docs[index];
-                return ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                MyProfileScreen(selectedUserId: data.id),
-                      ),
-                  title: Text(data['name']),
-                  subtitle: Text(data['email']),
+                    return ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        var data = snapshot.data!.docs[index];
+                        return ListTile(
+                          key: ValueKey(data.id), // Recommended for stability
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => MyProfileScreen(
+                                      selectedUserId: data.id,
+                                    ),
+                              ),
+                            );
+                          },
+                          title: Text(data['name']),
+                          subtitle: Text(data['email']),
                         );
                       },
                     );

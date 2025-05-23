@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/core/models/skills_strengths_model.dart';
-import 'package:screens/features/profile/profile_edit/edit_profile_attributes/edit_individual/edit_skills_strength.dart';
-import 'package:screens/providers/user_provider.dart';
+import 'package:thrivex/core/models/skills_strengths_model.dart';
+import 'package:thrivex/features/profile/profile_edit/edit_profile_attributes/edit_individual/edit_skills_strength.dart';
+import 'package:thrivex/providers/user_provider.dart';
 
 class MyExistingSkillsStrengthsWidget extends StatefulWidget {
   final String selectedUserId;

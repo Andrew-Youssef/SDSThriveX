@@ -6,8 +6,8 @@ class ProfileModel extends ChangeNotifier {
   String name;
   late String nameLowerCase;
   final String userType;
-  String? title;
-  String? description;
+  String title;
+  String description;
   String? profilePicUrl;
   String? backgroundPicUrl;
   bool isEndorsed;
@@ -17,8 +17,8 @@ class ProfileModel extends ChangeNotifier {
     required this.name,
     required this.nameLowerCase,
     required this.userType,
-    this.title,
-    this.description,
+    required this.title,
+    required this.description,
     this.profilePicUrl,
     required this.isEndorsed,
   });
@@ -31,8 +31,8 @@ class ProfileModel extends ChangeNotifier {
       nameLowerCase:
           data['nameLowerCase'] ?? data['name'].toString().toLowerCase(),
       userType: data['userType'],
-      title: data['title'] ?? '',
-      description: data['description'] ?? '',
+      title: data['title'] ?? 'No Title',
+      description: data['description'] ?? 'No About Me',
       isEndorsed: data['isEndorsed'] ?? false,
     );
   }

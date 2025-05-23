@@ -94,7 +94,7 @@ class UserProvider extends ChangeNotifier {
     await loadPersonalStories(userId);
     await loadSkillsStrengths(userId);
     await loadVolunteeringWorks(userId);
-    await generateSummary();
+    // await generateSummary();
   }
 
   void clearProfile() {
@@ -281,7 +281,7 @@ class UserProvider extends ChangeNotifier {
             .collection('users')
             .doc(userId)
             .collection('workExperiences')
-            .orderBy('Datebegun')
+            .orderBy('dateBegun')
             .get();
 
     _workExperiences =
@@ -352,7 +352,7 @@ class UserProvider extends ChangeNotifier {
             .collection('users')
             .doc(userId)
             .collection('certDegree')
-            .orderBy('Datebegun')
+            .orderBy('dateStarted')
             .get();
 
     _certDegrees =
@@ -560,7 +560,7 @@ class UserProvider extends ChangeNotifier {
             .collection('users')
             .doc(userId)
             .collection('volunteeringWorks')
-            .orderBy('Datebegun')
+            .orderBy('dateStarted')
             .get();
 
     _volunteeringWorks =
@@ -574,12 +574,6 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> generateSummary() async {
     final gemini = Gemini.instance;
-    await loadProjects(profile!.userId);
-    await loadCertDegrees(profile!.userId);
-    await loadSkillsStrengths(profile!.userId);
-    await loadWorkExperiences(profile!.userId);
-    await loadVolunteeringWorks(profile!.userId);
-
     String combinedInformation = [
       {'Role/Title: ${_profile!.title}\n\n'},
       {'About Me: ${_profile!.description}\n\n'},
@@ -637,9 +631,6 @@ class UserProvider extends ChangeNotifier {
   //           .get();
 
   //   _aiSummary = AIModel.convertMap(ref.data()!, 'AI');
-
-  //   notifyListeners();
-  // }
 
   //   notifyListeners();
   // }

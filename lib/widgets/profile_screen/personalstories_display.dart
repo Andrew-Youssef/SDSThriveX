@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screens/core/models/personal_stories_model.dart';
-import 'package:screens/features/profile/profile_edit/edit_profile_attributes/edit_individual/edit_personal_story.dart';
-import 'package:screens/providers/user_provider.dart';
+import 'package:thrivex/core/models/personal_stories_model.dart';
+import 'package:thrivex/features/profile/profile_edit/edit_profile_attributes/edit_individual/edit_personal_story.dart';
+import 'package:thrivex/providers/user_provider.dart';
 
 class MyExistingPersonalStoriesWidget extends StatefulWidget {
   final String selectedUserId;
