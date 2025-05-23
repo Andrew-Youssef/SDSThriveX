@@ -153,6 +153,8 @@ class UserProvider extends ChangeNotifier {
     newProject.updateUserID(docRef.id);
     await docRef.set(newProject.toJSON());
     _projects.add(newProject);
+    _projects.sort((a, b) => a.dateBegun.compareTo(b.dateBegun));
+
     // print("addProject projectid: ${docRef.id}\n");
     updateProfileAttributes();
     await generateSummary();
@@ -235,6 +237,7 @@ class UserProvider extends ChangeNotifier {
     newWorkExperience.updateUserID(docRef.id);
     await docRef.set(newWorkExperience.toJSON());
     _workExperiences.add(newWorkExperience);
+    _workExperiences.sort((a, b) => a.dateBegun.compareTo(b.dateBegun));
     updateProfileAttributes();
     await generateSummary();
     notifyListeners();
@@ -309,6 +312,8 @@ class UserProvider extends ChangeNotifier {
     newCertDegree.updateUserID(docRef.id);
     await docRef.set(newCertDegree.toJSON());
     _certDegrees.add(newCertDegree);
+    _certDegrees.sort((a, b) => a.dateStarted.compareTo(b.dateStarted));
+
     updateProfileAttributes();
     await generateSummary();
     notifyListeners();
@@ -517,6 +522,7 @@ class UserProvider extends ChangeNotifier {
     newVolunteer.updateUserID(docRef.id);
     await docRef.set(newVolunteer.toJSON());
     _volunteeringWorks.add(newVolunteer);
+    _volunteeringWorks.sort((a, b) => a.dateStarted.compareTo(b.dateStarted));
     updateProfileAttributes();
     await generateSummary();
     notifyListeners();
