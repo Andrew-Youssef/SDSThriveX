@@ -26,9 +26,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:262456158294:android:d3028a2391060f39b8b3f7",
+        "mobilesdk_app_id": "1:262456158294:android:c756e7e7c3d96627b8b3f7",
         "android_client_info": {
-          "package_name": "com.example.thrive_x"
+          "package_name": "com.example.thrivex"
         }
       },
       "oauth_client": [],

@@ -1,0 +1,16 @@
+How to use the update*** methods:
+
+1. Call the methods
+2. In the parameters of the methods, create a map with these {}
+3. look at the variables of the model you want to update, for the example, it will be project_model
+4. On the left side of the Map, put the field name you want to update. MUST BE EXACT so copy paste from the model field
+5. On the right side of the Map, put the new value for that field. MUST BE THE SAME VARIANLE TYPE
+
+Example:
+I want to change project name and description.
+
+updateProject(projectID, {
+    'name': 'New Name',
+    'description' : 'New description'
+
+});

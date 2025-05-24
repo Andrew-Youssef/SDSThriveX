@@ -1,32 +1,110 @@
 import 'package:flutter/material.dart';
-import '../../data/data_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:thrivex/providers/user_provider.dart';
+import 'package:thrivex/widgets/profile_screen/ai_summary_display.dart';
+import '../../data/globals.dart';
+import 'profile_edit/edit_profile_attributes/edit_group/export_edit_group.dart';
+import '../../widgets/header.dart';
+import '../../widgets/profile_screen/export_attribute_display_widgets.dart';
 
 class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({super.key});
+  final String selectedUserId;
+
+  const MyProfileScreen({super.key, required this.selectedUserId});
 
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  final double coverHeight = 280;
-  final double profileHeight = 144;
+  late UserProvider selectedUserProvider;
+  bool _hadLoadedProfile = false;
+  bool _isLoggedInUser = false;
+  bool _isLoading = true;
 
-  void toggleProfileAttributes(String key) {
-    setState(() {
-      if (profileAttributes.containsKey(key)) {
-        profileAttributes[key] = !profileAttributes[key]!;
+  final double coverHeight = 140;
+  final double profileHeight = 130;
+
+  Map<ProfileAttribute, WidgetBuilder> attributeScreens = {
+    ProfileAttribute.projects: (context) => const MyEditProjectsScreen(),
+    ProfileAttribute.workExperience:
+        (context) => const MyEditWorkExperiencesScreen(),
+    ProfileAttribute.certDegrees: (context) => const MyEditCertDegreesScreen(),
+    ProfileAttribute.skillsStrengths:
+        (context) => const MyEditSkillsStrengthsScreen(),
+    ProfileAttribute.personalStories:
+        (context) => const MyEditPersonalStoriesScreen(),
+    ProfileAttribute.volunteeringWork:
+        (context) => const MyEditVolunteeringWorksScreen(),
+  };
+
+  final Map<ProfileAttribute, String> profileAttributeLabels = {
+    ProfileAttribute.profile: 'Profile',
+    ProfileAttribute.projects: 'Projects',
+    ProfileAttribute.workExperience: 'Work Experience',
+    ProfileAttribute.certDegrees: 'Certificate & Degrees',
+    ProfileAttribute.skillsStrengths: 'Skills & Strengths',
+    ProfileAttribute.personalStories: 'Personal Stories',
+    ProfileAttribute.volunteeringWork: 'Volunteering Work',
+  };
+  // void toggleProfileAttributes(ProfileAttribute key) {
+  //   setState(() {
+  //     if (profileAttributes.containsKey(key)) {
+  //       profileAttributes[key] = !profileAttributes[key]!;
+  //     }
+  //   });
+  // }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isLoading) {
+      if (!_hadLoadedProfile) {
+        _hadLoadedProfile = true;
+
+        UserProvider userProvider = Provider.of<UserProvider>(context);
+        if (widget.selectedUserId == userProvider.userId) {
+          selectedUserProvider = userProvider;
+          _isLoggedInUser = true;
+          _isLoading = false;
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            selectedUserProvider = UserProvider();
+            await selectedUserProvider.setTemporaryProfile(
+              widget.selectedUserId,
+            );
+            setState(() {
+              _isLoading = false;
+            });
+          });
+        }
       }
-      print(profileAttributes[key]);
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: [buildTop(), buildContent(), buildAttributeData()],
+    final theme = Theme.of(context);
+
+    //
+    //
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return Container(
+      color: theme.primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: myAppBar('Profile', context),
+          body: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              buildTop(),
+              buildContent(context),
+              buildAttributeData(context),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -34,31 +112,118 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   //projects
   //certificates
   //
-  Widget buildContent() {
+  Widget buildContent(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Column(
       children: [
-        Column(
-          children: [
-            Text('John Smith', style: TextStyle(fontSize: 28)),
-            Text('Student at UTS', style: TextStyle(fontSize: 15)),
-          ],
+        Container(
+          padding: EdgeInsets.all(8.0),
+          width: double.infinity,
+          child: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        selectedUserProvider!.profile!.name,
+                        style: theme.textTheme.titleMedium!.copyWith(
+                          fontSize: 28,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed:
+                            _isLoggedInUser
+                                ? () async {
+                                  //THIS NEEDS TO BE CHANGED TO
+                                  await selectedUserProvider.toggleEndorsement(
+                                    selectedUserProvider.userId,
+                                  );
+                                }
+                                : null,
+                        icon:
+                            selectedUserProvider.profile!.isEndorsed
+                                ? Icon(Icons.check_circle)
+                                : Icon(Icons.check_circle_outline_outlined),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    selectedUserProvider.profile!.title,
+                    style: theme.textTheme.displayMedium,
+                  ),
+                ],
+              ),
+
+              Expanded(child: SizedBox()),
+              IconButton(
+                onPressed:
+                    _isLoggedInUser
+                        ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => MyEditProfileDetailsScreen(
+                                    profile: selectedUserProvider.profile!,
+                                  ),
+                            ),
+                          );
+                        }
+                        : null,
+                icon: _isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
+              ),
+            ],
+          ),
         ),
+        //Ai sumamry
+        Divider(thickness: 1),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: MyAiSummaryWidget(userProvider: selectedUserProvider),
+        ),
+
+        //About Me
+        Divider(thickness: 1),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              buildAttributeButtons(),
-              Text(
-                'About',
-                textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              // buildAttributeButtons(),
+              Row(
+                children: [
+                  Text(
+                    'About',
+                    textAlign: TextAlign.left,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  Expanded(child: SizedBox()),
+                  IconButton(
+                    onPressed:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditProfileDetailsScreen(
+                                        profile: selectedUserProvider.profile!,
+                                      ),
+                                ),
+                              );
+                            }
+                            : null,
+                    icon:
+                        _isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
+                  ),
+                ],
               ),
               Text(
-                'Place holder text for About',
-                // softWrap: true,
+                selectedUserProvider.profile!.description,
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 15),
+                style: theme.textTheme.displayMedium,
               ),
             ],
           ),
@@ -67,55 +232,82 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  Widget buildAttributeButtons() {
-    return Wrap(
-      spacing: 8,
-      children:
-          profileAttributes.keys.map((key) {
-            return ElevatedButton(
-              onPressed: () {
-                toggleProfileAttributes(key);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    profileAttributes[key]! ? Colors.blue : Colors.white70,
-              ),
-              child: Text(key),
-            );
-          }).toList(),
-    );
-  }
+  // Widget buildAttributeButtons() {
+  //   return Wrap(
+  //     spacing: 8,
+  //     children:
+  //         profileAttributes.keys.map((key) {
+  //           return ElevatedButton(
+  //             onPressed: () {
+  //               toggleProfileAttributes(key);
+  //             },
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor:
+  //                   profileAttributes[key]! ? Colors.blue : Colors.white70,
+  //             ),
+  //             child: Text(profileAttributeLabels[key]!),
+  //           );
+  //         }).toList(),
+  //   );
+  // }
 
-  Widget buildAttributeData() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            profileAttributes.keys.map((key) {
-              if (profileAttributes[key]!) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      key,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+  Widget buildAttributeData(BuildContext context) {
+    final attributes = selectedUserProvider.profileAttributes;
+    ThemeData theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children:
+          attributes.keys.map((key) {
+            //displays all attributes to logged in user
+            //only displays filled attributes when viewing other user
+            if (attributes[key]! || _isLoggedInUser) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Divider(thickness: 1),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              profileAttributeLabels[key]!,
+                              style: theme.textTheme.titleMedium,
+                            ),
+                            Expanded(child: SizedBox()),
+                            IconButton(
+                              onPressed:
+                                  _isLoggedInUser
+                                      ? () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: attributeScreens[key]!,
+                                          ),
+                                        );
+                                      }
+                                      : null,
+                              icon:
+                                  _isLoggedInUser
+                                      ? Icon(Icons.edit)
+                                      : SizedBox.shrink(),
+                            ),
+                          ],
+                        ),
+                        getAttributeWidgetData(context)[key]!,
+                        const SizedBox(height: 10),
+                      ],
                     ),
-                    Text(
-                      'Place holder text for $key',
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                );
-              } else {
-                return SizedBox.shrink();
-              }
-            }).toList(),
-      ),
+                  ),
+                ],
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          }).toList(),
     );
   }
 
@@ -144,14 +336,35 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  Container buildCoverImage() {
-    return Container(
-      child: Image.network(
-        'https://media.licdn.com/dms/image/v2/D4D12AQF6mW4EuB-99Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1692951785182?e=2147483647&v=beta&t=9whX4YpHoNOzyq7CIiNwro17k-ajBH6TM3qo2CyH2Pk',
-        width: double.infinity,
-        height: coverHeight,
-        fit: BoxFit.cover,
-      ),
+  Image buildCoverImage() {
+    return Image.network(
+      'https://media.licdn.com/dms/image/v2/D4D12AQF6mW4EuB-99Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1692951785182?e=2147483647&v=beta&t=9whX4YpHoNOzyq7CIiNwro17k-ajBH6TM3qo2CyH2Pk',
+      width: double.infinity,
+      height: coverHeight,
+      fit: BoxFit.cover,
     );
+  }
+
+  Map<ProfileAttribute, Widget> getAttributeWidgetData(context) {
+    return {
+      ProfileAttribute.projects: MyExistingProjectsWidget(
+        selectedUserProvider: selectedUserProvider,
+      ),
+      ProfileAttribute.workExperience: MyExistingWorkExperiencesWidget(
+        selectedUserProvider: selectedUserProvider,
+      ),
+      ProfileAttribute.certDegrees: MyExistingCertDegreesWidget(
+        selectedUserProvider: selectedUserProvider,
+      ),
+      ProfileAttribute.skillsStrengths: MyExistingSkillsStrengthsWidget(
+        selectedUserProvider: selectedUserProvider,
+      ),
+      ProfileAttribute.personalStories: MyExistingPersonalStoriesWidget(
+        selectedUserProvider: selectedUserProvider,
+      ),
+      ProfileAttribute.volunteeringWork: MyExistingVolunteeringWorksWidget(
+        selectedUserProvider: selectedUserProvider,
+      ),
+    };
   }
 }
