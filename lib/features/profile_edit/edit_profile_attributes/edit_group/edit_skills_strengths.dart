@@ -16,17 +16,9 @@ class MyEditSkillsStrengthsScreen extends StatefulWidget {
 class _MyEditSkillsStrengthsScreenState
     extends State<MyEditSkillsStrengthsScreen> {
   SkillsStrengthsModel? selectedSkillStrength;
-  late final TextEditingController _skillController;
-  late final TextEditingController _acquiredAtController;
-  late final TextEditingController _descriptionController;
-
-  @override
-  void initState() {
-    super.initState();
-    _skillController = TextEditingController();
-    _acquiredAtController = TextEditingController();
-    _descriptionController = TextEditingController();
-  }
+  final TextEditingController _skillController = TextEditingController();
+  final TextEditingController _acquiredAtController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   void dispose() {
@@ -35,6 +27,44 @@ class _MyEditSkillsStrengthsScreenState
     _descriptionController.dispose();
     super.dispose();
   }
+
+  void _addSkillStrength(UserProvider userProvider) {
+  if (_skillController.text.isEmpty ||
+      _acquiredAtController.text.isEmpty ||
+      _descriptionController.text.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Please fill in all the fields.'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+    return;
+  }
+
+  SkillsStrengthsModel newSkillStrength = SkillsStrengthsModel(
+    skill: _skillController.text,
+    acquiredAt: _acquiredAtController.text,
+    description: _descriptionController.text,
+  );
+
+  userProvider.addSkillStrength(newSkillStrength);
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: const Text('Skill/Strength added successfully!'),
+      backgroundColor: Colors.green,
+      behavior: SnackBarBehavior.floating,
+    ),
+  );
+
+  _skillController.clear();
+  _acquiredAtController.clear();
+  _descriptionController.clear();
+
+  setState(() => selectedSkillStrength = null);
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,46 +79,13 @@ class _MyEditSkillsStrengthsScreenState
           appBar: myAppBar('Edit Skills & Strengths', context),
           body: Column(
             children: [
-              Row(
-                children: [
-                  Expanded(child: SizedBox()),
-                  IconButton(
-                    onPressed:
-                        selectedSkillStrength == null
-                            ? null
-                            : () {
-                              userProvider.removeSkillStrength(
-                                selectedSkillStrength!,
-                              );
-                              selectedSkillStrength = null;
-                            },
-                    icon: Icon(Icons.delete),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      if (_skillController.text.isNotEmpty &&
-                          _acquiredAtController.text.isNotEmpty &&
-                          _descriptionController.text.isNotEmpty) {
-                        SkillsStrengthsModel newSkillStrength =
-                            SkillsStrengthsModel(
-                              skill: _skillController.text,
-                              acquiredAt: _acquiredAtController.text,
-                              description: _descriptionController.text,
-                            );
-                        userProvider.addSkillStrength(newSkillStrength);
-                      }
-                    },
-                    icon: Icon(Icons.add_box),
-                  ),
-                ],
-              ),
-              if (skillsStrengths.isEmpty) ...[
-                Center(child: Text('Add a new work experience!')),
-                SizedBox(height: 20),
-              ] else ...[
-                showExistingSkillsStrengths(context),
-              ],
-              buildInputFields(context),
+              if (skillsStrengths.isNotEmpty) showExistingSkillsStrengths(context),
+              if (skillsStrengths.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Text('Add a new skill or strength!'),
+                ),
+              buildInputFields(context, userProvider),
             ],
           ),
         ),
@@ -97,98 +94,118 @@ class _MyEditSkillsStrengthsScreenState
   }
 
   Widget showExistingSkillsStrengths(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<SkillsStrengthsModel> workExperiences = userProvider.skillsStrengths;
+    final userProvider = Provider.of<UserProvider>(context);
+    final theme = Theme.of(context);
 
     return SizedBox(
-      height: 200,
+      height: 180,
       child: ListView(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        children: [
-          for (final p in workExperiences) ...[
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedSkillStrength = p;
-                });
-                // print('yoooooo');
-              },
-              onLongPress: () {
-                setState(() {
-                  selectedSkillStrength = p;
-                });
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => MyEditSkillStrengthScreen(
-                          skillStrength: selectedSkillStrength!,
-                        ),
-                  ),
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: theme.primaryColor,
-                    width: p == selectedSkillStrength ? 5 : 3,
-                  ),
+        children: userProvider.skillsStrengths.map((p) {
+          return GestureDetector(
+            onTap: () {
+              setState(() => selectedSkillStrength = p);
+            },
+            onLongPress: () {
+              setState(() => selectedSkillStrength = p);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      MyEditSkillStrengthScreen(skillStrength: p),
                 ),
+              );
+            },
+            child: Container(
+              width: 140,
+              margin: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: p == selectedSkillStrength
+                      ? theme.colorScheme.secondary
+                      : Colors.grey,
+                  width: 3,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
                 child: Text(
                   p.skill,
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.normal,
-                ),
+                  style: theme.textTheme.titleSmall,
                 ),
               ),
             ),
-            SizedBox(width: 20),
-          ],
-        ],
+          );
+        }).toList(),
       ),
     );
   }
 
-  Widget buildInputFields(BuildContext context) {
+  Widget buildInputFields(BuildContext context, UserProvider userProvider) {
     return Expanded(
-      child: ListView(
-        padding: EdgeInsets.all(8.0),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            const Text("Skill or Strength:", style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 4),
+            TextField(
               controller: _skillController,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Name of Skill or Strength',
+                hintText: "e.g. Time management",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
+            const SizedBox(height: 16),
+            const Text("Acquired At:", style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 4),
+            TextField(
               controller: _acquiredAtController,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Where was skill acquired',
+                hintText: "Where or how you acquired this skill",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
+            const SizedBox(height: 16),
+            const Text("Description:", style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 4),
+            TextField(
               controller: _descriptionController,
+              maxLines: 4,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Description',
+                hintText: "Explain how this skill helps you",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () => _addSkillStrength(userProvider),
+                icon: const Icon(Icons.add),
+                label: const Text("Add New Skill/Strength"),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }

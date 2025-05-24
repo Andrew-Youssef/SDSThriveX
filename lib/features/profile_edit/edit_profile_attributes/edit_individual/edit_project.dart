@@ -31,10 +31,12 @@ class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
       text: widget.project.imageUrl ?? '',
     );
     _startDate = TextEditingController(
-      text: widget.project.dateBegun.toString().split(' ')[0],
+      text: _formatDateToDDMMYYYY(widget.project.dateBegun),
     );
     _endDate = TextEditingController(
-      text: widget.project.dateEnded?.toString().split(' ')[0] ?? 'Ongoing',
+      text: widget.project.dateEnded != null 
+          ? _formatDateToDDMMYYYY(widget.project.dateEnded!)
+          : '',
     );
   }
 
@@ -160,9 +162,7 @@ Widget build(BuildContext context) {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
-              // save logic here
-            },
+            onPressed: () => _confirmChanges(),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.cyan,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -219,12 +219,26 @@ Widget build(BuildContext context) {
               lastDate: DateTime(2100),
             );
             if (picked != null) {
-              controller.text = picked.toString().split(" ")[0];
+              // Check if end date is before start date
+              if (controller == _endDate) {
+                final currentStart = DateTime.tryParse(_startDate.text.split('/').reversed.join('-'));
+                if (currentStart != null && picked.isBefore(currentStart)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('End date cannot be before start date.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+              }
+              
+              controller.text = _formatDateToDDMMYYYY(picked);
               onDateSelected(picked);
             }
           },
           decoration: InputDecoration(
-            hintText: 'DD / MM / YYYY',
+            hintText: 'DD/MM/YYYY',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
@@ -233,40 +247,19 @@ Widget build(BuildContext context) {
     );
   }
 
+  String _formatDateToDDMMYYYY(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+  }
 
-  Future<void> _selectDate(
-    TextEditingController controller,
-    BuildContext context,
-  ) async {
-    final Map<TextEditingController, void Function(DateTime)> updaterMap = {
-      _startDate: widget.project.updateDateBegun,
-      _endDate: widget.project.updateDateEnded,
-    };
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
+  void _confirmChanges() {
+    widget.project.updateName(_nameController.text);
+    widget.project.updateDescription(_descriptionController.text);
+    // Dates are already updated in the date selection methods
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Changes saved")),
     );
 
-    if (picked != null) {
-      setState(() {
-        controller.text = picked.toString().split(" ")[0];
-        updaterMap[controller]!.call(picked);
-      });
-    }
-    
-    if(picked != null) {
-      final isEndDate = controller == _endDate;
-      final currentStart = DateTime.tryParse(_startDate.text);
-
-      if (isEndDate && currentStart != null && picked.isBefore(currentStart)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('End date cannot be before start date.'), backgroundColor: Colors.red,),
-        );
-        return;
-      }
-    }
-    
+    Navigator.pop(context);
   }
 }

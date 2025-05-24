@@ -154,51 +154,152 @@ class _MyEditPersonalStoriesScreenState
     );
   }
 
+  
+
   Widget buildInputFields(BuildContext context) {
-    return Expanded(
-      child: ListView(
-        padding: EdgeInsets.all(8.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Title',
+          const SizedBox(height: 16),
+          const Text("Title:", style: TextStyle(fontSize: 18)),
+          const SizedBox(height: 4),
+          TextField(
+            controller: _titleController,
+            decoration: InputDecoration(
+              hintText: "Enter project name",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(width: 2),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _dateController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Start Date (required)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-              ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_dateController, context);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Description',
+          const SizedBox(height: 16),
+          const Text("Date begun:", style: TextStyle(fontSize: 18)),
+          const SizedBox(height: 4),
+          TextField(
+            controller: _dateController,
+            decoration: InputDecoration(
+              hintText: "DD / MM / YYYY",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(width: 2),
               ),
             ),
+            readOnly: true,
+            onTap: () => _selectDate(_dateController, context),
           ),
+          const SizedBox(height: 16),
+          const Text("Description:", style: TextStyle(fontSize: 18)),
+          const SizedBox(height: 4),
+          TextField(
+            controller: _descriptionController,
+            maxLines: 5,
+            decoration: InputDecoration(
+              hintText: "Enter a short description of your project",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(width: 2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          GestureDetector(
+            onTap: () {
+              final title = _titleController.text.trim();
+              final date = _dateController.text.trim();
+              final description = _descriptionController.text.trim();
+
+              if (title.isEmpty || date.isEmpty || description.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text("Please fill in all fields!"),
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: const EdgeInsets.all(16),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+                return;
+              }
+
+              try {
+                final parsedDate = DateTime.tryParse(date);
+                if (parsedDate == null) throw Exception("Invalid date");
+
+                PersonalStoriesModel newStory = PersonalStoriesModel(
+                  title: title,
+                  date: parsedDate,
+                  description: description,
+                );
+
+                Provider.of<UserProvider>(context, listen: false)
+                    .addPersonalStory(newStory);
+
+                // Clear inputs
+                _titleController.clear();
+                _dateController.clear();
+                _descriptionController.clear();
+                FocusScope.of(context).unfocus();
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text("Project added successfully!"),
+                    backgroundColor: Colors.green,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: const EdgeInsets.all(16),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text("Invalid date format!"),
+                    backgroundColor: Colors.orange,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: const EdgeInsets.all(16),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.cyanAccent,
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(width: 2),
+              ),
+              child: const Text(
+                "Add new project!",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
         ],
       ),
     );
   }
+
+
+
+
 
   Future<void> _selectDate(
     TextEditingController controller,

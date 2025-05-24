@@ -43,7 +43,7 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
     ProfileAttribute.personalStories:
         (context) => const MyEditPersonalStoriesScreen(),
     ProfileAttribute.volunteeringWork:
-        (context) => const MyEditVolunteeringWorksScreen(),
+        (context) => const MyEditVolunteeringScreen(),
   };
 
   @override

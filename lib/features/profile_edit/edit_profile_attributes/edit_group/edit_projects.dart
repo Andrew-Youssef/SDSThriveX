@@ -131,6 +131,23 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                           imageUrl: _imageController.text,
                         );
                         userProvider.addProject(newProject);
+                        
+                        // Clear fields and show success message
+                        _nameController.clear();
+                        _descriptionController.clear();
+                        _imageController.clear();
+                        _startDate.clear();
+                        _endDate.clear();
+                        setState(() {
+                          isOngoing = false;
+                        });
+                        
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Project added successfully!"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
                       }
 
                       if (_nameController.text.isEmpty ||
@@ -396,6 +413,23 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
                 );
                 Provider.of<UserProvider>(context, listen: false)
                     .addProject(newProject);
+                
+                // Clear fields and show success message
+                _nameController.clear();
+                _descriptionController.clear();
+                _imageController.clear();
+                _startDate.clear();
+                _endDate.clear();
+                setState(() {
+                  isOngoing = false;
+                });
+                
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Project added successfully!"),
+                    backgroundColor: Colors.green,
+                  ),
+                );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

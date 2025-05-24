@@ -62,7 +62,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     ProfileAttribute.personalStories:
         (context) => const MyEditPersonalStoriesScreen(),
     ProfileAttribute.volunteeringWork:
-        (context) => const MyEditVolunteeringWorksScreen(),
+        (context) => const MyEditVolunteeringScreen(),
   };
 
   void toggleProfileAttributes(ProfileAttribute key) {
