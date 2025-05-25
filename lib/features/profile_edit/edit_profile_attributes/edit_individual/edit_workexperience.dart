@@ -21,6 +21,7 @@ class _MyEditWorkExperienceScreenState
   late final TextEditingController _descriptionController;
   late final TextEditingController _startDate;
   late final TextEditingController _endDate;
+  late bool isOngoing;
 
   @override
   void initState() {
@@ -34,10 +35,11 @@ class _MyEditWorkExperienceScreenState
       text: _formatDateToDDMMYYYY(widget.workExperience.dateBegun),
     );
     _endDate = TextEditingController(
-      text: widget.workExperience.dateEnded != null 
+      text: widget.workExperience.dateEnded != null
           ? _formatDateToDDMMYYYY(widget.workExperience.dateEnded!)
           : '',
     );
+    isOngoing = widget.workExperience.dateEnded == null;
   }
 
   @override
@@ -63,7 +65,7 @@ class _MyEditWorkExperienceScreenState
             children: [
               Row(
                 children: [
-                  Expanded(child: SizedBox()),
+                  const Spacer(),
                   IconButton(
                     onPressed: () async {
                       final confirm = await showDialog<bool>(
@@ -71,15 +73,18 @@ class _MyEditWorkExperienceScreenState
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text("Delete Work Experience"),
-                            content: const Text("Are you sure you want to delete this work experience? This action cannot be undone."),
+                            content: const Text(
+                                "Are you sure you want to delete this work experience? This action cannot be undone."),
                             actions: [
                               TextButton(
                                 child: const Text("Cancel"),
                                 onPressed: () => Navigator.of(context).pop(false),
                               ),
                               ElevatedButton(
-                                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                child: const Text("Delete", style: TextStyle(color: Colors.white)),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red),
+                                child: const Text("Delete",
+                                    style: TextStyle(color: Colors.white)),
                                 onPressed: () => Navigator.of(context).pop(true),
                               ),
                             ],
@@ -105,9 +110,6 @@ class _MyEditWorkExperienceScreenState
   }
 
   Widget buildInputFields(BuildContext context) {
-    final theme = Theme.of(context);
-    bool isOngoing = _endDate.text.isEmpty;
-
     return Expanded(
       child: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -161,9 +163,11 @@ class _MyEditWorkExperienceScreenState
                         }
                       });
                     },
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4)),
                     checkColor: Colors.white,
-                    fillColor: MaterialStateProperty.all(Color.fromARGB(255, 42, 157, 143)),
+                    fillColor: MaterialStateProperty.all(
+                        const Color.fromARGB(255, 42, 157, 143)),
                   ),
                 ],
               )
@@ -179,15 +183,17 @@ class _MyEditWorkExperienceScreenState
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () => _confirmChanges(),
+            onPressed: _confirmChanges,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 42, 157, 143),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              backgroundColor: const Color.fromARGB(255, 42, 157, 143),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24)),
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
             child: const Text(
               'Confirm changes?',
-              style: TextStyle(color: Color.fromARGB(255, 42, 157, 143), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -195,7 +201,8 @@ class _MyEditWorkExperienceScreenState
     );
   }
 
-  Widget _buildLabeledField(String label, TextEditingController controller, String hint,
+  Widget _buildLabeledField(String label, TextEditingController controller,
+      String hint,
       {void Function(String)? onChanged, int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,16 +215,22 @@ class _MyEditWorkExperienceScreenState
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: hint,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(24)),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildLabeledDateField(String label, TextEditingController controller, BuildContext context,
-      void Function(DateTime) onDateSelected, {bool enabled = true}) {
+  Widget _buildLabeledDateField(
+      String label,
+      TextEditingController controller,
+      BuildContext context,
+      void Function(DateTime) onDateSelected,
+      {bool enabled = true}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -238,26 +251,30 @@ class _MyEditWorkExperienceScreenState
             if (picked != null) {
               // Check if end date is before start date
               if (controller == _endDate) {
-                final currentStart = DateTime.tryParse(_startDate.text.split('/').reversed.join('-'));
+                final currentStart = DateTime.tryParse(
+                    _startDate.text.split('/').reversed.join('-'));
                 if (currentStart != null && picked.isBefore(currentStart)) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('End date cannot be before start date.'),
+                      content:
+                          Text('End date cannot be before start date.'),
                       backgroundColor: Colors.red,
                     ),
                   );
                   return;
                 }
               }
-              
+
               controller.text = _formatDateToDDMMYYYY(picked);
               onDateSelected(picked);
             }
           },
           decoration: InputDecoration(
             hintText: 'DD/MM/YYYY',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
         ),
       ],
@@ -272,7 +289,7 @@ class _MyEditWorkExperienceScreenState
     widget.workExperience.updateName(_nameController.text);
     widget.workExperience.updateRole(_roleController.text);
     widget.workExperience.updateDescription(_descriptionController.text);
-    // Dates are already updated in the date selection methods
+    // Dates already updated when selected
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Changes saved")),

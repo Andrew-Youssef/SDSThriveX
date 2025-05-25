@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_innatex_student_screens/core/models/cert_degree_model.dart';
-import 'package:flutter_innatex_student_screens/core/models/project_model.dart';
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-
 
 class MyEditCertDegreeScreen extends StatefulWidget {
   final CertDegreesModel certDegree;
@@ -22,28 +20,20 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
   late final TextEditingController _startDate;
   late final TextEditingController _endDate;
   late final TextEditingController _descriptionController;
+  late bool isOngoing;
 
   @override
   void initState() {
     super.initState();
-    _institutionNameController = TextEditingController(
-      text: widget.certDegree.institutionName,
-    );
-    _certificationNameController = TextEditingController(
-      text: widget.certDegree.certificateName,
-    );
-    _descriptionController = TextEditingController(
-      text: widget.certDegree.description,
-    );
     final dateFormatter = DateFormat('dd/MM/yyyy');
-      _startDate = TextEditingController(
-        text: dateFormatter.format(widget.certDegree.dateStarted),
-      );
-      _endDate = TextEditingController(
-        text: widget.certDegree.dateEnded != null
-            ? dateFormatter.format(widget.certDegree.dateEnded!)
-            : 'Ongoing',
-      );
+    _institutionNameController = TextEditingController(text: widget.certDegree.institutionName);
+    _certificationNameController = TextEditingController(text: widget.certDegree.certificateName);
+    _descriptionController = TextEditingController(text: widget.certDegree.description);
+    _startDate = TextEditingController(text: dateFormatter.format(widget.certDegree.dateStarted));
+    isOngoing = widget.certDegree.dateEnded == null;
+    _endDate = TextEditingController(
+      text: widget.certDegree.dateEnded != null ? dateFormatter.format(widget.certDegree.dateEnded!) : '',
+    );
   }
 
   @override
@@ -58,8 +48,9 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
+    final userProvider = Provider.of<UserProvider>(context);
+    final theme = Theme.of(context);
+
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
@@ -69,15 +60,14 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
             children: [
               Row(
                 children: [
-                  Expanded(child: SizedBox()),
+                  const Spacer(),
                   IconButton(
-                  onPressed: () async {
-                    final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Delete Project"),
-                          content: const Text("Are you sure you want to delete this project? This action cannot be undone."),
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text("Delete Certificate"),
+                          content: const Text("Are you sure you want to delete this item? This action cannot be undone."),
                           actions: [
                             TextButton(
                               child: const Text("Cancel"),
@@ -89,40 +79,48 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
                               onPressed: () => Navigator.of(context).pop(true),
                             ),
                           ],
-                        );
-                      },
-                    );
+                        ),
+                      );
 
-                    if (confirm == true) {
-                      userProvider.removeCertDegree(widget.certDegree);
-                      Navigator.pop(context);
-                    }
-                  },
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                ),
-              ],
-            ),
-            buildInputFields(context),
-          ],
+                      if (confirm == true) {
+                        userProvider.removeCertDegree(widget.certDegree);
+                        Navigator.pop(context);
+                      }
+                    },
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                  ),
+                ],
+              ),
+              buildInputFields(context),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget buildInputFields(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    bool isOngoing = _endDate.text.isEmpty;
-
     return Expanded(
       child: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          _buildLabeledField('Certificate Name:', _certificationNameController, 'Enter project name', onChanged: widget.certDegree.updateCertificateName),
+          _buildLabeledField(
+            'Certificate Name:',
+            _certificationNameController,
+            'Enter certificate name',
+            onChanged: widget.certDegree.updateCertificateName,
+          ),
           const SizedBox(height: 12),
-            _buildLabeledField('Institution Name:', _institutionNameController, 'Enter project name', onChanged: widget.certDegree.updateInstitutionName),
+          _buildLabeledField(
+            'Institution Name:',
+            _institutionNameController,
+            'Enter institution name',
+            onChanged: widget.certDegree.updateInstitutionName,
+          ),
           const SizedBox(height: 12),
-          _buildLabeledDateField('Date begun:', _startDate, context, (date) => widget.certDegree.updateDateStarted(date)),
+          _buildLabeledDateField('Date begun:', _startDate, (date) {
+            widget.certDegree.updateDateStarted(date);
+          }),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -130,8 +128,9 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
                 child: _buildLabeledDateField(
                   'Date ended:',
                   _endDate,
-                  context,
-                  (date) => widget.certDegree.updateDateEnded(date),
+                  (date) {
+                    widget.certDegree.updateDateEnded(date);
+                  },
                   enabled: !isOngoing,
                 ),
               ),
@@ -164,17 +163,36 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
           _buildLabeledField(
             'Description:',
             _descriptionController,
-            'Enter a short description of your project',
+            'Enter a short description',
             onChanged: widget.certDegree.updateDescription,
             maxLines: 4,
           ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // save logic here
+              widget.certDegree.updateCertificateName(_certificationNameController.text);
+              widget.certDegree.updateInstitutionName(_institutionNameController.text);
+              widget.certDegree.updateDescription(_descriptionController.text);
+
+              final dateFormatter = DateFormat('dd/MM/yyyy');
+              final start = dateFormatter.parse(_startDate.text);
+              widget.certDegree.updateDateStarted(start);
+
+              if (_endDate.text.isNotEmpty && _endDate.text != 'Ongoing') {
+                final end = dateFormatter.parse(_endDate.text);
+                widget.certDegree.updateDateEnded(end);
+              } else {
+                widget.certDegree.updateDateEnded(null);
+              }
+
+              // Optionally update in provider if needed:
+              // userProvider.updateCertDegree(widget.certDegree);
+
+              Navigator.pop(context);
             },
+
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 42, 157, 143),
+              backgroundColor: const Color.fromARGB(255, 42, 157, 143),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
@@ -188,8 +206,13 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
     );
   }
 
-  Widget _buildLabeledField(String label, TextEditingController controller, String hint,
-      {void Function(String)? onChanged, int maxLines = 1}) {
+  Widget _buildLabeledField(
+    String label,
+    TextEditingController controller,
+    String hint, {
+    void Function(String)? onChanged,
+    int maxLines = 1,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -209,8 +232,12 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
     );
   }
 
-  Widget _buildLabeledDateField(String label, TextEditingController controller, BuildContext context,
-      void Function(DateTime) onDateSelected, {bool enabled = true}) {
+  Widget _buildLabeledDateField(
+    String label,
+    TextEditingController controller,
+    void Function(DateTime) onDateSelected, {
+    bool enabled = true,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -220,20 +247,8 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
           controller: controller,
           readOnly: true,
           enabled: enabled,
-          onTap: () async {
-            if (!enabled) return;
-            DateTime? picked = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100),
-            );
-            if (picked != null) {
-              final formattedDate = DateFormat('dd/MM/yyyy').format(picked);
-              controller.text = formattedDate;
-              onDateSelected(picked);
-            }
-
+          onTap: () {
+            if (enabled) _selectDate(controller, context);
           },
           decoration: InputDecoration(
             hintText: 'DD / MM / YYYY',
@@ -245,19 +260,8 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
     );
   }
 
-
-
-
-
-  Future<void> _selectDate(
-    TextEditingController controller,
-    BuildContext context,
-  ) async {
-    final Map<TextEditingController, void Function(DateTime)> updaterMap = {
-      _startDate: widget.certDegree.updateDateStarted,
-      _endDate: widget.certDegree.updateDateEnded,
-    };
-    DateTime? picked = await showDatePicker(
+  Future<void> _selectDate(TextEditingController controller, BuildContext context) async {
+    final picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1900),
@@ -265,24 +269,26 @@ class _MyEditCertDegreeScreenState extends State<MyEditCertDegreeScreen> {
     );
 
     if (picked != null) {
-      setState(() {
-        final formattedDate = DateFormat('dd/MM/yyyy').format(picked);
-        controller.text = formattedDate;
-        updaterMap[controller]!.call(picked);
-      });
-    }
-    
-    if(picked != null) {
+      final formatter = DateFormat('dd/MM/yyyy');
+      final formattedDate = formatter.format(picked);
       final isEndDate = controller == _endDate;
-      final currentStart = DateTime.tryParse(_startDate.text);
+      final startDate = DateFormat('dd/MM/yyyy').parse(_startDate.text);
 
-      if (isEndDate && currentStart != null && picked.isBefore(currentStart)) {
+      if (isEndDate && picked.isBefore(startDate)) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('End date cannot be before start date.'), backgroundColor: Colors.red,),
+          SnackBar(content: const Text('End date cannot be before start date.'), backgroundColor: Colors.red),
         );
         return;
       }
+
+      setState(() {
+        controller.text = formattedDate;
+        if (controller == _startDate) {
+          widget.certDegree.updateDateStarted(picked);
+        } else if (controller == _endDate) {
+          widget.certDegree.updateDateEnded(picked);
+        }
+      });
     }
-    
   }
 }

@@ -52,16 +52,7 @@ class _MyEditVolunteeringScreenState extends State<MyEditVolunteeringScreen> {
       child: SafeArea(
         child: WillPopScope(
           onWillPop: () async {
-            final hasNamedEntry = volunteeringList.any((v) => v.institutionName.trim().isNotEmpty);
-            if (!hasNamedEntry) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text("Please add at least one volunteering entry before going back."),
-                  backgroundColor: Colors.red,
-                ),
-              );
-              return false;
-            }
+            // Allow user to go back without restriction
             return true;
           },
           child: Scaffold(

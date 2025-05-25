@@ -3,6 +3,7 @@ import 'package:flutter_innatex_student_screens/core/models/volunteering_work_mo
 import 'package:flutter_innatex_student_screens/providers/user_provider.dart';
 import 'package:flutter_innatex_student_screens/widgets/header.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class MyEditVolunteeringWorkScreen extends StatefulWidget {
   final VolunteeringWorkModel volunteeringWork;
@@ -25,6 +26,8 @@ class _MyEditVolunteeringWorksScreenState
   late final TextEditingController _endDate;
   late final TextEditingController _descriptionController;
 
+  bool _isOngoing = false;
+
   @override
   void initState() {
     super.initState();
@@ -39,10 +42,11 @@ class _MyEditVolunteeringWorksScreenState
       text: _formatDateToDDMMYYYY(widget.volunteeringWork.dateStarted),
     );
     _endDate = TextEditingController(
-      text: widget.volunteeringWork.dateEnded != null 
+      text: widget.volunteeringWork.dateEnded != null
           ? _formatDateToDDMMYYYY(widget.volunteeringWork.dateEnded!)
           : '',
     );
+    _isOngoing = widget.volunteeringWork.dateEnded == null;
   }
 
   @override
@@ -68,7 +72,7 @@ class _MyEditVolunteeringWorksScreenState
             children: [
               Row(
                 children: [
-                  Expanded(child: SizedBox()),
+                  const Spacer(),
                   IconButton(
                     onPressed: () async {
                       final confirm = await showDialog<bool>(
@@ -76,16 +80,21 @@ class _MyEditVolunteeringWorksScreenState
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text("Delete Volunteering Work"),
-                            content: const Text("Are you sure you want to delete this volunteering work? This action cannot be undone."),
+                            content: const Text(
+                                "Are you sure you want to delete this volunteering work? This action cannot be undone."),
                             actions: [
                               TextButton(
                                 child: const Text("Cancel"),
-                                onPressed: () => Navigator.of(context).pop(false),
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
                               ),
                               ElevatedButton(
-                                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                child: const Text("Delete", style: TextStyle(color: Colors.white)),
-                                onPressed: () => Navigator.of(context).pop(true),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red),
+                                child: const Text("Delete",
+                                    style: TextStyle(color: Colors.white)),
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
                               ),
                             ],
                           );
@@ -93,7 +102,8 @@ class _MyEditVolunteeringWorksScreenState
                       );
 
                       if (confirm == true) {
-                        userProvider.removeVolunteeringWork(widget.volunteeringWork);
+                        userProvider
+                            .removeVolunteeringWork(widget.volunteeringWork);
                         Navigator.pop(context);
                       }
                     },
@@ -111,7 +121,6 @@ class _MyEditVolunteeringWorksScreenState
 
   Widget buildInputFields(BuildContext context) {
     final theme = Theme.of(context);
-    bool isOngoing = _endDate.text.isEmpty;
 
     return Expanded(
       child: ListView(
@@ -121,21 +130,18 @@ class _MyEditVolunteeringWorksScreenState
             'Institution Name:',
             _institutionNameController,
             'Enter institution name',
-            onChanged: widget.volunteeringWork.updateInstitutionName,
           ),
           const SizedBox(height: 12),
           _buildLabeledField(
             'Role:',
             _roleController,
             'Enter your role',
-            onChanged: widget.volunteeringWork.updateRole,
           ),
           const SizedBox(height: 12),
           _buildLabeledDateField(
             'Date started:',
             _startDate,
             context,
-            (date) => widget.volunteeringWork.updateDateStarted(date),
           ),
           const SizedBox(height: 12),
           Row(
@@ -145,8 +151,7 @@ class _MyEditVolunteeringWorksScreenState
                   'Date ended:',
                   _endDate,
                   context,
-                  (date) => widget.volunteeringWork.updateDateEnded(date),
-                  enabled: !isOngoing,
+                  enabled: !_isOngoing,
                 ),
               ),
               const SizedBox(width: 8),
@@ -156,19 +161,20 @@ class _MyEditVolunteeringWorksScreenState
                 children: [
                   const Text("Ongoing?"),
                   Checkbox(
-                    value: isOngoing,
+                    value: _isOngoing,
                     onChanged: (value) {
                       setState(() {
-                        isOngoing = value!;
-                        if (isOngoing) {
+                        _isOngoing = value!;
+                        if (_isOngoing) {
                           _endDate.clear();
-                          widget.volunteeringWork.updateDateEnded(null);
                         }
                       });
                     },
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4)),
                     checkColor: Colors.white,
-                    fillColor: MaterialStateProperty.all(Color.fromARGB(255, 42, 157, 143)),
+                    fillColor: MaterialStateProperty.all(
+                        const Color.fromARGB(255, 42, 157, 143)),
                   ),
                 ],
               )
@@ -179,20 +185,21 @@ class _MyEditVolunteeringWorksScreenState
             'Description:',
             _descriptionController,
             'Enter a description of your volunteering work',
-            onChanged: widget.volunteeringWork.updateDescription,
             maxLines: 4,
           ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () => _confirmChanges(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 42, 157, 143),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              backgroundColor: const Color.fromARGB(255, 42, 157, 143),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24)),
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
             child: const Text(
               'Confirm changes?',
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -200,8 +207,8 @@ class _MyEditVolunteeringWorksScreenState
     );
   }
 
-  Widget _buildLabeledField(String label, TextEditingController controller, String hint,
-      {void Function(String)? onChanged, int maxLines = 1}) {
+  Widget _buildLabeledField(String label, TextEditingController controller,
+      String hint, {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -209,20 +216,22 @@ class _MyEditVolunteeringWorksScreenState
         const SizedBox(height: 4),
         TextField(
           controller: controller,
-          onChanged: onChanged,
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: hint,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildLabeledDateField(String label, TextEditingController controller, BuildContext context,
-      void Function(DateTime) onDateSelected, {bool enabled = true}) {
+  Widget _buildLabeledDateField(
+      String label, TextEditingController controller, BuildContext context,
+      {bool enabled = true}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -241,28 +250,15 @@ class _MyEditVolunteeringWorksScreenState
               lastDate: DateTime(2100),
             );
             if (picked != null) {
-              // Check if end date is before start date
-              if (controller == _endDate) {
-                final currentStart = DateTime.tryParse(_startDate.text);
-                if (currentStart != null && picked.isBefore(currentStart)) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('End date cannot be before start date.'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                  return;
-                }
-              }
-              
               controller.text = _formatDateToDDMMYYYY(picked);
-              onDateSelected(picked);
             }
           },
           decoration: InputDecoration(
             hintText: 'DD/MM/YYYY',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
         ),
       ],
@@ -274,10 +270,21 @@ class _MyEditVolunteeringWorksScreenState
   }
 
   void _confirmChanges() {
-    widget.volunteeringWork.updateInstitutionName(_institutionNameController.text);
+    final dateFormatter = DateFormat('dd/MM/yyyy');
+    final start = dateFormatter.parse(_startDate.text);
+
+    widget.volunteeringWork.updateInstitutionName(
+        _institutionNameController.text);
     widget.volunteeringWork.updateRole(_roleController.text);
     widget.volunteeringWork.updateDescription(_descriptionController.text);
-    // Dates are already updated in the date selection methods
+    widget.volunteeringWork.updateDateStarted(start);
+
+    if (_endDate.text.isNotEmpty && !_isOngoing) {
+      final end = dateFormatter.parse(_endDate.text);
+      widget.volunteeringWork.updateDateEnded(end);
+    } else {
+      widget.volunteeringWork.updateDateEnded(null);
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Changes saved")),

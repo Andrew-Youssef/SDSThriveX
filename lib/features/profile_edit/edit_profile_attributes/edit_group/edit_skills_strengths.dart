@@ -146,67 +146,72 @@ class _MyEditSkillsStrengthsScreenState
 
   Widget buildInputFields(BuildContext context, UserProvider userProvider) {
     return Expanded(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
-            const Text("Skill or Strength:", style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 4),
-            TextField(
-              controller: _skillController,
-              decoration: InputDecoration(
-                hintText: "e.g. Time management",
-                border: OutlineInputBorder(
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 16),
+          const Text("Skill or Strength:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          TextField(
+            controller: _skillController,
+            decoration: InputDecoration(
+              hintText: "e.g. Time management",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text("Acquired At:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          TextField(
+            controller: _acquiredAtController,
+            decoration: InputDecoration(
+              hintText: "Where or how you acquired this skill",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text("Description:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          TextField(
+            controller: _descriptionController,
+            maxLines: 4,
+            decoration: InputDecoration(
+              hintText: "Explain how this skill helps you",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () => _addSkillStrength(userProvider),
+              icon: const Icon(Icons.add),
+              label: const Text("Add New Skill/Strength"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text("Acquired At:", style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 4),
-            TextField(
-              controller: _acquiredAtController,
-              decoration: InputDecoration(
-                hintText: "Where or how you acquired this skill",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text("Description:", style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 4),
-            TextField(
-              controller: _descriptionController,
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText: "Explain how this skill helps you",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => _addSkillStrength(userProvider),
-                icon: const Icon(Icons.add),
-                label: const Text("Add New Skill/Strength"),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+        ],
       ),
-    );
+    ),
+  );
   }
 }

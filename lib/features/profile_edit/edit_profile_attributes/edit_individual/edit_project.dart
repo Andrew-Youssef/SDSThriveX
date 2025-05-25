@@ -19,25 +19,19 @@ class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
   late final TextEditingController _imageController;
   late final TextEditingController _startDate;
   late final TextEditingController _endDate;
+  late bool _isOngoing;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.project.name);
-    _descriptionController = TextEditingController(
-      text: widget.project.description,
-    );
-    _imageController = TextEditingController(
-      text: widget.project.imageUrl ?? '',
-    );
-    _startDate = TextEditingController(
-      text: _formatDateToDDMMYYYY(widget.project.dateBegun),
-    );
+    _descriptionController = TextEditingController(text: widget.project.description);
+    _imageController = TextEditingController(text: widget.project.imageUrl ?? '');
+    _startDate = TextEditingController(text: _formatDateToDDMMYYYY(widget.project.dateBegun));
     _endDate = TextEditingController(
-      text: widget.project.dateEnded != null 
-          ? _formatDateToDDMMYYYY(widget.project.dateEnded!)
-          : '',
+      text: widget.project.dateEnded != null ? _formatDateToDDMMYYYY(widget.project.dateEnded!) : '',
     );
+    _isOngoing = widget.project.dateEnded == null;
   }
 
   @override
@@ -51,62 +45,61 @@ class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
   }
 
   @override
-Widget build(BuildContext context) {
-  UserProvider userProvider = Provider.of<UserProvider>(context);
-  ThemeData theme = Theme.of(context);
-  return Container(
-    color: theme.primaryColor,
-    child: SafeArea(
-      child: Scaffold(
-        appBar: myAppBar('Edit Project', context),
-        body: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(child: SizedBox()),
-                IconButton(
-                  onPressed: () async {
-                    final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Delete Project"),
-                          content: const Text("Are you sure you want to delete this project? This action cannot be undone."),
-                          actions: [
-                            TextButton(
-                              child: const Text("Cancel"),
-                              onPressed: () => Navigator.of(context).pop(false),
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                              child: const Text("Delete", style: TextStyle(color: Colors.white)),
-                              onPressed: () => Navigator.of(context).pop(true),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+  Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeData theme = Theme.of(context);
+    return Container(
+      color: theme.primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: myAppBar('Edit Project', context),
+          body: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(child: SizedBox()),
+                  IconButton(
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Delete Project"),
+                            content: const Text("Are you sure you want to delete this project? This action cannot be undone."),
+                            actions: [
+                              TextButton(
+                                child: const Text("Cancel"),
+                                onPressed: () => Navigator.of(context).pop(false),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                child: const Text("Delete", style: TextStyle(color: Colors.white)),
+                                onPressed: () => Navigator.of(context).pop(true),
+                              ),
+                            ],
+                          );
+                        },
+                      );
 
-                    if (confirm == true) {
-                      userProvider.removeProject(widget.project);
-                      Navigator.pop(context);
-                    }
-                  },
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                ),
-              ],
-            ),
-            buildInputFields(context),
-          ],
+                      if (confirm == true) {
+                        userProvider.removeProject(widget.project);
+                        Navigator.pop(context);
+                      }
+                    },
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                  ),
+                ],
+              ),
+              buildInputFields(context),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget buildInputFields(BuildContext context) {
     final theme = Theme.of(context);
-    bool isOngoing = _endDate.text.isEmpty;
 
     return Expanded(
       child: ListView(
@@ -124,7 +117,7 @@ Widget build(BuildContext context) {
                   _endDate,
                   context,
                   (date) => widget.project.updateDateEnded(date),
-                  enabled: !isOngoing,
+                  enabled: !_isOngoing,
                 ),
               ),
               const SizedBox(width: 8),
@@ -134,11 +127,11 @@ Widget build(BuildContext context) {
                 children: [
                   const Text("Ongoing?"),
                   Checkbox(
-                    value: isOngoing,
+                    value: _isOngoing,
                     onChanged: (value) {
                       setState(() {
-                        isOngoing = value!;
-                        if (isOngoing) {
+                        _isOngoing = value!;
+                        if (_isOngoing) {
                           _endDate.clear();
                           widget.project.updateDateEnded(null);
                         }
@@ -164,7 +157,7 @@ Widget build(BuildContext context) {
           ElevatedButton(
             onPressed: () => _confirmChanges(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 42, 157, 143),
+              backgroundColor: const Color.fromARGB(255, 42, 157, 143),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
@@ -200,7 +193,8 @@ Widget build(BuildContext context) {
   }
 
   Widget _buildLabeledDateField(String label, TextEditingController controller, BuildContext context,
-      void Function(DateTime) onDateSelected, {bool enabled = true}) {
+      void Function(DateTime) onDateSelected,
+      {bool enabled = true}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -219,9 +213,8 @@ Widget build(BuildContext context) {
               lastDate: DateTime(2100),
             );
             if (picked != null) {
-              // Check if end date is before start date
               if (controller == _endDate) {
-                final currentStart = DateTime.tryParse(_startDate.text.split('/').reversed.join('-'));
+                final currentStart = _parseDateFromDDMMYYYY(_startDate.text);
                 if (currentStart != null && picked.isBefore(currentStart)) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -232,7 +225,7 @@ Widget build(BuildContext context) {
                   return;
                 }
               }
-              
+
               controller.text = _formatDateToDDMMYYYY(picked);
               onDateSelected(picked);
             }
@@ -241,6 +234,10 @@ Widget build(BuildContext context) {
             hintText: 'DD/MM/YYYY',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(24),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
           ),
         ),
       ],
@@ -251,10 +248,24 @@ Widget build(BuildContext context) {
     return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
   }
 
+  DateTime? _parseDateFromDDMMYYYY(String dateString) {
+    if (dateString.isEmpty) return null;
+    try {
+      final parts = dateString.split('/');
+      if (parts.length != 3) return null;
+      final day = int.parse(parts[0]);
+      final month = int.parse(parts[1]);
+      final year = int.parse(parts[2]);
+      return DateTime(year, month, day);
+    } catch (e) {
+      return null;
+    }
+  }
+
   void _confirmChanges() {
     widget.project.updateName(_nameController.text);
     widget.project.updateDescription(_descriptionController.text);
-    // Dates are already updated in the date selection methods
+    // Dates are already updated through date pickers
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Changes saved")),
