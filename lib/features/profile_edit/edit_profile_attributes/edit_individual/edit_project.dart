@@ -146,7 +146,7 @@ Widget build(BuildContext context) {
                     },
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                     checkColor: Colors.white,
-                    fillColor: MaterialStateProperty.all(Colors.cyan),
+                    fillColor: MaterialStateProperty.all(Color.fromARGB(255, 42, 157, 143)),
                   ),
                 ],
               )
@@ -164,7 +164,7 @@ Widget build(BuildContext context) {
           ElevatedButton(
             onPressed: () => _confirmChanges(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.cyan,
+              backgroundColor: Color.fromARGB(255, 42, 157, 143),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),

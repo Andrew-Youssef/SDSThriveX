@@ -278,7 +278,7 @@ class _MyEditPersonalStoriesScreenState
               padding: const EdgeInsets.symmetric(vertical: 8),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.cyanAccent,
+                color: Color.fromARGB(255, 42, 157, 143),
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(width: 2),
               ),
