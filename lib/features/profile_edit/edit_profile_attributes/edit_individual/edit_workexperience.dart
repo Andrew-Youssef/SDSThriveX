@@ -163,7 +163,7 @@ class _MyEditWorkExperienceScreenState
                     },
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                     checkColor: Colors.white,
-                    fillColor: MaterialStateProperty.all(Colors.cyan),
+                    fillColor: MaterialStateProperty.all(Color.fromARGB(255, 42, 157, 143)),
                   ),
                 ],
               )
@@ -181,13 +181,13 @@ class _MyEditWorkExperienceScreenState
           ElevatedButton(
             onPressed: () => _confirmChanges(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.cyan,
+              backgroundColor: Color.fromARGB(255, 42, 157, 143),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
             child: const Text(
               'Confirm changes?',
-              style: TextStyle(color: Colors.tealAccent, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Color.fromARGB(255, 42, 157, 143), fontWeight: FontWeight.bold),
             ),
           ),
         ],

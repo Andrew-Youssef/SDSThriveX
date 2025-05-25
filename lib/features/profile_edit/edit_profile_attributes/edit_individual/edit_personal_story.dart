@@ -123,7 +123,7 @@ class _MyEditPersonalStoryScreenState extends State<MyEditPersonalStoryScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text("Confirm Changes", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 40, 167, 139)), ),
+                  child: const Text("Confirm Changes", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 42, 157, 143)), ),
                 ),
               ),
               ),

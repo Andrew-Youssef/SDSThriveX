@@ -358,7 +358,7 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
                         }
                       });
                     },
-                    activeColor: Colors.cyan,
+                    activeColor: const Color.fromARGB(255, 42, 157, 143),
                     side: BorderSide(color: Colors.black, width: 1.5),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4)),

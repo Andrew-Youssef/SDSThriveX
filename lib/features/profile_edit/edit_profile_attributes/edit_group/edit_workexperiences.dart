@@ -339,7 +339,7 @@ class _MyEditWorkExperiencesScreenState extends State<MyEditWorkExperiencesScree
                         }
                       });
                     },
-                    activeColor: Colors.cyan,
+                    activeColor: Color.fromARGB(255, 42, 157, 143),
                     side: BorderSide(color: Colors.black, width: 1.5),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4)),
@@ -415,7 +415,7 @@ class _MyEditWorkExperiencesScreenState extends State<MyEditWorkExperiencesScree
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.cyanAccent,
+              backgroundColor: Color.fromARGB(255, 42, 157, 143),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
                 side: BorderSide(color: Colors.black, width: 2),

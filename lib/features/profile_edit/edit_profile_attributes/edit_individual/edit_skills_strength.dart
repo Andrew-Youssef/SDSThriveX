@@ -129,7 +129,7 @@ class _MyEditSkillStrengthScreenState extends State<MyEditSkillStrengthScreen> {
               // Save logic here
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.cyan,
+              backgroundColor: Color.fromARGB(255, 42, 157, 143),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24)),
               padding: const EdgeInsets.symmetric(vertical: 16),
