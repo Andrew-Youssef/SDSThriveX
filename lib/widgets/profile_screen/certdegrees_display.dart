@@ -56,9 +56,9 @@ class MyExistingCertDegreesWidgetState
         children:
             certDegrees.map((cert) {
               final String startDate =
-                  '${cert.dateStarted.toLocal().toString().split(' ')[0]}';
+                  cert.dateStarted.toLocal().toString().split(' ')[0];
               final String endDate =
-                  '${cert.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+                  cert.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present";
 
               return GestureDetector(
                 onTap:

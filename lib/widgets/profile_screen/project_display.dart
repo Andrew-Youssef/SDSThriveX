@@ -53,7 +53,7 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget>
               final String startDate =
                   '${project.dateBegun.toLocal().toString().split(' ')[0]} - ';
               final String endDate =
-                  '${project.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+                  project.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present";
 
               return GestureDetector(
                 onTap:

@@ -56,9 +56,9 @@ class _MyExistingWorkExperiencesWidgetState
         children:
             workExperiences.map((exp) {
               final String startDate =
-                  '${exp.dateBegun.toLocal().toString().split(' ')[0]}';
+                  exp.dateBegun.toLocal().toString().split(' ')[0];
               final String endDate =
-                  '${exp.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+                  exp.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present";
 
               return GestureDetector(
                 onTap:

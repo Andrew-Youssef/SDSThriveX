@@ -127,7 +127,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   Row(
                     children: [
                       Text(
-                        selectedUserProvider!.profile!.name,
+                        selectedUserProvider.profile!.name,
                         style: theme.textTheme.titleMedium!.copyWith(
                           fontSize: 28,
                         ),

@@ -4,8 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:integration_test/integration_test.dart';
 import '../test/test_util.dart'; // Utility for test context
 
-import 'package:screens/core/services/auth_service.dart';
-import 'package:screens/core/services/firebase_options.dart';
+import 'package:thrivex/core/services/auth_service.dart';
+import 'package:thrivex/core/services/firebase_options.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
