@@ -51,10 +51,7 @@ class _MyEditVolunteeringScreenState extends State<MyEditVolunteeringScreen> {
       color: theme.primaryColor,
       child: SafeArea(
         child: WillPopScope(
-          onWillPop: () async {
-            // Allow user to go back without restriction
-            return true;
-          },
+          onWillPop: () async => true,
           child: Scaffold(
             appBar: myAppBar('Edit Volunteering Work', context),
             body: Column(
@@ -137,12 +134,46 @@ class _MyEditVolunteeringScreenState extends State<MyEditVolunteeringScreen> {
                 if (volunteeringList.isEmpty)
                   Center(child: Text('Add a new volunteering entry!'))
                 else
-                  showExistingVolunteering(context),
+                  buildVolunteeringHeaderCards(context),
                 buildInputFields(context),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildVolunteeringHeaderCards(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    List<VolunteeringWorkModel> list = Provider.of<UserProvider>(context).volunteeringWork;
+
+    return SizedBox(
+      height: 80,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        children: list.map((v) {
+          return Container(
+            width: 150,
+            margin: EdgeInsets.only(right: 10),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black, width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                v.institutionName,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleSmall,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

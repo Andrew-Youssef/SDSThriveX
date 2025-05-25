@@ -193,68 +193,52 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
   );
   }
 
-  Widget showExistingProjects(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<ProjectModel> projects = userProvider.projects;
+ Widget showExistingProjects(BuildContext context) {
+  UserProvider userProvider = Provider.of<UserProvider>(context);
+  ThemeData theme = Theme.of(context);
+  List<ProjectModel> projects = userProvider.projects;
 
-    return SizedBox(
-      height: 200,
-      child: ListView(
-        padding: EdgeInsets.all(8.0),
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        children: [
-          for (final p in projects) ...[
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedProject = p;
-                  _nameController.text = p.name;
-                  _descriptionController.text = p.description;
-                  _imageController.text = p.imageUrl ?? '';
-                  _startDate.text = p.dateBegun.toString().split(' ')[0];
-                  _endDate.text = p.dateEnded?.toString().split(' ')[0] ?? '';
-                });
-                // print('yoooooo');
-              },
-              onLongPress: () {
-                setState(() {
-                  selectedProject = p;
-                });
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            MyEditProjectScreen(project: selectedProject!),
-                  ),
-                );
-              },
-              child: Container(
-                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: theme.primaryColor,
-                    width: p == selectedProject ? 5 : 3,
-                  ),
-                ),
-                child: Text(
+  return SizedBox(
+    height: 200,
+    child: ListView(
+      padding: EdgeInsets.all(8.0),
+      scrollDirection: Axis.horizontal,
+      children: [
+        for (final p in projects) ...[
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: theme.primaryColor,
+                width: 2,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.lock, size: 16, color: Colors.grey.shade700),
+                SizedBox(width: 6),
+                Text(
                   p.name,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.normal, // not bold
-                      
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black87,
                   ),
                 ),
-              ),
+              ],
             ),
-            SizedBox(width: 10),
-          ],
+          ),
+          SizedBox(width: 10),
         ],
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
+
 
   InputDecoration customInputDecoration(String hint) {
     return InputDecoration(

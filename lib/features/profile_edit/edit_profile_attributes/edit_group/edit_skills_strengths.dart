@@ -99,50 +99,66 @@ class _MyEditSkillsStrengthsScreenState
 
     return SizedBox(
       height: 180,
-      child: ListView(
-        padding: const EdgeInsets.all(8.0),
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         scrollDirection: Axis.horizontal,
-        children: userProvider.skillsStrengths.map((p) {
+        itemCount: userProvider.skillsStrengths.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          final skill = userProvider.skillsStrengths[index];
+          final isSelected = skill == selectedSkillStrength;
+
           return GestureDetector(
             onTap: () {
-              setState(() => selectedSkillStrength = p);
+              setState(() => selectedSkillStrength = skill);
             },
             onLongPress: () {
-              setState(() => selectedSkillStrength = p);
+              setState(() => selectedSkillStrength = skill);
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      MyEditSkillStrengthScreen(skillStrength: p),
+                  builder: (_) => MyEditSkillStrengthScreen(skillStrength: skill),
                 ),
               );
             },
             child: Container(
-              width: 140,
-              margin: const EdgeInsets.only(right: 12),
-              padding: const EdgeInsets.all(8),
+              width: 220,
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: p == selectedSkillStrength
-                      ? theme.colorScheme.secondary
-                      : Colors.grey,
-                  width: 3,
+                  color: isSelected ? theme.colorScheme.secondary : Colors.grey.shade400,
+                  width: 2.5,
                 ),
-                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 6,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: Center(
-                child: Text(
-                  p.skill,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.titleSmall,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    skill.skill,
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  
+                ],
               ),
             ),
           );
-        }).toList(),
+        },
       ),
     );
   }
+
 
   Widget buildInputFields(BuildContext context, UserProvider userProvider) {
     return Expanded(

@@ -15,10 +15,10 @@ class MyEditVolunteeringWorkScreen extends StatefulWidget {
 
   @override
   State<MyEditVolunteeringWorkScreen> createState() =>
-      _MyEditVolunteeringWorksScreenState();
+      _MyEditVolunteeringWorkScreenState();
 }
 
-class _MyEditVolunteeringWorksScreenState
+class _MyEditVolunteeringWorkScreenState
     extends State<MyEditVolunteeringWorkScreen> {
   late final TextEditingController _institutionNameController;
   late final TextEditingController _roleController;
@@ -61,8 +61,9 @@ class _MyEditVolunteeringWorksScreenState
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
+    final userProvider = Provider.of<UserProvider>(context);
+    final theme = Theme.of(context);
+
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
@@ -70,6 +71,40 @@ class _MyEditVolunteeringWorksScreenState
           appBar: myAppBar('Edit Volunteering Work', context),
           body: Column(
             children: [
+              // Horizontal list of volunteering works - non-clickable cards
+              SizedBox(
+                height: 80,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                  itemCount: userProvider.volunteeringWork.length,
+                  itemBuilder: (context, index) {
+                    final vw = userProvider.volunteeringWork[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 3,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                          alignment: Alignment.center,
+                          child: Text(
+                            vw.institutionName,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
               Row(
                 children: [
                   const Spacer(),
@@ -102,8 +137,7 @@ class _MyEditVolunteeringWorksScreenState
                       );
 
                       if (confirm == true) {
-                        userProvider
-                            .removeVolunteeringWork(widget.volunteeringWork);
+                        userProvider.removeVolunteeringWork(widget.volunteeringWork);
                         Navigator.pop(context);
                       }
                     },
@@ -111,6 +145,7 @@ class _MyEditVolunteeringWorksScreenState
                   ),
                 ],
               ),
+
               buildInputFields(context),
             ],
           ),
@@ -273,8 +308,7 @@ class _MyEditVolunteeringWorksScreenState
     final dateFormatter = DateFormat('dd/MM/yyyy');
     final start = dateFormatter.parse(_startDate.text);
 
-    widget.volunteeringWork.updateInstitutionName(
-        _institutionNameController.text);
+    widget.volunteeringWork.updateInstitutionName(_institutionNameController.text);
     widget.volunteeringWork.updateRole(_roleController.text);
     widget.volunteeringWork.updateDescription(_descriptionController.text);
     widget.volunteeringWork.updateDateStarted(start);

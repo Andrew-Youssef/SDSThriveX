@@ -165,53 +165,58 @@ class _MyEditWorkExperiencesScreenState extends State<MyEditWorkExperiencesScree
   }
 
   Widget showExistingWorkExperiences(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
-    List<WorkExperienceModel> workExperiences = userProvider.workExperiences;
+  UserProvider userProvider = Provider.of<UserProvider>(context);
+  ThemeData theme = Theme.of(context);
+  List<WorkExperienceModel> workExperiences = userProvider.workExperiences;
 
-    return SizedBox(
-      height: 200,
-      child: ListView(
-        padding: EdgeInsets.all(8.0),
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        children: [
-          for (final w in workExperiences) ...[
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedWorkExperience = w;
-                  _nameController.text = w.name;
-                  _roleController.text = w.role;
-                  _descriptionController.text = w.description;
-                  _startDate.text = w.dateBegun.toString().split(' ')[0];
-                  _endDate.text = w.dateEnded?.toString().split(' ')[0] ?? '';
-                });
-              },
-              child: Container(
-                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: theme.primaryColor,
-                    width: w == selectedWorkExperience ? 5 : 3,
-                  ),
+  return SizedBox(
+    height: 200,
+    child: ListView(
+      padding: EdgeInsets.all(8.0),
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      children: [
+        for (final w in workExperiences) ...[
+          Container(
+            width: 160,
+            padding: EdgeInsets.all(12),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: theme.primaryColor,
+                width: 3,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                  offset: Offset(2, 2),
                 ),
-                child: Text(
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
                   w.name,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.normal, // not bold
-                      
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+                SizedBox(height: 4),
+              ],
             ),
-            SizedBox(width: 10),
-          ],
+          ),
+          SizedBox(width: 10),
         ],
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
+
 
   InputDecoration customInputDecoration(String hint) {
     return InputDecoration(

@@ -128,38 +128,40 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
     final certDegrees = userProvider.certDegrees;
 
     return SizedBox(
-      height: 200,
+      height: 180,
       child: ListView(
+        padding: const EdgeInsets.all(8.0),
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.all(8),
-        children: certDegrees.map((p) {
+        children: certDegrees.map((cert) {
           return GestureDetector(
-            onTap: () => setState(() => selectedCertDegree = p),
+            onTap: () => setState(() => selectedCertDegree = cert),
             onLongPress: () {
-              setState(() => selectedCertDegree = p);
+              setState(() => selectedCertDegree = cert);
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => MyEditCertDegreeScreen(certDegree: p),
+                  builder: (_) => MyEditCertDegreeScreen(certDegree: cert),
                 ),
               );
             },
             child: Container(
-              margin: EdgeInsets.only(right: 20),
-              padding: EdgeInsets.all(8),
+              width: 140,
+              margin: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: theme.primaryColor,
-                  width: p == selectedCertDegree ? 5 : 3,
+                  color: cert == selectedCertDegree
+                      ? theme.colorScheme.secondary
+                      : Colors.grey,
+                  width: 3,
                 ),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
                 child: Text(
-                  p.certificateName,
+                  cert.certificateName,
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.normal,
-                  ),
+                  style: theme.textTheme.titleSmall,
                 ),
               ),
             ),
@@ -168,6 +170,7 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
       ),
     );
   }
+
 
   Widget buildInputFields(BuildContext context) {
     final theme = Theme.of(context);
