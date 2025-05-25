@@ -15,7 +15,7 @@ void main() {
     );
   });
 
-  testWidgets('Add a new project to the profile', (WidgetTester tester) async {
+  testWidgets('Add a new Personal Story to the profile', (WidgetTester tester) async {
     app.main();
     await tester.pumpAndSettle(const Duration(seconds: 5));
 
@@ -30,21 +30,23 @@ void main() {
     await tester.pumpUntilFound(profileTabFinder, const Duration(seconds: 10));
     await tester.tap(profileTabFinder);
     await tester.pumpAndSettle(const Duration(seconds: 5));
+    await tester.ensureVisible(find.text('Personal Stories'));
+    await tester.pumpAndSettle();
     
-    // Go to Edit Projects page
-    final projectsEditButtonFinder = find.descendant(
+    // Go to Edit Personal Stories page
+    final storiesEditButtonFinder = find.descendant(
       of: find.ancestor(
-        of: find.text('Projects'),
+        of: find.text('Personal Stories'),
         matching: find.byType(Row),
       ),
       matching: find.byIcon(Icons.edit),
     );
 
-    await tester.tap(projectsEditButtonFinder);
+    await tester.tap(storiesEditButtonFinder);
     await tester.pumpAndSettle(const Duration(seconds: 3));
 
-    // Enter project details
-    await tester.enterText(find.byType(TextField).at(0), 'Test Project'); // project title
+    // Enter story details
+    await tester.enterText(find.byType(TextField).at(0), 'Test Personal Story'); // story title
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.calendar_today).first);
@@ -52,21 +54,16 @@ void main() {
     await tester.tap(find.text('OK')); // letting it default to today's date
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.calendar_today).last);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('OK')); // letting it default to today's date
+    await tester.enterText(find.byType(TextField).at(2), 'A story from integration test'); // story description
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byType(TextField).at(3), 'A project from integration test'); // project description
-    await tester.pumpAndSettle();
-
-    // Adding the project
+    // Adding the story
     await tester.tap(find.byIcon(Icons.add_box));
     await tester.pumpAndSettle(const Duration(seconds: 5));
 
-    // Confirm project appears
-    expect(find.text('Test Project'), findsWidgets);
-    expect(find.text('A project from integration test'), findsWidgets);
+    // Confirm story appears
+    expect(find.text('Test Personal Story'), findsWidgets);
+    expect(find.text('A story from integration test'), findsWidgets);
   });
 
   // testWidgets('Edit an existing project', (WidgetTester tester) async {
