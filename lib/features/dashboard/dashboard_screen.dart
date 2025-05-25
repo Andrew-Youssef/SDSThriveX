@@ -35,7 +35,7 @@ class _MyDashBoardScreenState extends State<MyDashBoardScreen> {
                 ),
               ),
 
-              // 🔽 Scrollable content below the fixed header
+              // Scrollable content below the fixed header
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.only(top: 10),
@@ -232,29 +232,36 @@ Widget buildMyCard1(BuildContext context) {
           bottom: 12,
         ),
         child: ExpansionTile(
-        title: Text(
-          'View Portfolio',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        children: [
-          ...[
-            '- Personal Projects',
-            '- Work Experience',
-            '- Volunteer Work',
-            '- Certifications & Degrees',
-            '- Personal Stories',
-          ].map(
-            (text) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-              child: Text(
-                text,
-                style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            ),
+          title: Text(
+            'View Portfolio',
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-        ],
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          shape: const Border(),
+          collapsedShape: const Border(),
+          children: [
+            ...[
+              '- Personal Projects',
+              '- Work Experience',
+              '- Volunteer Work',
+              '- Certifications & Degrees',
+              '- Personal Stories',
+            ].map(
+              (text) => Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 4.0),
+                  child: Text(
+                    text,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
     ),
   );
 }
@@ -268,26 +275,41 @@ Widget buildMyCard2(BuildContext context) {
         side: const BorderSide(color: Colors.orange, width: 2),
       ),
       elevation: 4,
-      child: ExpansionTile(
-        title: Text(
-          'Upcoming Meetings',
-          style: Theme.of(context).textTheme.titleMedium,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 15,
+          right: 10,
+          top: 12,
+          bottom: 12,
         ),
-        children: [
-          ...[
-            '- Coaching Sessions',
-            '- Job Interviews',
-            '- Seminars',
-          ].map(
-            (text) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-              child: Text(
-                text,
-                style: Theme.of(context).textTheme.bodyMedium,
+        child: ExpansionTile(
+          title: Text(
+            'Upcoming Meetings',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          shape: const Border(),
+          collapsedShape: const Border(),
+          children: [
+            ...[
+              '- Coaching Sessions',
+              '- Job Interviews',
+              '- Seminars',
+            ].map(
+              (text) => Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 4.0),
+                  child: Text(
+                    text,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );
