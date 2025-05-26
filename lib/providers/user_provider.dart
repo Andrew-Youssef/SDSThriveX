@@ -594,7 +594,7 @@ class UserProvider extends ChangeNotifier {
     final prompt =
         "You are an expert career assistant helping job seekers present themselves professionally. \n\n"
         "I will give you a list of information about a person, including their education, work experience, volunteer work, achievements, and other relevant background. \n\n"
-        "Your task is to write a professional and engaging summary of 250 words that could appear on a professional profile page such as LinkedIn or a job application site. \n\n"
+        "Your task is to write a professional and engaging summary of 100 words that could appear on a professional profile page such as LinkedIn or a job application site. \n\n"
         "The summary should: \n\n"
         "- Focus on the most important facts a recruiter who are looking for fresh talents would care about. \n\n"
         "- Highlight skills, experience, achievements, and personality traits relevant to employability. \n\n"
