@@ -19,33 +19,52 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = userProvider.getTheme();
-
-    return Theme(
-      data: theme,
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
+    // padding: EdgeInsetsDirectional.fromSTEB(10, 8, 10, 0),
+    return Container(
+      color: theme.primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
             children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(10, 8, 10, 0),
-                child: TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      searchName = value;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    prefixIcon: Icon(Icons.search, color: Colors.black),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+              Material(
+                color: theme.primaryColor,
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(10, 8, 10, 8),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(Icons.arrow_back, color: Colors.white),
+                      ),
+                      Flexible(
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              searchName = value;
+                            });
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Search',
+                            prefixIcon: Icon(Icons.search, color: Colors.black),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
+
+              //Endorsed Button
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
                 child: SizedBox(
@@ -60,6 +79,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
               ),
+
+              //listview
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                   stream:

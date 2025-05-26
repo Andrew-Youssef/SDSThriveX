@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 AppBar myAppBar(String title, BuildContext context) {
   ThemeData theme = Theme.of(context);
+  bool canPop = Navigator.canPop(context);
 
   return AppBar(
     backgroundColor: theme.primaryColor,
@@ -12,9 +13,12 @@ AppBar myAppBar(String title, BuildContext context) {
       style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),
     ),
     leading: IconButton(
-      icon: const Icon(Icons.arrow_back, color: Colors.white),
+      icon:
+          canPop
+              ? const Icon(Icons.arrow_back, color: Colors.white)
+              : SizedBox.shrink(),
       onPressed: () {
-        if (Navigator.canPop(context)) {
+        if (canPop) {
           Navigator.pop(context);
         }
       },
