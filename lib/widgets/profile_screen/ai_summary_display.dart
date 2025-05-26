@@ -45,7 +45,7 @@ class _MyAiSummaryWidgetState extends State<MyAiSummaryWidget>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'AI Sumary',
+            'AI Summary',
             textAlign: TextAlign.left,
             style: theme.textTheme.titleMedium,
           ),
@@ -57,7 +57,7 @@ class _MyAiSummaryWidgetState extends State<MyAiSummaryWidget>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'AI Sumary',
+            'AI Summary',
             textAlign: TextAlign.left,
             style: theme.textTheme.titleMedium,
           ),
