@@ -321,8 +321,8 @@ class _MyEditProjectScreenState extends State<MyEditProjectScreen> {
 
     await userProvider.updateProject(widget.project.id, {
       'name': _nameController.text,
-      'dateBegun': _startDate.text,
-      'dateEnded': _endDate.text,
+      'dateBegun': _parseDateFromDDMMYYYY(_startDate.text),
+      'dateEnded': _parseDateFromDDMMYYYY(_endDate.text),
       'description': _descriptionController.text,
       'imageUrl': _imageController.text,
     });
