@@ -234,14 +234,16 @@ Widget buildMyCard1(BuildContext context) {
           top: 12,
           bottom: 12,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ExpansionTile(
+          title: Text(
+            'View Portfolio',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          shape: const Border(),
+          collapsedShape: const Border(),
           children: [
-            Text(
-              'View Portfolio',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const Divider(color: Colors.grey),
             ...[
               '- Personal Projects',
               '- Work Experience',
@@ -249,8 +251,19 @@ Widget buildMyCard1(BuildContext context) {
               '- Certifications & Degrees',
               '- Personal Stories',
             ].map(
-              (text) =>
-                  Text(text, style: Theme.of(context).textTheme.bodyMedium),
+              (text) => Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 0.0,
+                    vertical: 4.0,
+                  ),
+                  child: Text(
+                    text,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -275,17 +288,30 @@ Widget buildMyCard2(BuildContext context) {
           top: 12,
           bottom: 12,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ExpansionTile(
+          title: Text(
+            'Upcoming Meetings',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          shape: const Border(),
+          collapsedShape: const Border(),
           children: [
-            Text(
-              'Upcoming Meetings',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const Divider(color: Colors.grey),
             ...['- Coaching Sessions', '- Job Interviews', '- Seminars'].map(
-              (text) =>
-                  Text(text, style: Theme.of(context).textTheme.bodyMedium),
+              (text) => Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 0.0,
+                    vertical: 4.0,
+                  ),
+                  child: Text(
+                    text,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ),
             ),
           ],
         ),

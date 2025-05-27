@@ -13,6 +13,7 @@ class MyEditProjectsScreen extends StatefulWidget {
 }
 
 class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
+  bool isOngoing = false;
   ProjectModel? selectedProject;
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
@@ -28,10 +29,6 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
     _imageController = TextEditingController();
     _startDate = TextEditingController();
     _endDate = TextEditingController();
-    //it should be impossible for new data to have been loaded,
-    //ie projects list is still valid.
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.loadProjects(userProvider.profile!.userId);
   }
 
   @override
@@ -47,59 +44,17 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-    // userProvider.loadProjects(userProvider.profile!.userId);
     ThemeData theme = Theme.of(context);
     List<ProjectModel> projects = userProvider.projects;
 
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
+        // ignore: deprecated_member_use
         child: Scaffold(
           appBar: myAppBar('Edit Projects', context),
-          body: Column(
+          body: ListView(
             children: [
-              Row(
-                children: [
-                  Expanded(child: SizedBox()),
-                  IconButton(
-                    onPressed:
-                        selectedProject == null
-                            ? null
-                            : () {
-                              print(
-                                "selectedProject trash Id: ${selectedProject!.id}\n",
-                              );
-                              userProvider.removeProject(selectedProject!.id);
-                              // userProvider.loadProjects(
-                              //   userProvider.profile!.userId,
-                              // );
-                              selectedProject = null;
-                            },
-                    icon: Icon(Icons.delete),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      if (_nameController.text.isNotEmpty &&
-                          _startDate.text.isNotEmpty &&
-                          _descriptionController.text.isNotEmpty) {
-                        ProjectModel newProject = ProjectModel(
-                          id: '',
-                          name: _nameController.text,
-                          dateBegun: DateTime.tryParse(_startDate.text)!,
-                          dateEnded:
-                              _endDate.text.isNotEmpty
-                                  ? DateTime.tryParse(_startDate.text)
-                                  : null,
-                          description: _descriptionController.text,
-                          imageUrl: _imageController.text,
-                        );
-                        userProvider.addProject(newProject);
-                      }
-                    },
-                    icon: Icon(Icons.add_box),
-                  ),
-                ],
-              ),
               // Expanded(
               //   child: ListView(
               //     children: [
@@ -133,63 +88,122 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
     List<ProjectModel> projects = userProvider.projects;
 
     return SizedBox(
-      height: 200,
+      height: 160,
       child: ListView(
         padding: EdgeInsets.all(8.0),
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         children: [
           for (final p in projects) ...[
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedProject = p;
-                  print("onTap selectedProject Id: ${selectedProject!.id}\n");
-                });
-                // print('yoooooo');
-              },
-              onLongPress: () {
-                setState(() {
-                  selectedProject = p;
-                  print(
-                    "onLongPress selectedProject Id: ${selectedProject!.id}\n",
-                  );
-                });
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            MyEditProjectScreen(project: selectedProject!),
-                  ),
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: theme.primaryColor,
-                    width: p == selectedProject ? 5 : 3,
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(p.name),
-                    Text(p.dateBegun.toString().split(' ')[0]),
-                    Text(
-                      p.dateEnded != null
-                          ? p.dateEnded!.toString().split(' ')[0]
-                          : 'Unknown',
+            Padding(padding: EdgeInsets.all(8)),
+            Container(
+              padding: EdgeInsets.all(8),
+              constraints: BoxConstraints(maxWidth: 130),
+              decoration: BoxDecoration(
+                border: Border.all(color: theme.primaryColor, width: 2),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: Center(
+                      // 👈 centers 1- or 2-line text vertically
+                      child: Text(
+                        p.name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        textAlign:
+                            TextAlign.center, // 👈 centers text horizontally
+                        style: theme.textTheme.titleMedium,
+                      ),
                     ),
-                    Text(p.description),
-                    Text(p.imageUrl != null ? p.imageUrl! : 'Unknown'),
-                  ],
-                ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      deleteButton(p),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => MyEditProjectScreen(project: p),
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.edit),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            SizedBox(width: 20),
           ],
         ],
+      ),
+    );
+  }
+
+  IconButton deleteButton(ProjectModel p) {
+    final userProvider = Provider.of<UserProvider>(context);
+    return IconButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Confirm Deletion"),
+              content: Text("Are you sure you want to delete this project?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close dialog
+                  },
+                  child: Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close dialog
+                    userProvider.removeProject(p.id);
+                    setState(() {
+                      selectedProject = null;
+                      _nameController.clear();
+                      _descriptionController.clear();
+                      _imageController.clear();
+                      _startDate.clear();
+                      _endDate.clear();
+                    });
+                  },
+                  child: Text("Delete", style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      icon: Icon(Icons.delete),
+    );
+  }
+
+  InputDecoration customInputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(
+        fontStyle: FontStyle.italic,
+        // ignore: deprecated_member_use
+        color: Colors.black.withOpacity(0.3),
+      ),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: Colors.black, width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: Colors.black, width: 2),
       ),
     );
   }
@@ -197,78 +211,194 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
   Widget buildInputFields(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return Expanded(
-      child: ListView(
-        padding: EdgeInsets.all(8.0),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Name of project',
+    return Column(
+      // padding: EdgeInsets.all(8.0),
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        // Title field
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Project Name:', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 6),
+              TextField(
+                controller: _nameController,
+                // readOnly: selectedProject != null,
+                decoration: customInputDecoration('Enter project name'),
+                // .copyWith(
+                //   suffixIcon:
+                //       selectedProject != null
+                //           ? Tooltip(
+                //             message: "Project name can't be edited",
+                //             child: Icon(Icons.lock, color: Colors.grey),
+                //           )
+                //           : null,
+                // ),
               ),
-            ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _startDate,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Start Date (required)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
+        ),
+
+        // Start Date
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Date begun:', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 6),
+              TextField(
+                controller: _startDate,
+                decoration: customInputDecoration('DD / MM / YYYY'),
+                readOnly: true,
+                onTap: () {
+                  _selectDate(_startDate, context);
+                },
               ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_startDate, context);
-              },
-            ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _endDate,
-              decoration: InputDecoration(
-                // border: OutlineInputBorder(),
-                labelText: 'End Date (optional)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: theme.primaryColor),
+        ),
+
+        // End Date + Ongoing checkbox
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Date ended:', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 6),
+              TextField(
+                controller: _endDate,
+                enabled: !isOngoing,
+                decoration: customInputDecoration('DD / MM / YYYY'),
+                readOnly: true,
+                onTap: () {
+                  if (!isOngoing) _selectDate(_endDate, context);
+                },
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text("OR", style: TextStyle(fontWeight: FontWeight.bold)),
+                  SizedBox(width: 8),
+                  Text("Ongoing?"),
+                  SizedBox(width: 8),
+                  Checkbox(
+                    value: isOngoing,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isOngoing = value ?? false;
+                        if (isOngoing) {
+                          _endDate.clear();
+                        }
+                      });
+                    },
+                    activeColor: Color.fromARGB(255, 42, 157, 143),
+                    side: BorderSide(color: Colors.black, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // Description
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Description:', style: TextStyle(fontSize: 18)),
+              SizedBox(height: 6),
+              TextField(
+                controller: _descriptionController,
+                minLines: 3,
+                maxLines: 5,
+                decoration: customInputDecoration(
+                  'Enter a short description of your project',
                 ),
               ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_endDate, context);
+            ],
+          ),
+        ),
+
+        // Add button
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                if (_nameController.text.isNotEmpty &&
+                    _startDate.text.isNotEmpty &&
+                    _descriptionController.text.isNotEmpty) {
+                  ProjectModel newProject = ProjectModel(
+                    id: '',
+                    name: _nameController.text,
+                    dateBegun: DateTime.tryParse(_startDate.text)!,
+                    dateEnded:
+                        isOngoing ? null : DateTime.tryParse(_endDate.text),
+                    description: _descriptionController.text,
+                    imageUrl: _imageController.text,
+                  );
+                  Provider.of<UserProvider>(
+                    context,
+                    listen: false,
+                  ).addProject(newProject);
+
+                  // Clear fields and show success message
+                  _nameController.clear();
+                  _descriptionController.clear();
+                  _imageController.clear();
+                  _startDate.clear();
+                  _endDate.clear();
+                  setState(() {
+                    isOngoing = false;
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Project added successfully!"),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Please enter name, description, and start date.",
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Description',
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 42, 157, 143),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(color: Colors.black, width: 2),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: Text(
+                'Add new project!',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _imageController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Image URL (figure out later)',
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -276,14 +406,38 @@ class _MyEditProjectsScreenState extends State<MyEditProjectsScreen> {
     TextEditingController controller,
     BuildContext context,
   ) async {
+    DateTime initialDate = DateTime.now();
+
+    // Try to parse the controller's current value for better UX
+    try {
+      initialDate = DateTime.parse(controller.text);
+    } catch (_) {}
+
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: initialDate,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
     );
 
     if (picked != null) {
+      DateTime? startDate;
+      try {
+        startDate = DateTime.parse(_startDate.text);
+      } catch (_) {}
+
+      if (controller == _endDate &&
+          startDate != null &&
+          picked.isBefore(startDate)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("End date cannot be before start date."),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
       setState(() {
         controller.text = picked.toString().split(" ")[0];
       });
