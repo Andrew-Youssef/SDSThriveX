@@ -28,7 +28,7 @@ void main() {
     // Go to Search page
     final searchBarFinder = find.widgetWithText(TextField, 'Search');
     await tester.tap(searchBarFinder);
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(seconds: 5));
 
     // Entering the name of the user to search
     const targetName = 'Andrew';
@@ -60,7 +60,7 @@ void main() {
     // Go to Search page
     final searchBarFinder = find.widgetWithText(TextField, 'Search');
     await tester.tap(searchBarFinder);
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(seconds: 5));
 
     // Entering the name of the user to search
     await tester.enterText(searchBarFinder, 'Poop');

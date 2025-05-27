@@ -62,7 +62,7 @@ void main() {
     await tester.tap(find.text('OK')); // letting it default to today's date
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byType(TextField).at(4), 'A description of the Certificate'); // story description
+    await tester.enterText(find.byType(TextField).at(4), 'A description of the Certificate'); // cert description
     await tester.pumpAndSettle();
 
     // Adding the certificate
