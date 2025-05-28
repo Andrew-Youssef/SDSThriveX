@@ -128,7 +128,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   children: [
                     Row(
                       children: [
-                        Expanded(
+                        Flexible(
                           child: Text(
                             selectedUserProvider.profile!.name,
                             style: theme.textTheme.titleMedium!.copyWith(
