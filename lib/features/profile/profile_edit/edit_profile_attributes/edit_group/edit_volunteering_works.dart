@@ -110,7 +110,14 @@ class _MyEditVolunteeringScreenState
           },
         );
       },
-      icon: Icon(Icons.delete),
+      icon: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 42, 157, 143),
+          shape: BoxShape.circle,
+        ),
+        padding: EdgeInsets.all(6),
+        child: Icon(Icons.delete),
+      ),
     );
   }
 
@@ -130,9 +137,9 @@ class _MyEditVolunteeringScreenState
             Padding(padding: EdgeInsets.all(8)),
             Container(
               padding: EdgeInsets.all(8),
-              constraints: BoxConstraints(maxWidth: 130),
+              constraints: BoxConstraints(maxWidth: 170),
               decoration: BoxDecoration(
-                border: Border.all(color: theme.primaryColor, width: 2),
+                border: Border.all(color: Colors.orange, width: 4),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -166,7 +173,14 @@ class _MyEditVolunteeringScreenState
                             ),
                           );
                         },
-                        icon: Icon(Icons.edit),
+                        icon: Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 42, 157, 143),
+                            shape: BoxShape.circle,
+                          ),
+                          padding: EdgeInsets.all(6),
+                          child: Icon(Icons.edit),
+                        ),
                       ),
                     ],
                   ),
@@ -304,15 +318,7 @@ class _MyEditVolunteeringScreenState
             readOnly: readOnly,
             minLines: multiline ? 3 : 1,
             maxLines: multiline ? 5 : 1,
-            decoration: customInputDecoration(hint).copyWith(
-              suffixIcon:
-                  readOnly
-                      ? Tooltip(
-                        message: "$label can't be edited",
-                        child: Icon(Icons.lock, color: Colors.grey),
-                      )
-                      : null,
-            ),
+            decoration: customInputDecoration(hint),
           ),
         ],
       ),
