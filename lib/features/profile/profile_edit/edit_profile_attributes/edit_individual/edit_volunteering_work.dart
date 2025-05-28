@@ -3,6 +3,7 @@ import '../../../../../core/models/volunteering_work_model.dart';
 import '../../../../../providers/user_provider.dart';
 import '../../../../../widgets/header.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class MyEditVolunteeringWorkScreen extends StatefulWidget {
   final VolunteeringWorkModel volunteeringWork;
@@ -14,16 +15,18 @@ class MyEditVolunteeringWorkScreen extends StatefulWidget {
 
   @override
   State<MyEditVolunteeringWorkScreen> createState() =>
-      _MyEditVolunteeringWorksScreenState();
+      _MyEditVolunteeringWorkScreenState();
 }
 
-class _MyEditVolunteeringWorksScreenState
+class _MyEditVolunteeringWorkScreenState
     extends State<MyEditVolunteeringWorkScreen> {
   late final TextEditingController _institutionNameController;
   late final TextEditingController _roleController;
   late final TextEditingController _startDate;
   late final TextEditingController _endDate;
   late final TextEditingController _descriptionController;
+
+  bool _isOngoing = false;
 
   @override
   void initState() {
@@ -36,13 +39,15 @@ class _MyEditVolunteeringWorksScreenState
       text: widget.volunteeringWork.description,
     );
     _startDate = TextEditingController(
-      text: widget.volunteeringWork.dateStarted.toString().split(' ')[0],
+      text: _formatDateToDDMMYYYY(widget.volunteeringWork.dateStarted),
     );
     _endDate = TextEditingController(
       text:
-          widget.volunteeringWork.dateEnded?.toString().split(' ')[0] ??
-          'Ongoing',
+          widget.volunteeringWork.dateEnded != null
+              ? _formatDateToDDMMYYYY(widget.volunteeringWork.dateEnded!)
+              : '',
     );
+    _isOngoing = widget.volunteeringWork.dateEnded == null;
   }
 
   @override
@@ -57,8 +62,9 @@ class _MyEditVolunteeringWorksScreenState
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
+    final userProvider = Provider.of<UserProvider>(context);
+    final theme = Theme.of(context);
+
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
@@ -68,18 +74,51 @@ class _MyEditVolunteeringWorksScreenState
             children: [
               Row(
                 children: [
-                  Expanded(child: SizedBox()),
+                  const Spacer(),
                   IconButton(
-                    onPressed: () {
-                      userProvider.removeVolunteerWork(
-                        widget.volunteeringWork.id,
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Delete Volunteering Work"),
+                            content: const Text(
+                              "Are you sure you want to delete this volunteering work? This action cannot be undone.",
+                            ),
+                            actions: [
+                              TextButton(
+                                child: const Text("Cancel"),
+                                onPressed:
+                                    () => Navigator.of(context).pop(false),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                ),
+                                child: const Text(
+                                  "Delete",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed:
+                                    () => Navigator.of(context).pop(true),
+                              ),
+                            ],
+                          );
+                        },
                       );
-                      Navigator.pop(context);
+
+                      if (confirm == true) {
+                        userProvider.removeVolunteerWork(
+                          widget.volunteeringWork.id,
+                        );
+                        Navigator.pop(context);
+                      }
                     },
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete, color: Colors.red),
                   ),
                 ],
               ),
+
               buildInputFields(context),
             ],
           ),
@@ -89,78 +128,82 @@ class _MyEditVolunteeringWorksScreenState
   }
 
   Widget buildInputFields(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
 
     return Expanded(
       child: ListView(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: widget.volunteeringWork.updateInstitutionName,
-              controller: _institutionNameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Name of Institution',
-              ),
-            ),
+          _buildLabeledField(
+            'Institution Name:',
+            _institutionNameController,
+            'Enter institution name',
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: widget.volunteeringWork.updateRole,
-              controller: _roleController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Role in Insitution',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _startDate,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Start Date (required)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-              ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_startDate, context);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _endDate,
-              decoration: InputDecoration(
-                // border: OutlineInputBorder(),
-                labelText: 'End Date (optional)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: theme.primaryColor),
+          const SizedBox(height: 12),
+          _buildLabeledField('Role:', _roleController, 'Enter your role'),
+          const SizedBox(height: 12),
+          _buildLabeledDateField('Date started:', _startDate, context),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildLabeledDateField(
+                  'Date ended:',
+                  _endDate,
+                  context,
+                  enabled: !_isOngoing,
                 ),
               ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_endDate, context);
-              },
-            ),
+              const SizedBox(width: 8),
+              const Text("OR", style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(width: 8),
+              Column(
+                children: [
+                  const Text("Ongoing?"),
+                  Checkbox(
+                    value: _isOngoing,
+                    onChanged: (value) {
+                      setState(() {
+                        _isOngoing = value!;
+                        if (_isOngoing) {
+                          _endDate.clear();
+                        }
+                      });
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    checkColor: Colors.white,
+                    fillColor: MaterialStateProperty.all(
+                      const Color.fromARGB(255, 42, 157, 143),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: widget.volunteeringWork.updateDescription,
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Description',
+          const SizedBox(height: 12),
+          _buildLabeledField(
+            'Description:',
+            _descriptionController,
+            'Enter a description of your volunteering work',
+            maxLines: 4,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () => _confirmChanges(),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 42, 157, 143),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            child: const Text(
+              'Confirm changes?',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -169,26 +212,120 @@ class _MyEditVolunteeringWorksScreenState
     );
   }
 
-  Future<void> _selectDate(
+  Widget _buildLabeledField(
+    String label,
     TextEditingController controller,
-    BuildContext context,
-  ) async {
-    final Map<TextEditingController, void Function(DateTime)> updaterMap = {
-      _startDate: widget.volunteeringWork.updateDateStarted,
-      _endDate: widget.volunteeringWork.updateDateEnded,
-    };
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
+    String hint, {
+    int maxLines = 1,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 4),
+        TextField(
+          controller: controller,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: hint,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+          ),
+        ),
+      ],
     );
+  }
 
-    if (picked != null) {
-      setState(() {
-        controller.text = picked.toString().split(" ")[0];
-        updaterMap[controller]!.call(picked);
-      });
+  Widget _buildLabeledDateField(
+    String label,
+    TextEditingController controller,
+    BuildContext context, {
+    bool enabled = true,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 4),
+        TextField(
+          controller: controller,
+          readOnly: true,
+          enabled: enabled,
+          onTap: () async {
+            if (!enabled) return;
+            DateTime? picked = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime(2100),
+            );
+            if (picked != null) {
+              controller.text = _formatDateToDDMMYYYY(picked);
+            }
+          },
+          decoration: InputDecoration(
+            hintText: 'DD/MM/YYYY',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _formatDateToDDMMYYYY(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+  }
+
+  DateTime? _parseDateFromDDMMYYYY(String dateString) {
+    if (dateString.isEmpty) return null;
+    try {
+      final parts = dateString.split('/');
+      if (parts.length != 3) return null;
+      final day = int.parse(parts[0]);
+      final month = int.parse(parts[1]);
+      final year = int.parse(parts[2]);
+      return DateTime(year, month, day);
+    } catch (e) {
+      return null;
     }
+  }
+
+  Future<void> _confirmChanges() async {
+    final userProvder = Provider.of<UserProvider>(context, listen: false);
+    final dateFormatter = DateFormat('dd/MM/yyyy');
+    final start = dateFormatter.parse(_startDate.text);
+
+    widget.volunteeringWork.updateInstitutionName(
+      _institutionNameController.text,
+    );
+    widget.volunteeringWork.updateRole(_roleController.text);
+    widget.volunteeringWork.updateDescription(_descriptionController.text);
+    widget.volunteeringWork.updateDateStarted(start);
+
+    if (_endDate.text.isNotEmpty && !_isOngoing) {
+      final end = dateFormatter.parse(_endDate.text);
+      widget.volunteeringWork.updateDateEnded(end);
+    } else {
+      widget.volunteeringWork.updateDateEnded(null);
+    }
+
+    await userProvder.updateVolunteerWork(widget.volunteeringWork.id, {
+      'institutionName': _institutionNameController.text,
+      'role': _roleController.text,
+      'dateStarted': _parseDateFromDDMMYYYY(_startDate.text),
+      'dateEnded': _parseDateFromDDMMYYYY(_endDate.text),
+      'description': _descriptionController.text,
+    });
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("Changes saved")));
   }
 }
