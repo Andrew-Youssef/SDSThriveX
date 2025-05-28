@@ -20,7 +20,6 @@ class MyExistingPersonalStoriesWidget extends StatefulWidget {
 class _MyExistingPersonalStoriesWidgetState
     extends State<MyExistingPersonalStoriesWidget>
     with AutomaticKeepAliveClientMixin {
-  PersonalStoriesModel? selectedPersonalStory;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
 
@@ -58,26 +57,7 @@ class _MyExistingPersonalStoriesWidgetState
               final String formattedDate =
                   story.date.toLocal().toString().split(' ')[0];
 
-              return GestureDetector(
-                onTap:
-                    _isLoggedInUser
-                        ? () {
-                          if (selectedPersonalStory == story) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => MyEditPersonalStoryScreen(
-                                      personalStory: story,
-                                    ),
-                              ),
-                            );
-                          }
-                          setState(() {
-                            selectedPersonalStory = story;
-                          });
-                        }
-                        : null,
+              return InkWell(
                 onLongPress:
                     _isLoggedInUser
                         ? () {
@@ -92,17 +72,17 @@ class _MyExistingPersonalStoriesWidgetState
                           );
                         }
                         : null,
-                child: Container(
+                borderRadius: BorderRadius.circular(12),
+                child: Ink(
                   decoration: BoxDecoration(
-                    border:
-                        story == selectedPersonalStory
-                            ? Border.all(color: theme.primaryColor, width: 3)
-                            : null,
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Divider(thickness: 1),
+                      const Divider(thickness: 1),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

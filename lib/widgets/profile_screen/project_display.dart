@@ -19,7 +19,6 @@ class MyExistingProjectsWidget extends StatefulWidget {
 
 class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget>
     with AutomaticKeepAliveClientMixin {
-  ProjectModel? selectedProject;
   bool _isLoggedInUser = false;
   bool _hadLoadedProfile = false;
 
@@ -55,31 +54,10 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget>
               final String endDate =
                   '${project.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
 
-              return GestureDetector(
-                onTap:
-                    _isLoggedInUser
-                        ? () {
-                          if (selectedProject == project) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) =>
-                                        MyEditProjectScreen(project: project),
-                              ),
-                            );
-                          }
-                          setState(() {
-                            selectedProject = project;
-                          });
-                        }
-                        : null,
+              return InkWell(
                 onLongPress:
                     _isLoggedInUser
                         ? () {
-                          setState(() {
-                            selectedProject = project;
-                          });
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -90,17 +68,17 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget>
                           );
                         }
                         : null,
-                child: Container(
+                borderRadius: BorderRadius.circular(12),
+                child: Ink(
                   decoration: BoxDecoration(
-                    border:
-                        project == selectedProject
-                            ? Border.all(color: theme.primaryColor, width: 3)
-                            : null,
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.transparent,
                   ),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Divider(thickness: 1),
+                      const Divider(thickness: 1),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

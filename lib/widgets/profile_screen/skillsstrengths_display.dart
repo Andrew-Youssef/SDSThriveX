@@ -20,7 +20,6 @@ class MyExistingSkillsStrengthsWidget extends StatefulWidget {
 class _MyExistingSkillsStrengthsWidgetState
     extends State<MyExistingSkillsStrengthsWidget>
     with AutomaticKeepAliveClientMixin {
-  SkillsStrengthsModel? selectedSkillStrength;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
 
@@ -55,26 +54,7 @@ class _MyExistingSkillsStrengthsWidgetState
         crossAxisAlignment: CrossAxisAlignment.start,
         children:
             skills.map((skillModel) {
-              return GestureDetector(
-                onTap:
-                    _isLoggedInUser
-                        ? () {
-                          if (selectedSkillStrength == skillModel) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => MyEditSkillStrengthScreen(
-                                      skillStrength: skillModel,
-                                    ),
-                              ),
-                            );
-                          }
-                          setState(() {
-                            selectedSkillStrength = skillModel;
-                          });
-                        }
-                        : null,
+              return InkWell(
                 onLongPress:
                     _isLoggedInUser
                         ? () {
@@ -89,21 +69,20 @@ class _MyExistingSkillsStrengthsWidgetState
                           );
                         }
                         : null,
-                child: Container(
+                borderRadius: BorderRadius.circular(12),
+                child: Ink(
                   decoration: BoxDecoration(
-                    border:
-                        skillModel == selectedSkillStrength
-                            ? Border.all(color: theme.primaryColor, width: 3)
-                            : null,
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Divider(thickness: 1),
+                      const Divider(thickness: 1),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // No ellipsis — allow wrapping
                           Flexible(
                             child: Text(
                               skillModel.skill,

@@ -20,7 +20,6 @@ class MyExistingCertDegreesWidget extends StatefulWidget {
 class MyExistingCertDegreesWidgetState
     extends State<MyExistingCertDegreesWidget>
     with AutomaticKeepAliveClientMixin {
-  CertDegreesModel? selectedCertDegree;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
 
@@ -60,26 +59,7 @@ class MyExistingCertDegreesWidgetState
               final String endDate =
                   '${cert.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
 
-              return GestureDetector(
-                onTap:
-                    _isLoggedInUser
-                        ? () {
-                          if (selectedCertDegree == cert) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => MyEditCertDegreeScreen(
-                                      certDegree: cert,
-                                    ),
-                              ),
-                            );
-                          }
-                          setState(() {
-                            selectedCertDegree = cert;
-                          });
-                        }
-                        : null,
+              return InkWell(
                 onLongPress:
                     _isLoggedInUser
                         ? () {
@@ -93,17 +73,17 @@ class MyExistingCertDegreesWidgetState
                           );
                         }
                         : null,
-                child: Container(
+                borderRadius: BorderRadius.circular(12),
+                child: Ink(
                   decoration: BoxDecoration(
-                    border:
-                        cert == selectedCertDegree
-                            ? Border.all(color: theme.primaryColor, width: 3)
-                            : null,
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Divider(thickness: 1),
+                      const Divider(thickness: 1),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

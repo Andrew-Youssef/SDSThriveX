@@ -20,7 +20,6 @@ class MyExistingWorkExperiencesWidget extends StatefulWidget {
 class _MyExistingWorkExperiencesWidgetState
     extends State<MyExistingWorkExperiencesWidget>
     with AutomaticKeepAliveClientMixin {
-  WorkExperienceModel? selectedWorkExperience;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
 
@@ -60,32 +59,10 @@ class _MyExistingWorkExperiencesWidgetState
               final String endDate =
                   '${exp.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
 
-              return GestureDetector(
-                onTap:
-                    _isLoggedInUser
-                        ? () {
-                          if (selectedWorkExperience == exp) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => MyEditWorkExperienceScreen(
-                                      workExperience: exp,
-                                    ),
-                              ),
-                            );
-                          }
-                          setState(() {
-                            selectedWorkExperience = exp;
-                          });
-                        }
-                        : null,
+              return InkWell(
                 onLongPress:
                     _isLoggedInUser
                         ? () {
-                          setState(() {
-                            selectedWorkExperience = exp;
-                          });
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -97,17 +74,17 @@ class _MyExistingWorkExperiencesWidgetState
                           );
                         }
                         : null,
-                child: Container(
+                borderRadius: BorderRadius.circular(12),
+                child: Ink(
                   decoration: BoxDecoration(
-                    border:
-                        exp == selectedWorkExperience
-                            ? Border.all(color: theme.primaryColor, width: 3)
-                            : null,
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.transparent,
                   ),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Divider(thickness: 1),
+                      const Divider(thickness: 1),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

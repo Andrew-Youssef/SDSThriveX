@@ -20,7 +20,6 @@ class MyExistingVolunteeringWorksWidget extends StatefulWidget {
 class _MyExistingVolunteeringWorksWidgetState
     extends State<MyExistingVolunteeringWorksWidget>
     with AutomaticKeepAliveClientMixin {
-  VolunteeringWorkModel? selectedVolunteeringWork;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
 
@@ -60,26 +59,7 @@ class _MyExistingVolunteeringWorksWidgetState
               final String endDate =
                   '${work.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
 
-              return GestureDetector(
-                onTap:
-                    _isLoggedInUser
-                        ? () {
-                          if (selectedVolunteeringWork == work) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => MyEditVolunteeringWorkScreen(
-                                      volunteeringWork: work,
-                                    ),
-                              ),
-                            );
-                          }
-                          setState(() {
-                            selectedVolunteeringWork = work;
-                          });
-                        }
-                        : null,
+              return InkWell(
                 onLongPress:
                     _isLoggedInUser
                         ? () {
@@ -94,17 +74,17 @@ class _MyExistingVolunteeringWorksWidgetState
                           );
                         }
                         : null,
-                child: Container(
+                borderRadius: BorderRadius.circular(12),
+                child: Ink(
                   decoration: BoxDecoration(
-                    border:
-                        work == selectedVolunteeringWork
-                            ? Border.all(color: theme.primaryColor, width: 3)
-                            : null,
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.transparent,
                   ),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Divider(thickness: 1),
+                      const Divider(thickness: 1),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
