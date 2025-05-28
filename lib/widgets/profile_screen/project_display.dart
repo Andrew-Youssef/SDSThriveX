@@ -54,87 +54,103 @@ class _MyExistingProjectsWidgetState extends State<MyExistingProjectsWidget>
               final String endDate =
                   '${project.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
 
-              return InkWell(
-                onLongPress:
-                    _isLoggedInUser
-                        ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) =>
-                                      MyEditProjectScreen(project: project),
-                            ),
-                          );
-                        }
-                        : null,
-                borderRadius: BorderRadius.circular(12),
-                child: Ink(
-                  decoration: BoxDecoration(
+              return Column(
+                children: [
+                  const Divider(thickness: 1),
+                  InkWell(
+                    onDoubleTap:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          MyEditProjectScreen(project: project),
+                                ),
+                              );
+                            }
+                            : null,
+                    onLongPress:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          MyEditProjectScreen(project: project),
+                                ),
+                              );
+                            }
+                            : null,
                     borderRadius: BorderRadius.circular(12),
-                    color: Colors.transparent,
-                  ),
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Divider(thickness: 1),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.transparent,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Flexible(
-                            child: Text(
-                              project.name,
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Column(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                startDate,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                              Flexible(
+                                child: Text(
+                                  project.name,
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                              Text(
-                                endDate,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Column(
+                                children: [
+                                  Text(
+                                    startDate,
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    endDate,
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+                          const SizedBox(height: 4),
+                          Text(
+                            project.description,
+                            style: theme.textTheme.displayMedium,
+                          ),
+                          if (project.imageUrl != null &&
+                              project.imageUrl!.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  project.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Icon(Icons.broken_image);
+                                  },
+                                ),
+                              ),
+                            ),
+                          const SizedBox(height: 10),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        project.description,
-                        style: theme.textTheme.displayMedium,
-                      ),
-                      if (project.imageUrl != null &&
-                          project.imageUrl!.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              project.imageUrl!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.broken_image);
-                              },
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 10),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               );
             }).toList(),
       );

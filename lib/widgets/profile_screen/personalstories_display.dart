@@ -57,62 +57,79 @@ class _MyExistingPersonalStoriesWidgetState
               final String formattedDate =
                   story.date.toLocal().toString().split(' ')[0];
 
-              return InkWell(
-                onLongPress:
-                    _isLoggedInUser
-                        ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => MyEditPersonalStoryScreen(
-                                    personalStory: story,
-                                  ),
-                            ),
-                          );
-                        }
-                        : null,
-                borderRadius: BorderRadius.circular(12),
-                child: Ink(
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
+              return Column(
+                children: [
+                  const Divider(thickness: 1),
+                  InkWell(
+                    onDoubleTap:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditPersonalStoryScreen(
+                                        personalStory: story,
+                                      ),
+                                ),
+                              );
+                            }
+                            : null,
+                    onLongPress:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditPersonalStoryScreen(
+                                        personalStory: story,
+                                      ),
+                                ),
+                              );
+                            }
+                            : null,
                     borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Divider(thickness: 1),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Flexible(
-                            child: Text(
-                              story.title,
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  story.title,
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
+                              Text(
+                                formattedDate,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
+                          const SizedBox(height: 4),
                           Text(
-                            formattedDate,
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            story.description,
+                            style: theme.textTheme.displayMedium,
                           ),
+                          const SizedBox(height: 10),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        story.description,
-                        style: theme.textTheme.displayMedium,
-                      ),
-                      const SizedBox(height: 10),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               );
             }).toList(),
       );
