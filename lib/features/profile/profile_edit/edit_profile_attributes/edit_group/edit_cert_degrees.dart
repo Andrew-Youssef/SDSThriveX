@@ -3,7 +3,6 @@ import '../../../../../core/models/cert_degree_model.dart';
 import '../../../../../providers/user_provider.dart';
 import '../../../../../widgets/header.dart';
 import 'package:provider/provider.dart';
-
 import '../edit_individual/edit_cert_degree.dart';
 
 class MyEditCertDegreesScreen extends StatefulWidget {
@@ -22,6 +21,8 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
   late final TextEditingController _endDate;
   late final TextEditingController _descriptionController;
 
+  bool isOngoing = false;
+
   @override
   void initState() {
     super.initState();
@@ -30,8 +31,6 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
     _descriptionController = TextEditingController();
     _startDate = TextEditingController();
     _endDate = TextEditingController();
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.loadCertDegrees(userProvider.profile!.userId);
   }
 
   @override
@@ -42,6 +41,42 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
     _endDate.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  InputDecoration customInputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(
+        fontStyle: FontStyle.italic,
+        color: Colors.black.withOpacity(0.3),
+      ),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: Colors.black, width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: Colors.black, width: 2),
+      ),
+    );
+  }
+
+  Future<void> _selectDate(
+    TextEditingController controller,
+    BuildContext context,
+  ) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1970),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null) {
+      controller.text = pickedDate.toIso8601String().substring(0, 10);
+    }
   }
 
   @override
@@ -55,52 +90,13 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
       child: SafeArea(
         child: Scaffold(
           appBar: myAppBar('Edit Certs & Degrees', context),
-          body: Column(
+          body: ListView(
             children: [
-              Row(
-                children: [
-                  Expanded(child: SizedBox()),
-                  IconButton(
-                    onPressed:
-                        selectedCertDegree == null
-                            ? null
-                            : () {
-                              userProvider.removeCertDegree(
-                                selectedCertDegree!.id,
-                              );
-                              selectedCertDegree = null;
-                            },
-                    icon: Icon(Icons.delete),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      if (_institutionNameController.text.isNotEmpty &&
-                          _startDate.text.isNotEmpty &&
-                          _descriptionController.text.isNotEmpty) {
-                        CertDegreesModel newCertDegree = CertDegreesModel(
-                          id: '',
-                          institutionName: _institutionNameController.text,
-                          certificateName: _certificationNameController.text,
-                          dateStarted: DateTime.tryParse(_startDate.text)!,
-                          dateEnded:
-                              _endDate.text.isNotEmpty
-                                  ? DateTime.tryParse(_startDate.text)
-                                  : null,
-                          description: _descriptionController.text,
-                        );
-                        userProvider.addCertDegree(newCertDegree);
-                      }
-                    },
-                    icon: Icon(Icons.add_box),
-                  ),
-                ],
-              ),
               if (certDegrees.isEmpty) ...[
                 Center(child: Text('Add a new cert or degree!')),
                 SizedBox(height: 20),
-              ] else ...[
+              ] else
                 showExistingCertDegrees(context),
-              ],
               buildInputFields(context),
             ],
           ),
@@ -112,137 +108,255 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
   Widget showExistingCertDegrees(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     ThemeData theme = Theme.of(context);
-    List<CertDegreesModel> certDegrees = userProvider.certDegrees;
+    List<CertDegreesModel> projects = userProvider.certDegrees;
 
     return SizedBox(
-      height: 200,
+      height: 160,
       child: ListView(
         padding: EdgeInsets.all(8.0),
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         children: [
-          for (final p in certDegrees) ...[
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedCertDegree = p;
-                });
-                // print('yoooooo');
-              },
-              onLongPress: () {
-                setState(() {
-                  selectedCertDegree = p;
-                });
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => MyEditCertDegreeScreen(
-                          certDegree: selectedCertDegree!,
-                        ),
-                  ),
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: theme.primaryColor,
-                    width: p == selectedCertDegree ? 5 : 3,
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(p.institutionName),
-                    Text(p.certificateName),
-                    Text(p.dateStarted.toString().split(' ')[0]),
-                    Text(
-                      p.dateEnded != null
-                          ? p.dateEnded!.toString().split(' ')[0]
-                          : 'Unknown',
+          for (final p in projects) ...[
+            Padding(padding: EdgeInsets.all(8)),
+            Container(
+              padding: EdgeInsets.all(8),
+              constraints: BoxConstraints(maxWidth: 130),
+              decoration: BoxDecoration(
+                border: Border.all(color: theme.primaryColor, width: 2),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: Center(
+                      // 👈 centers 1- or 2-line text vertically
+                      child: Text(
+                        p.certificateName,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        textAlign:
+                            TextAlign.center, // 👈 centers text horizontally
+                        style: theme.textTheme.titleMedium,
+                      ),
                     ),
-                    Text(p.description),
-                  ],
-                ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      deleteButton(p),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      MyEditCertDegreeScreen(certDegree: p),
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.edit),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            SizedBox(width: 20),
           ],
         ],
       ),
     );
   }
 
+  IconButton deleteButton(CertDegreesModel w) {
+    final userProvider = Provider.of<UserProvider>(context);
+    return IconButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Confirm Deletion"),
+              content: Text(
+                "Are you sure you want to delete this certificate/degree?",
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close dialog
+                  },
+                  child: Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop(); // Close dialog
+                    userProvider.removeWorkExperience(w.id);
+                    setState(() {
+                      selectedCertDegree = null;
+                      _institutionNameController.clear();
+                      _certificationNameController.clear();
+                      _startDate.clear();
+                      _endDate.clear();
+                      _descriptionController.clear();
+                    });
+                  },
+                  child: Text("Delete", style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      icon: Icon(Icons.delete),
+    );
+  }
+
   Widget buildInputFields(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
 
     return Expanded(
-      child: ListView(
-        padding: EdgeInsets.all(8.0),
+      child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _institutionNameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Name of Institution',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _certificationNameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Name of Certification',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _startDate,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Start Date (required)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-              ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_startDate, context);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _endDate,
-              decoration: InputDecoration(
-                // border: OutlineInputBorder(),
-                labelText: 'End Date (optional)',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: theme.primaryColor),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Certificate Name:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-              ),
-              readOnly: true,
-              onTap: () {
-                _selectDate(_endDate, context);
-              },
+                SizedBox(height: 8),
+                TextField(
+                  controller: _certificationNameController,
+                  decoration: customInputDecoration('Enter certificate name'),
+                ),
+              ],
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Description',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Institution:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                TextField(
+                  controller: _institutionNameController,
+                  decoration: customInputDecoration('Enter institution name'),
+                ),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Date begun:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                TextField(
+                  controller: _startDate,
+                  readOnly: true,
+                  decoration: customInputDecoration('DD / MM / YYYY'),
+                  onTap: () => _selectDate(_startDate, context),
+                ),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Date ended:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _endDate,
+                        enabled: !isOngoing,
+                        readOnly: true,
+                        decoration: customInputDecoration('DD / MM / YYYY'),
+                        onTap: () {
+                          if (!isOngoing) _selectDate(_endDate, context);
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Text("OR", style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(width: 8),
+                    Text("Ongoing?"),
+                    Checkbox(
+                      value: isOngoing,
+                      onChanged: (val) {
+                        setState(() {
+                          isOngoing = val ?? false;
+                          if (isOngoing) _endDate.clear();
+                        });
+                      },
+                      activeColor: Color.fromARGB(255, 42, 157, 143),
+                      side: BorderSide(color: Colors.black, width: 1.5),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Description:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                TextField(
+                  controller: _descriptionController,
+                  maxLines: 4,
+                  decoration: customInputDecoration(
+                    'Enter a short description',
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _handleAddCertDegree,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                child: Text('Add Certification/Degree'),
               ),
             ),
           ),
@@ -251,30 +365,60 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
     );
   }
 
-  Future<void> _selectDate(
-    TextEditingController controller,
-    BuildContext context,
-  ) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
+  void _handleAddCertDegree() {
+    final start = DateTime.tryParse(_startDate.text);
+    final end =
+        _endDate.text.isNotEmpty ? DateTime.tryParse(_endDate.text) : null;
+
+    if (_institutionNameController.text.isEmpty ||
+        _certificationNameController.text.isEmpty ||
+        _startDate.text.isEmpty ||
+        _descriptionController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Please fill in all required fields."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (start != null && end != null && end.isBefore(start)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("End date cannot be before start date."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    CertDegreesModel newCert = CertDegreesModel(
+      id: '',
+      institutionName: _institutionNameController.text,
+      certificateName: _certificationNameController.text,
+      dateStarted: start!,
+      dateEnded: end,
+      description: _descriptionController.text,
     );
 
-    if (picked != null) {
-      setState(() {
-        controller.text = picked.toString().split(" ")[0];
-      });
-    }
-  }
+    Provider.of<UserProvider>(context, listen: false).addCertDegree(newCert);
 
-  DateTime? getParsedStartDate() {
-    if (_startDate.text.isEmpty) return null;
-    try {
-      return DateTime.parse(_startDate.text);
-    } catch (e) {
-      return null; // Handle invalid format safely
-    }
+    _institutionNameController.clear();
+    _certificationNameController.clear();
+    _startDate.clear();
+    _endDate.clear();
+    _descriptionController.clear();
+
+    setState(() {
+      selectedCertDegree = null;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Certification/Degree added."),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 }
