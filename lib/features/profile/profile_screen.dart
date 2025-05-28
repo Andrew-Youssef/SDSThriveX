@@ -42,7 +42,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     ProfileAttribute.profile: 'Profile',
     ProfileAttribute.projects: 'Projects',
     ProfileAttribute.workExperience: 'Work Experience',
-    ProfileAttribute.certDegrees: 'Certificate & Degrees',
+    ProfileAttribute.certDegrees: 'Certificates & Degrees',
     ProfileAttribute.skillsStrengths: 'Skills & Strengths',
     ProfileAttribute.personalStories: 'Personal Stories',
     ProfileAttribute.volunteeringWork: 'Volunteering Work',

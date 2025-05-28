@@ -141,16 +141,17 @@ class _MyEditPersonalStoryScreenState extends State<MyEditPersonalStoryScreen> {
                   child: ElevatedButton(
                     onPressed: () => _confirmChanges(userProvider),
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 42, 157, 143),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: const Text(
-                      "Confirm Changes",
+                      "Confirm Changes?",
                       style: TextStyle(
                         fontSize: 16,
-                        color: Color.fromARGB(255, 42, 157, 143),
+                        color: Colors.black,
                       ),
                     ),
                   ),

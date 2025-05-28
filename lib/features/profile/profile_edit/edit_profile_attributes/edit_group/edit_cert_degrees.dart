@@ -370,7 +370,13 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
                     fontSize: 16,
                   ),
                 ),
-                child: Text('Add Certification/Degree'),
+                child: Text('Add new certificate/degree!',
+                  style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  ),
+                ),
+                
               ),
             ),
           ),

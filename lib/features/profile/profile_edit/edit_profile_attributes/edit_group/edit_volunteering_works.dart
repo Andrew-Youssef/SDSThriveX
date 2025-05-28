@@ -285,7 +285,7 @@ class _MyEditVolunteeringScreenState
                 padding: EdgeInsets.symmetric(vertical: 16),
               ),
               child: Text(
-                'Add new entry!',
+                'Add new volunteering experience!',
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,

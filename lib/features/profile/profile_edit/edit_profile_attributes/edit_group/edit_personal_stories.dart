@@ -291,7 +291,7 @@ class _MyEditPersonalStoriesScreenState
                 border: Border.all(width: 2),
               ),
               child: const Text(
-                "Add Personal Story",
+                "Add new personal story!",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ),

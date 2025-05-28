@@ -312,7 +312,11 @@ class _MyEditSkillsStrengthsScreenState
                   fontSize: 16,
                 ),
               ),
-              child: const Text("Add New Skill/Strength"),
+              child: const Text("Add new skill/strength!",
+                  style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  ),),
             ),
           ),
         ),

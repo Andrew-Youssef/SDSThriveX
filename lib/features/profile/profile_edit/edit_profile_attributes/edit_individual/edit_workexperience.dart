@@ -205,7 +205,7 @@ class _MyEditWorkExperienceScreenState
             child: const Text(
               'Confirm changes?',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
