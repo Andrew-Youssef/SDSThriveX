@@ -41,8 +41,9 @@ class _MyEditSkillStrengthScreenState extends State<MyEditSkillStrengthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    ThemeData theme = Theme.of(context);
+    final userProvider = Provider.of<UserProvider>(context);
+    final theme = Theme.of(context);
+
     return Container(
       color: theme.primaryColor,
       child: SafeArea(
@@ -52,15 +53,47 @@ class _MyEditSkillStrengthScreenState extends State<MyEditSkillStrengthScreen> {
             children: [
               Row(
                 children: [
-                  Expanded(child: SizedBox()),
+                  const Spacer(),
                   IconButton(
-                    onPressed: () {
-                      userProvider.removeSkillsStrengths(
-                        widget.skillStrength.id,
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Delete Skill"),
+                            content: const Text(
+                              "Are you sure you want to delete this skill? This action cannot be undone.",
+                            ),
+                            actions: [
+                              TextButton(
+                                child: const Text("Cancel"),
+                                onPressed:
+                                    () => Navigator.of(context).pop(false),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                ),
+                                child: const Text(
+                                  "Delete",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed:
+                                    () => Navigator.of(context).pop(true),
+                              ),
+                            ],
+                          );
+                        },
                       );
-                      Navigator.pop(context);
+
+                      if (confirm == true) {
+                        userProvider.removeSkillsStrengths(
+                          widget.skillStrength.id,
+                        );
+                        Navigator.pop(context);
+                      }
                     },
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete, color: Colors.red),
                   ),
                 ],
               ),
@@ -75,43 +108,95 @@ class _MyEditSkillStrengthScreenState extends State<MyEditSkillStrengthScreen> {
   Widget buildInputFields(BuildContext context) {
     return Expanded(
       child: ListView(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: widget.skillStrength.updateSkill,
-              controller: _skillController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Name of Skill or Strength',
-              ),
-            ),
+          _buildLabeledField(
+            'Name of Skill or Strength:',
+            _skillController,
+            'Enter skill or strength name',
+            onChanged: widget.skillStrength.updateSkill,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: widget.skillStrength.updateAcquiredAt,
-              controller: _acquiredAtController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Where was skill acquired',
-              ),
-            ),
+          const SizedBox(height: 12),
+          _buildLabeledField(
+            'Where was skill acquired:',
+            _acquiredAtController,
+            'Enter where skill was acquired',
+            onChanged: widget.skillStrength.updateAcquiredAt,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: widget.skillStrength.updateDescription,
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Description',
+          const SizedBox(height: 12),
+          _buildLabeledField(
+            'Description:',
+            _descriptionController,
+            'Describe the skill briefly',
+            onChanged: widget.skillStrength.updateDescription,
+            maxLines: 4,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () async {
+              final userProvider = Provider.of<UserProvider>(
+                context,
+                listen: false,
+              );
+
+              await userProvider
+                  .updateSkillsStrengths(widget.skillStrength.id, {
+                    'skill': _skillController.text,
+                    'acquiredAt': _acquiredAtController.text,
+                    'description': _descriptionController.text,
+                  });
+              print('updated experience!\n');
+
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text("Changes saved")));
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color.fromARGB(255, 42, 157, 143),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            child: const Text(
+              'Confirm changes?',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLabeledField(
+    String label,
+    TextEditingController controller,
+    String hint, {
+    void Function(String)? onChanged,
+    int maxLines = 1,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 4),
+        TextField(
+          controller: controller,
+          onChanged: onChanged,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: hint,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

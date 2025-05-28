@@ -413,56 +413,6 @@ class _MyEditWorkExperiencesScreenState
     );
   }
 
-  // Widget showExistingWorkExperiences(BuildContext context) {
-  //   UserProvider userProvider = Provider.of<UserProvider>(context);
-  //   ThemeData theme = Theme.of(context);
-  //   List<WorkExperienceModel> workExperiences = userProvider.workExperiences;
-
-  //   return SizedBox(
-  //     height: 200,
-  //     child: ListView(
-  //       padding: EdgeInsets.all(8.0),
-  //       scrollDirection: Axis.horizontal,
-  //       shrinkWrap: true,
-  //       children: [
-  //         for (final w in workExperiences) ...[
-  //           Container(
-  //             width: 160,
-  //             padding: EdgeInsets.all(12),
-  //             alignment: Alignment.center,
-  //             decoration: BoxDecoration(
-  //               color: Colors.white,
-  //               border: Border.all(color: theme.primaryColor, width: 3),
-  //               borderRadius: BorderRadius.circular(16),
-  //               boxShadow: [
-  //                 BoxShadow(
-  //                   color: Colors.black12,
-  //                   blurRadius: 4,
-  //                   offset: Offset(2, 2),
-  //                 ),
-  //               ],
-  //             ),
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.center,
-  //               children: [
-  //                 Text(
-  //                   w.name,
-  //                   textAlign: TextAlign.center,
-  //                   style: theme.textTheme.titleSmall?.copyWith(
-  //                     fontWeight: FontWeight.bold,
-  //                   ),
-  //                 ),
-  //                 SizedBox(height: 4),
-  //               ],
-  //             ),
-  //           ),
-  //           SizedBox(width: 10),
-  //         ],
-  //       ],
-  //     ),
-  //   );
-  // }
-
   IconButton deleteButton(WorkExperienceModel w) {
     final userProvider = Provider.of<UserProvider>(context);
     return IconButton(
@@ -531,8 +481,6 @@ class _MyEditWorkExperiencesScreenState
   bool isOngoing = false; // toggles ongoing checkbox
 
   Widget buildInputFields(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-
     return Column(
       children: [
         // Company Name field
