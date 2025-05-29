@@ -45,5 +45,19 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Firebase permissions -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
+
+	<key>NSCrashOnException</key>
+	<false/>
+
 </dict>
 </plist>
