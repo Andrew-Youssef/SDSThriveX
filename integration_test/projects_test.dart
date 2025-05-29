@@ -98,8 +98,8 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 2));
 
     // Tap Confirm Details button
-    final endorsedButton = find.text("Confirm changes?");
-    await tester.tap(endorsedButton);
+    final confirmButton = find.text("Confirm changes?");
+    await tester.tap(confirmButton);
     await tester.pumpAndSettle(const Duration(seconds: 5));
 
     // Go back to Profile page
