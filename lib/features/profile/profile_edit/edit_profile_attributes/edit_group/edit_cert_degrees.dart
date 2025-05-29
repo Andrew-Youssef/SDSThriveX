@@ -227,161 +227,152 @@ class _MyEditCertificatesScreenState extends State<MyEditCertDegreesScreen> {
   }
 
   Widget buildInputFields(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Expanded(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Certificate Name:",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                TextField(
-                  controller: _certificationNameController,
-                  decoration: customInputDecoration('Enter certificate name'),
-                ),
-              ],
-            ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Certificate Name:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                controller: _certificationNameController,
+                decoration: customInputDecoration('Enter certificate name'),
+              ),
+            ],
           ),
+        ),
 
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Institution:",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                TextField(
-                  controller: _institutionNameController,
-                  decoration: customInputDecoration('Enter institution name'),
-                ),
-              ],
-            ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Institution:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                controller: _institutionNameController,
+                decoration: customInputDecoration('Enter institution name'),
+              ),
+            ],
           ),
+        ),
 
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Date begun:",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                TextField(
-                  controller: _startDate,
-                  readOnly: true,
-                  decoration: customInputDecoration('DD / MM / YYYY'),
-                  onTap: () => _selectDate(_startDate, context),
-                ),
-              ],
-            ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Date begun:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                controller: _startDate,
+                readOnly: true,
+                decoration: customInputDecoration('DD / MM / YYYY'),
+                onTap: () => _selectDate(_startDate, context),
+              ),
+            ],
           ),
+        ),
 
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Date ended:",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _endDate,
-                        enabled: !isOngoing,
-                        readOnly: true,
-                        decoration: customInputDecoration('DD / MM / YYYY'),
-                        onTap: () {
-                          if (!isOngoing) _selectDate(_endDate, context);
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Text("OR", style: TextStyle(fontWeight: FontWeight.bold)),
-                    SizedBox(width: 8),
-                    Text("Ongoing?"),
-                    Checkbox(
-                      value: isOngoing,
-                      onChanged: (val) {
-                        setState(() {
-                          isOngoing = val ?? false;
-                          if (isOngoing) _endDate.clear();
-                        });
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Date ended:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _endDate,
+                      enabled: !isOngoing,
+                      readOnly: true,
+                      decoration: customInputDecoration('DD / MM / YYYY'),
+                      onTap: () {
+                        if (!isOngoing) _selectDate(_endDate, context);
                       },
-                      activeColor: Color.fromARGB(255, 42, 157, 143),
-                      side: BorderSide(color: Colors.black, width: 1.5),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  SizedBox(width: 10),
+                  Text("OR", style: TextStyle(fontWeight: FontWeight.bold)),
+                  SizedBox(width: 8),
+                  Text("Ongoing?"),
+                  Checkbox(
+                    value: isOngoing,
+                    onChanged: (val) {
+                      setState(() {
+                        isOngoing = val ?? false;
+                        if (isOngoing) _endDate.clear();
+                      });
+                    },
+                    activeColor: Color.fromARGB(255, 42, 157, 143),
+                    side: BorderSide(color: Colors.black, width: 1.5),
+                  ),
+                ],
+              ),
+            ],
           ),
+        ),
 
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Description:",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                TextField(
-                  controller: _descriptionController,
-                  maxLines: 4,
-                  decoration: customInputDecoration(
-                    'Enter a short description',
-                  ),
-                ),
-              ],
-            ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Description:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                controller: _descriptionController,
+                maxLines: 4,
+                decoration: customInputDecoration('Enter a short description'),
+              ),
+            ],
           ),
+        ),
 
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _handleAddCertDegree,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _handleAddCertDegree,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                padding: EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                child: Text('Add new certificate/degree!',
-                  style: TextStyle(
+                textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              child: Text(
+                'Add new certificate/degree!',
+                style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  ),
                 ),
-                
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
