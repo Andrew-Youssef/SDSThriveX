@@ -180,8 +180,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ],
           ),
         ),
-
-        //Ai summary
+        //AI Summary
         Divider(thickness: 1),
         Padding(
           padding: EdgeInsets.all(8.0),

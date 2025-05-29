@@ -55,9 +55,9 @@ class _MyExistingVolunteeringWorksWidgetState
         children:
             volunteeringWorks.map((work) {
               final String startDate =
-                  '${work.dateStarted.toLocal().toString().split(' ')[0]}';
+                  work.dateStarted.toLocal().toString().split(' ')[0];
               final String endDate =
-                  '${work.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present"}';
+                  work.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present";
 
               return Column(
                 children: [

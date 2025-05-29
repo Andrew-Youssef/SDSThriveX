@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:thrivex/providers/user_provider.dart';
 
 class MyAiSummaryWidget extends StatefulWidget {
