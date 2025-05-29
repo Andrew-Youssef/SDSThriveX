@@ -42,7 +42,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     ProfileAttribute.profile: 'Profile',
     ProfileAttribute.projects: 'Projects',
     ProfileAttribute.workExperience: 'Work Experience',
-    ProfileAttribute.certDegrees: 'Certificate & Degrees',
+    ProfileAttribute.certDegrees: 'Certificates & Degrees',
     ProfileAttribute.skillsStrengths: 'Skills & Strengths',
     ProfileAttribute.personalStories: 'Personal Stories',
     ProfileAttribute.volunteeringWork: 'Volunteering Work',
@@ -120,64 +120,67 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           padding: EdgeInsets.all(8.0),
           width: double.infinity,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        selectedUserProvider.profile!.name,
-                        style: theme.textTheme.titleMedium!.copyWith(
-                          fontSize: 28,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed:
-                            _isLoggedInUser
-                                ? () async {
-                                  //THIS NEEDS TO BE CHANGED TO
-                                  await selectedUserProvider.toggleEndorsement(
-                                    selectedUserProvider.userId,
-                                  );
-                                }
-                                : null,
-                        icon:
-                            selectedUserProvider.profile!.isEndorsed
-                                ? Icon(Icons.check_circle)
-                                : Icon(Icons.check_circle_outline_outlined),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    selectedUserProvider.profile!.title,
-                    style: theme.textTheme.displayMedium,
-                  ),
-                ],
-              ),
-
-              Expanded(child: SizedBox()),
-              IconButton(
-                onPressed:
-                    _isLoggedInUser
-                        ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => MyEditProfileDetailsScreen(
-                                    profile: selectedUserProvider.profile!,
-                                  ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            selectedUserProvider.profile!.name,
+                            style: theme.textTheme.titleMedium!.copyWith(
+                              fontSize: 28,
                             ),
-                          );
-                        }
-                        : null,
-                icon: _isLoggedInUser ? Icon(Icons.edit) : SizedBox.shrink(),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed:
+                              _isLoggedInUser
+                                  ? () async {
+                                    await selectedUserProvider
+                                        .toggleEndorsement(
+                                          selectedUserProvider.userId,
+                                        );
+                                  }
+                                  : null,
+                          icon:
+                              selectedUserProvider.profile!.isEndorsed
+                                  ? Icon(Icons.check_circle)
+                                  : Icon(Icons.check_circle_outline_outlined),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      selectedUserProvider.profile!.title,
+                      style: theme.textTheme.displayMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
+              if (_isLoggedInUser)
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => MyEditProfileDetailsScreen(
+                              profile: selectedUserProvider.profile!,
+                            ),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.edit),
+                ),
             ],
           ),
         ),
-        //Ai Summary
+        //AI Summary
         Divider(thickness: 1),
         Padding(
           padding: EdgeInsets.all(8.0),

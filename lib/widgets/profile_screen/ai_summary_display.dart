@@ -41,6 +41,7 @@ class _MyAiSummaryWidgetState extends State<MyAiSummaryWidget>
     ThemeData theme = Theme.of(context);
     if (_isLoading) {
       return Column(
+        mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(

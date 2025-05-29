@@ -20,7 +20,6 @@ class MyExistingCertDegreesWidget extends StatefulWidget {
 class MyExistingCertDegreesWidgetState
     extends State<MyExistingCertDegreesWidget>
     with AutomaticKeepAliveClientMixin {
-  CertDegreesModel? selectedCertDegree;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
 
@@ -60,97 +59,96 @@ class MyExistingCertDegreesWidgetState
               final String endDate =
                   cert.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present";
 
-              return GestureDetector(
-                onTap:
-                    _isLoggedInUser
-                        ? () {
-                          if (selectedCertDegree == cert) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => MyEditCertDegreeScreen(
-                                      certDegree: cert,
-                                    ),
-                              ),
-                            );
-                          }
-                          setState(() {
-                            selectedCertDegree = cert;
-                          });
-                        }
-                        : null,
-                onLongPress:
-                    _isLoggedInUser
-                        ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) =>
-                                      MyEditCertDegreeScreen(certDegree: cert),
-                            ),
-                          );
-                        }
-                        : null,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border:
-                        cert == selectedCertDegree
-                            ? Border.all(color: theme.primaryColor, width: 3)
+              return Column(
+                children: [
+                  const Divider(thickness: 1),
+                  InkWell(
+                    onDoubleTap:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditCertDegreeScreen(
+                                        certDegree: cert,
+                                      ),
+                                ),
+                              );
+                            }
                             : null,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Divider(thickness: 1),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    onLongPress:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditCertDegreeScreen(
+                                        certDegree: cert,
+                                      ),
+                                ),
+                              );
+                            }
+                            : null,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Flexible(
-                            child: Text(
-                              cert.certificateName,
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                startDate,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                              Flexible(
+                                child: Text(
+                                  cert.certificateName,
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                              Text(
-                                endDate,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    startDate,
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    endDate,
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+                          const SizedBox(height: 4),
+                          Text(
+                            cert.institutionName,
+                            style: theme.textTheme.displayMedium,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            cert.description,
+                            style: theme.textTheme.displayMedium,
+                          ),
+                          const SizedBox(height: 10),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        cert.institutionName,
-                        style: theme.textTheme.displayMedium,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        cert.description,
-                        style: theme.textTheme.displayMedium,
-                      ),
-                      const SizedBox(height: 10),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               );
             }).toList(),
       );

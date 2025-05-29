@@ -20,7 +20,6 @@ class MyExistingSkillsStrengthsWidget extends StatefulWidget {
 class _MyExistingSkillsStrengthsWidgetState
     extends State<MyExistingSkillsStrengthsWidget>
     with AutomaticKeepAliveClientMixin {
-  SkillsStrengthsModel? selectedSkillStrength;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
 
@@ -55,82 +54,79 @@ class _MyExistingSkillsStrengthsWidgetState
         crossAxisAlignment: CrossAxisAlignment.start,
         children:
             skills.map((skillModel) {
-              return GestureDetector(
-                onTap:
-                    _isLoggedInUser
-                        ? () {
-                          if (selectedSkillStrength == skillModel) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => MyEditSkillStrengthScreen(
-                                      skillStrength: skillModel,
-                                    ),
-                              ),
-                            );
-                          }
-                          setState(() {
-                            selectedSkillStrength = skillModel;
-                          });
-                        }
-                        : null,
-                onLongPress:
-                    _isLoggedInUser
-                        ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => MyEditSkillStrengthScreen(
-                                    skillStrength: skillModel,
-                                  ),
-                            ),
-                          );
-                        }
-                        : null,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border:
-                        skillModel == selectedSkillStrength
-                            ? Border.all(color: theme.primaryColor, width: 3)
+              return Column(
+                children: [
+                  const Divider(thickness: 1),
+                  InkWell(
+                    onDoubleTap:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditSkillStrengthScreen(
+                                        skillStrength: skillModel,
+                                      ),
+                                ),
+                              );
+                            }
                             : null,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Divider(thickness: 1),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    onLongPress:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditSkillStrengthScreen(
+                                        skillStrength: skillModel,
+                                      ),
+                                ),
+                              );
+                            }
+                            : null,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // No ellipsis — allow wrapping
-                          Flexible(
-                            child: Text(
-                              skillModel.skill,
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  skillModel.skill,
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
+                              Text(
+                                skillModel.acquiredAt,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
+                          const SizedBox(height: 4),
                           Text(
-                            skillModel.acquiredAt,
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            skillModel.description,
+                            style: theme.textTheme.displayMedium,
                           ),
+                          const SizedBox(height: 10),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        skillModel.description,
-                        style: theme.textTheme.displayMedium,
-                      ),
-                      const SizedBox(height: 10),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               );
             }).toList(),
       );

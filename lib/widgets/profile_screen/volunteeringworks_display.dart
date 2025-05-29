@@ -20,7 +20,6 @@ class MyExistingVolunteeringWorksWidget extends StatefulWidget {
 class _MyExistingVolunteeringWorksWidgetState
     extends State<MyExistingVolunteeringWorksWidget>
     with AutomaticKeepAliveClientMixin {
-  VolunteeringWorkModel? selectedVolunteeringWork;
   bool _hadLoadedProfile = false;
   bool _isLoggedInUser = false;
 
@@ -60,95 +59,93 @@ class _MyExistingVolunteeringWorksWidgetState
               final String endDate =
                   work.dateEnded?.toLocal().toString().split(' ')[0] ?? "Present";
 
-              return GestureDetector(
-                onTap:
-                    _isLoggedInUser
-                        ? () {
-                          if (selectedVolunteeringWork == work) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => MyEditVolunteeringWorkScreen(
-                                      volunteeringWork: work,
-                                    ),
-                              ),
-                            );
-                          }
-                          setState(() {
-                            selectedVolunteeringWork = work;
-                          });
-                        }
-                        : null,
-                onLongPress:
-                    _isLoggedInUser
-                        ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => MyEditVolunteeringWorkScreen(
-                                    volunteeringWork: work,
-                                  ),
-                            ),
-                          );
-                        }
-                        : null,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border:
-                        work == selectedVolunteeringWork
-                            ? Border.all(color: theme.primaryColor, width: 3)
+              return Column(
+                children: [
+                  const Divider(thickness: 1),
+                  InkWell(
+                    onDoubleTap:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditVolunteeringWorkScreen(
+                                        volunteeringWork: work,
+                                      ),
+                                ),
+                              );
+                            }
                             : null,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Divider(thickness: 1),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    onLongPress:
+                        _isLoggedInUser
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MyEditVolunteeringWorkScreen(
+                                        volunteeringWork: work,
+                                      ),
+                                ),
+                              );
+                            }
+                            : null,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.transparent,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Flexible(
-                            child: Text(
-                              work.institutionName,
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                startDate,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                              Flexible(
+                                child: Text(
+                                  work.institutionName,
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                              Text(
-                                endDate,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    startDate,
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    endDate,
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+                          const SizedBox(height: 4),
+                          Text(work.role, style: theme.textTheme.displayMedium),
+                          const SizedBox(height: 4),
+                          Text(
+                            work.description,
+                            style: theme.textTheme.displayMedium,
+                          ),
+                          const SizedBox(height: 10),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(work.role, style: theme.textTheme.displayMedium),
-                      const SizedBox(height: 4),
-                      Text(
-                        work.description,
-                        style: theme.textTheme.displayMedium,
-                      ),
-                      const SizedBox(height: 10),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               );
             }).toList(),
       );

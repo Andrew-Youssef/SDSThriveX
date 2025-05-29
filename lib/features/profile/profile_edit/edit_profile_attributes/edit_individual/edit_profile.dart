@@ -67,7 +67,7 @@ class _MyEditProfileDetailsScreenState
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.primaryColor,
+                    backgroundColor: Color.fromARGB(255, 42, 157, 143),
                     padding: EdgeInsets.all(12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -77,7 +77,7 @@ class _MyEditProfileDetailsScreenState
                   child: Text(
                     'Update Details',
                     style: theme.textTheme.displayMedium!.copyWith(
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                 ),
