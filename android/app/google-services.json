@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "262456158294",
+    "project_id": "thrive-x-50728",
+    "storage_bucket": "thrive-x-50728.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262456158294:android:e0c9a6383bf216dab8b3f7",
+        "android_client_info": {
+          "package_name": "com.example.screens"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADg7P71tnLVdLPtzs6U24D7TyXa8m9xU0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262456158294:android:c756e7e7c3d96627b8b3f7",
+        "android_client_info": {
+          "package_name": "com.example.thrivex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADg7P71tnLVdLPtzs6U24D7TyXa8m9xU0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,37 @@
+name: thrivex
+description: "Thrive X is a mobile portfolio app designed to help students showcase their skills, experiences, and personal stories to potential employers, coaches, and recruiters. Built using Flutter and Firebase, the app allows users to create dynamic, professional profiles with sections like Projects, Work Experience, Certificates, and more. An integrated AI feature, powered by Google Gemini, generates tailored summaries to enhance profile presentation. The app was developed using Agile methodology, with a focus on student users and real-time data syncing through Firestore. Thrive X aims to bridge the gap between education and employment through modern, narrative-driven digital portfolios."
+
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  firebase_auth: ^5.4.2
+  firebase_core: ^3.11.0
+  cloud_firestore: ^5.6.6
+  provider: ^6.1.4
+  google_fonts: ^6.2.1
+  flutter_gemini: ^3.0.0
+  flutter_dotenv: ^5.2.1
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/PNG/
+    - .env
