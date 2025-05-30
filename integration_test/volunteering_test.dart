@@ -89,11 +89,11 @@ void main() {
     await tester.tap(profileTabFinder);
     await tester.pumpAndSettle(const Duration(seconds: 5));
 
-    // Long press the Personal Story card to open Edit Volunteering Work page
-    final storyCardFinder = find.text('Test Volunteering Institute').first;
-    await tester.ensureVisible(storyCardFinder);
+    // Long press the Volunteering card to open Edit Volunteering Work page
+    final volunteeringCardFinder = find.text('Test Volunteering Institute').first;
+    await tester.ensureVisible(volunteeringCardFinder);
     await tester.pumpAndSettle();
-    await tester.longPress(storyCardFinder);
+    await tester.longPress(volunteeringCardFinder);
     await tester.pumpAndSettle(const Duration(seconds: 10));
 
     // Modify the name of institute and description
@@ -132,11 +132,11 @@ void main() {
     await tester.tap(profileTabFinder);
     await tester.pumpAndSettle(const Duration(seconds: 5));
 
-    // Long press the Personal Story card to open Edit Volunteering Work page
-    final storyCardFinder = find.text('Edited Test Volunteering Institute').first;
-    await tester.ensureVisible(storyCardFinder);
+    // Long press the Volunteering card to open Edit Volunteering Work page
+    final volunteeringCardFinder = find.text('Edited Test Volunteering Institute').first;
+    await tester.ensureVisible(volunteeringCardFinder);
     await tester.pumpAndSettle();
-    await tester.longPress(storyCardFinder);
+    await tester.longPress(volunteeringCardFinder);
     await tester.pumpAndSettle(const Duration(seconds: 10));
 
     // Press bin button
