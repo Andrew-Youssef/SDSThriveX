@@ -52,7 +52,12 @@ void main() {
     await tester.enterText(find.byType(TextField).at(1), 'Test Volunteering Role'); // role
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.calendar_today).first);
+    await tester.tap(find.byType(TextField).at(2));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK')); // letting it default to today's date
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(TextField).at(3));
     await tester.pumpAndSettle();
     await tester.tap(find.text('OK')); // letting it default to today's date
     await tester.pumpAndSettle();
@@ -61,12 +66,90 @@ void main() {
     await tester.pumpAndSettle();
 
     // Adding the volunteering work
-    await tester.tap(find.byIcon(Icons.add_box));
-    await tester.pumpAndSettle(const Duration(seconds: 5));
+    await tester.tap(find.text("Add new volunteering experience!"));
+    await tester.pumpAndSettle(const Duration(seconds: 10));
 
     // Confirm volunteering work appears
     expect(find.text('Test Volunteering Institute'), findsWidgets);
-    expect(find.text('A description of the volunteering work'), findsWidgets);
+  });
+
+  testWidgets('Edit an existing Volunteering experience', (WidgetTester tester) async {
+    app.main();
+    await tester.pumpAndSettle(const Duration(seconds: 10));
+
+    // Login
+    await tester.enterText(find.byType(TextFormField).first, 'AndrewTest1@gmail.com');
+    await tester.enterText(find.byType(TextFormField).last, 'Andrew1!');
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Sign in'));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    // Go to Profile page
+    final profileTabFinder = find.byIcon(Icons.person_outlined);
+    await tester.pumpUntilFound(profileTabFinder, const Duration(seconds: 10));
+    await tester.tap(profileTabFinder);
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    // Long press the Personal Story card to open Edit Volunteering Work page
+    final storyCardFinder = find.text('Test Volunteering Institute').first;
+    await tester.ensureVisible(storyCardFinder);
+    await tester.pumpAndSettle();
+    await tester.longPress(storyCardFinder);
+    await tester.pumpAndSettle(const Duration(seconds: 10));
+
+    // Modify the name of institute and description
+    await tester.enterText(find.byType(TextField).at(0), 'Edited Test Volunteering Institute');
+    await tester.enterText(find.byType(TextField).at(4), 'Edited test description of the volunteering work');
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+
+    // Tap Confirm Details button
+    final confirmButton = find.text("Confirm changes?");
+    await tester.tap(confirmButton);
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    // Go back to Profile page
+    tester.state<NavigatorState>(find.byType(Navigator)).pop();
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    // Confirm the updates appear in the Volunteering Work section
+    await tester.ensureVisible(find.text('Edited Test Volunteering Institute'));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+    expect(find.text('Edited Test Volunteering Institute'), findsWidgets);
+  });
+
+  testWidgets('Delete an existing Volunteering experience', (WidgetTester tester) async {
+    app.main();
+    await tester.pumpAndSettle(const Duration(seconds: 10));
+
+    // Login
+    await tester.enterText(find.byType(TextFormField).first, 'AndrewTest1@gmail.com');
+    await tester.enterText(find.byType(TextFormField).last, 'Andrew1!');
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Sign in'));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    // Go to Profile page
+    final profileTabFinder = find.byIcon(Icons.person_outlined);
+    await tester.pumpUntilFound(profileTabFinder, const Duration(seconds: 10));
+    await tester.tap(profileTabFinder);
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    // Long press the Personal Story card to open Edit Volunteering Work page
+    final storyCardFinder = find.text('Edited Test Volunteering Institute').first;
+    await tester.ensureVisible(storyCardFinder);
+    await tester.pumpAndSettle();
+    await tester.longPress(storyCardFinder);
+    await tester.pumpAndSettle(const Duration(seconds: 10));
+
+    // Press bin button
+    final binButton = find.byIcon(Icons.delete);
+    await tester.tap(binButton);
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+
+    // Press confirm delete button
+    await tester.tap(find.text("Delete"));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    // Confirm that the Volunteering experience no longer exists in the Volunteering Work section
+    expect(find.text('Edited Test Volunteering Institute'), findsNothing);
   });
 }
 

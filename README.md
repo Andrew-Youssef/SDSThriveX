@@ -8,6 +8,9 @@ Team:
 
 - Xiang Hong Ong | 14352595
 - Adrian Rolfo | 24818686
-- Alexander Vlouhos | 24507612
 - Andrew Youssef | 24500530
+- Alexander Vlouhos | 24507612
 - Wilson Dao | 24764363
+
+To run:
+    flutter run --target=lib/main.dart
