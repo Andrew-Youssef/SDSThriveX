@@ -148,7 +148,7 @@ class _MyEditPersonalStoryScreenState extends State<MyEditPersonalStoryScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: const Text(
-                      "Confirm Changes?",
+                      "Confirm changes?",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.black,
